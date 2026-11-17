@@ -23,7 +23,7 @@ Coming soon — built one polished piece at a time:
 
 ## Live site
 
-Coming in the next step, via GitHub Pages.
+https://obiandrobi.github.io/Portfolio/
 
 ## Follow the build
 
