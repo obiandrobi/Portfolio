@@ -796,7 +796,47 @@
         card.classList.remove('done'); box.textContent = ''; done--; embers -= reward;
         playSfx(sfx.click);
       }
-      render();
+      render(); saveDay();
+    }
+
+    /* ----- Day board persistence: today's checkmarks + ember total save on this
+       device (like rocks and bests already do) and come back after a reload.
+       A new calendar day starts a fresh board; rocks and bests are forever. ----- */
+    var QUEST_KEYS = ['rock', 'follow', 'makeover', 'memory', 'jar', 'dance', 'puffs'];
+    function questKey(card) {
+      for (var i = 0; i < QUEST_KEYS.length; i++) if (card.hasAttribute('data-' + QUEST_KEYS[i])) return QUEST_KEYS[i];
+      return null;
+    }
+    function todayStr() {
+      var d = new Date();
+      return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+    }
+    function saveDay() {
+      try {
+        var doneKeys = [];
+        document.querySelectorAll('[data-quest]').forEach(function (c) {
+          if (c.classList.contains('done')) { var k = questKey(c); if (k) doneKeys.push(k); }
+        });
+        localStorage.setItem('poofDay', JSON.stringify({ date: todayStr(), done: doneKeys, embers: embers }));
+      } catch (e) {}
+    }
+    function restoreDay() {
+      try {
+        var raw = localStorage.getItem('poofDay');
+        if (!raw) return;
+        var saved = JSON.parse(raw);
+        if (!saved || saved.date !== todayStr() || !saved.done) return;
+        document.querySelectorAll('[data-quest]').forEach(function (c) {
+          var k = questKey(c);
+          if (k && saved.done.indexOf(k) !== -1 && !c.classList.contains('done')) {
+            c.classList.add('done');
+            c.querySelector('.box').textContent = '✓';
+            done++;
+          }
+        });
+        if (typeof saved.embers === 'number') embers = saved.embers;
+        render();
+      } catch (e) {}
     }
 
     document.querySelectorAll('[data-quest]').forEach(function (card) {
@@ -1204,6 +1244,7 @@
       dancePoof.pause();
       danceEndImg.src = 'assets/poof-win.jpg';
       danceEndImg.classList.add('show');
+      if (danceCard) setQuest(danceCard, true);
       var praise = ['Good job!', 'Great work!', 'You did it!'][Math.floor(Math.random() * 3)];
       danceMsg.textContent = praise + ' 🎉 Poof is cool and grooving — dancing on at a safe temperature. 🕺';
       playSfx(sfx.sparkle);
@@ -1330,6 +1371,7 @@
     }
     function memWin() {
       var b = getBest('memory');
+      if (memoryCard) setQuest(memoryCard, true);
       if (!b || MEM_WIN_LEN > (b.r || 0)) setBest('memory', { r: MEM_WIN_LEN });
       memoryMsg.textContent = praiseWord() + ' 🎉 A perfect ' + MEM_WIN_LEN + '-flame memory — Poof is impressed!';
       playSfx(sfx.sparkle);
@@ -1466,6 +1508,7 @@
       var secs = Math.max(1, Math.round((Date.now() - jarStartTime) / 1000));
       var b = getBest('jar');
       if (!b || !b.t || secs < b.t) setBest('jar', { t: secs });
+      if (jarCard) setQuest(jarCard, true);
       jarMsg.textContent = praiseWord() + ' 🎉 A full jar of embers — Poof will keep them by his bed.';
       playSfx(sfx.sparkle);
       jarCompleteBtn.style.display = '';
@@ -1615,6 +1658,7 @@
       var secs = Math.max(1, Math.round((Date.now() - puffStartTime) / 1000));
       var b = getBest('puffs');
       if (!b || !b.t || secs < b.t) setBest('puffs', { t: secs });
+      if (puffCard) setQuest(puffCard, true);
       puffMsg.textContent = praiseWord() + ' 🎉 15 golden stars popped — the sky over the cave is clear!';
       playSfx(sfx.sparkle);
       puffCompleteBtn.style.display = '';
@@ -1918,6 +1962,7 @@
     render();
     renderBests();
     renderRocks();
+    restoreDay();
   </script>
 </body>
 </html>
