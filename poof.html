@@ -298,6 +298,7 @@
             <div class="tracer-msg" id="danceMsg"></div>
             <div class="tracer-btns">
               <button id="danceStart">▶ Start</button>
+              <button id="danceComplete" style="display:none">Complete ✓</button>
               <button id="danceRetry" style="display:none">Try again 🕺</button>
               <button id="danceClose" class="ghost">Not now</button>
             </div>
@@ -591,6 +592,7 @@
       danceMsg.textContent = '';
       danceStartBtn.style.display = 'none';
       danceRetry.style.display = 'none';
+      danceCompleteBtn.style.display = 'none';
       danceEndImg.classList.remove('show');
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
@@ -599,6 +601,7 @@
       spawnFlame(); spawnFlame();
       danceTimer = setInterval(danceStep, 100);
     }
+    var danceCompleteBtn = document.getElementById('danceComplete');
     function winDance() {
       danceOver = true;
       stopDance();
@@ -608,11 +611,14 @@
       var praise = ['Good job!', 'Great work!', 'You did it!'][Math.floor(Math.random() * 3)];
       danceMsg.textContent = praise + ' 🎉 Poof is cool and grooving — dancing on at a safe temperature. 🕺';
       playSfx(sfx.sparkle);
-      setTimeout(function () {
-        dancePanel.classList.remove('show');
-        if (danceCard) setQuest(danceCard, true);
-      }, 2400);
+      danceCompleteBtn.style.display = '';
     }
+    danceCompleteBtn.addEventListener('click', function () {
+      danceCompleteBtn.style.display = 'none';
+      dancePanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (danceCard) setQuest(danceCard, true);
+    });
     function sleepFail() {
       danceOver = true;
       stopDance();
@@ -633,6 +639,7 @@
       heatBar.style.width = '0%';
       danceMsg.textContent = '';
       danceRetry.style.display = 'none';
+      danceCompleteBtn.style.display = 'none';
       danceStartBtn.style.display = '';
       danceEndImg.classList.remove('show');
       danceZzz.classList.remove('show');
