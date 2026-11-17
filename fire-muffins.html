@@ -28,6 +28,12 @@
     .hud { position: absolute; top: 0; left: 0; right: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; color: #fff; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
     .hud .score { font-size: 1.15rem; background: rgba(43,20,8,.5); padding: 5px 14px; border-radius: 999px; }
     .hud .hearts { font-size: 1.05rem; letter-spacing: 2px; }
+    .hud .streak { font-size: 1.05rem; background: rgba(255,110,20,.55); padding: 5px 12px; border-radius: 999px; opacity: 0; transform: scale(.7); transition: opacity .18s, transform .18s; }
+    .hud .streak.on { opacity: 1; transform: scale(1); }
+    #streakPop { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 7; pointer-events: none; opacity: 0; }
+    #streakPop span { font-size: 2.1rem; font-weight: 900; color: #ffd23e; text-shadow: 0 3px 0 #b34700, 0 8px 24px rgba(0,0,0,.55); letter-spacing: .5px; text-align: center; padding: 0 12px; }
+    #streakPop.pop { animation: streakPop 1.05s ease forwards; }
+    @keyframes streakPop { 0% { opacity: 0; transform: scale(.4) rotate(-4deg); } 18% { opacity: 1; transform: scale(1.15) rotate(2deg); } 30% { transform: scale(1) rotate(0deg); } 75% { opacity: 1; } 100% { opacity: 0; transform: scale(1.04) translateY(-10px); } }
     .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: rgba(20,8,4,.35); z-index: 2; }
     #poof { position: absolute; bottom: 12px; left: 50%; width: 128px; height: auto; margin-left: -64px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; pointer-events: none; -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
     #poof.hop { animation: hop .38s ease; }
@@ -75,8 +81,10 @@
       <div class="shade"></div>
       <div class="hud">
         <span class="score">🧁 × <span id="score">0</span></span>
+        <span class="streak" id="streakHud">🔥 ×0</span>
         <span class="hearts" id="hearts">❤️❤️❤️</span>
       </div>
+      <div id="streakPop"><span></span></div>
       <div class="ground"></div>
       <img id="poof" src="assets/poof-catch.png" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins" draggable="false">
 
@@ -84,6 +92,7 @@
         <h2>🔥 Fire Muffin Catch 🧁</h2>
         <p>Fire muffins are falling over the hills! Slide Poof to catch them.</p>
         <p>Catch <strong>15</strong> to win — but drop <strong>3</strong> and it's muffin chaos.</p>
+        <p>🔥 Catch streaks catch fire: every <strong>5 in a row</strong> pops big — and a drop puts it out.</p>
         <p>🔥 <strong>Flair Mode:</strong> the endless version — no cap, it gets harder every 30 seconds, and you play until you drop 3.</p>
         <p id="startBest" style="display:none;color:#ffd23e;font-weight:700"></p>
         <p id="startFlairBest" style="display:none;color:#ff9d5c;font-weight:700"></p>
@@ -148,6 +157,46 @@
       }
     }
 
+    /* Signature sounds: FIXED motifs, identical every time — that's what makes
+       them signatures. Winning always climbs the same four notes with a sparkle
+       on top; losing always gets the slide-whistle fall and a soft thud.
+       Catch notes climb a ladder as your streak grows, so a hot streak
+       literally sounds hotter. */
+    var _ladder = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5, 1174.66, 1318.51, 1567.98, 1760.0];
+    function playCatchTone() {
+      var f = _ladder[Math.min(Math.max(streak - 1, 0), _ladder.length - 1)];
+      _tone(f, 0, 0.26, 'triangle', 0.13);
+      _tone(f * 2, 0, 0.16, 'sine', 0.04);
+    }
+    function playStreakJingle() {
+      [880.0, 1108.73, 1318.51].forEach(function (f, i) {
+        _tone(f, i * 0.07, 0.3, 'triangle', 0.12);
+        _tone(f * 2, i * 0.07, 0.18, 'sine', 0.03);
+      });
+    }
+    function playWinJingle() {
+      [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) {
+        _tone(f, i * 0.09, 0.34, 'triangle', 0.13);
+        _tone(f * 2, i * 0.09, 0.2, 'sine', 0.035);
+      });
+      _tone(1318.51, 0.38, 0.42, 'triangle', 0.10);
+      _tone(1567.98, 0.46, 0.48, 'sine', 0.06);
+    }
+    function playLoseSound() {
+      _tone(620, 0, 0.5, 'sine', 0.13, 110);
+      _tone(310, 0.02, 0.5, 'triangle', 0.06, 70);
+      _tone(120, 0.48, 0.22, 'sine', 0.15, 55);
+    }
+    function renderStreak() {
+      streakHud.textContent = '🔥 ×' + streak;
+      streakHud.classList.toggle('on', streak >= 2);
+    }
+    function showStreakPop() {
+      var label = streak >= 20 ? '🚀 STREAK ×' + streak + '!' : streak >= 15 ? '⭐ SUPER STREAK ×' + streak + '!' : streak >= 10 ? '🔥🔥 STREAK ×' + streak + '!' : '🔥 STREAK ×' + streak + '!';
+      streakPop.querySelector('span').textContent = label;
+      streakPop.classList.remove('pop'); void streakPop.offsetWidth; streakPop.classList.add('pop');
+    }
+
     var stage = document.getElementById('stage');
     var poof = document.getElementById('poof');
     var scoreEl = document.getElementById('score');
@@ -172,6 +221,9 @@
 
     var WIN_SCORE = 15;
     var running = false, score = 0, hearts = 3;
+    var streak = 0, runBestStreak = 0;
+    var streakHud = document.getElementById('streakHud');
+    var streakPop = document.getElementById('streakPop');
     var poofX = 0.5, targetX = 0.5; // as fractions of stage width
     var muffins = [], lastSpawn = 0, lastTime = 0, rafId = null;
     var keys = {};
@@ -233,7 +285,7 @@
         var newFlair = score > fmFlairBest;
         if (newFlair) { fmFlairBest = score; try { localStorage.setItem('fmFlairBest', String(fmFlairBest)); } catch (e) {} }
         endBest.textContent = fmFlairBest > 0 ? ('🔥 Flair best: ' + fmFlairBest + ' muffins caught' + (newFlair ? ' — new best! 🎉' : '')) : '';
-        playSfx(sfx.bad);
+        playLoseSound();
       } else {
         endTitle.textContent = won ? 'Muffin Master! 🏆' : 'The muffins got away…';
         endText.textContent = won
@@ -242,8 +294,9 @@
         var newBest = score > fmBest;
         if (newBest) { fmBest = score; try { localStorage.setItem('fmBest', String(fmBest)); } catch (e) {} }
         endBest.textContent = fmBest > 0 ? ('🏆 Best: ' + fmBest + ' muffins caught' + (newBest ? ' — new best! 🎉' : '')) : '';
-        playSfx(won ? sfx.sparkle : sfx.bad);
+        if (won) playWinJingle(); else playLoseSound();
       }
+      if (runBestStreak >= 3) endText.textContent += ' Longest streak: 🔥 ×' + runBestStreak + '.';
       renderStartBest();
       endOverlay.classList.add('show');
       endVideo.currentTime = 0;
@@ -272,18 +325,23 @@
         var overlapX = Math.abs(m.x - poofX) * W < 84;
         if (muffinBottom >= poofTop + 26 && muffinBottom <= H - 4 && overlapX) {
           score++;
-          renderHud();
+          streak++;
+          if (streak > runBestStreak) runBestStreak = streak;
+          renderHud(); renderStreak();
           floatText(m.x, poofTop - 8, '+1 🧁');
           poof.classList.remove('hop'); void poof.offsetWidth; poof.classList.add('hop');
           setPose('happy');
-          playSfx(sfx.chime);
+          playCatchTone();
+          if (streak % 5 === 0) { showStreakPop(); playStreakJingle(); }
           m.el.remove();
           if (!flairMode && score >= WIN_SCORE) { endGame(true); return false; }
           return false;
         }
         if (m.y > H - 18) {
           hearts--;
-          renderHud();
+          if (streak >= 5) floatText(m.x, poofTop - 8, '💨 streak lost');
+          streak = 0;
+          renderHud(); renderStreak();
           splat(m.x);
           setPose('dizzy');
           playSfx(sfx.bad);
@@ -298,8 +356,8 @@
     }
     function startGame() {
       setPose('catch', true);
-      score = 0; hearts = 3; poofX = 0.5; targetX = 0.5;
-      renderHud(); placePoof();
+      score = 0; hearts = 3; streak = 0; runBestStreak = 0; poofX = 0.5; targetX = 0.5;
+      renderHud(); renderStreak(); placePoof();
       startOverlay.classList.remove('show');
       endOverlay.classList.remove('show');
       endVideo.pause();
