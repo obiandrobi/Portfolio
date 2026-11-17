@@ -124,6 +124,12 @@
     .jar-el { position: absolute; bottom: 4px; font-size: 2.7rem; transform: translateX(-50%); pointer-events: none; z-index: 3; }
     .fall-item { position: absolute; transform: translate(-50%, 0); pointer-events: none; z-index: 2; }
     .puff { position: absolute; background: none; border: 0; cursor: pointer; transform: translate(-50%, 0); z-index: 2; line-height: 1; padding: 2px; }
+    .acc-piece { position: absolute; transform: translate(-50%, -50%); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; z-index: 3; line-height: 1; }
+    .steve-rock { position: absolute; left: 50%; top: 55%; transform: translate(-50%, -50%); font-size: 7rem; z-index: 2; line-height: 1; }
+    .acc-tray { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px; }
+    .acc-tray button { font: inherit; font-size: 1.05rem; border-radius: 999px; padding: 5px 11px; cursor: pointer; border: 2px solid #f3e2d3; background: #fff; }
+    .acc-tray button.on { border-color: #ff8a3d; background: #fff1e2; }
+    #selfieImg { width: 100%; max-width: 240px; border-radius: 14px; margin: 10px auto 4px; display: none; box-shadow: 0 8px 22px rgba(120,60,20,.25); }
     .shake { animation: shake .35s ease; }
     @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
@@ -146,12 +152,12 @@
         <li>Animated cave-home header, generated from an original character design</li>
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
         <li>Working quest cards, progress ring, and ember rewards</li>
-        <li>Seven active quests — reflexes, memory, timing, and one real-world rock</li>
+        <li>Eight active quests — reflexes, memory, timing, a real-world rock, and one very fashionable rock</li>
         <li>High scores for every game, saved on the device — replay quests to beat your best</li>
-        <li>Finish all seven quests and Poof celebrates</li>
+        <li>Finish all eight quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all seven are <strong>active quests</strong>: cool dancing Poof down, follow the ember, name a cool rock for Steve, test your flame memory, wake the cave crystals, catch embers in a jar, and pop smoke puffs. Every game keeps a high score, and finished quests can be replayed any time to beat it. Finish all seven for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all eight are <strong>active quests</strong>: cool dancing Poof down, follow the ember, name a cool rock for Steve, test your flame memory, wake the cave crystals, catch embers in a jar, pop smoke puffs, and give Steve a makeover (yes, there's a selfie). Scored games keep a high score, and finished quests can be replayed any time to beat it. Finish all eight for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -182,11 +188,11 @@
                 <circle class="ring-bg" cx="32" cy="32" r="26"></circle>
                 <circle class="ring-fg" id="ringFg" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="163.4"></circle>
               </svg>
-              <div class="ring-num" id="ringNum">0/7</div>
+              <div class="ring-num" id="ringNum">0/8</div>
             </div>
             <div>
               <h3>Today's quests</h3>
-              <p id="progressText">Seven tiny steps. Poof believes in you.</p>
+              <p id="progressText">Eight tiny steps. Poof believes in you.</p>
             </div>
             <div class="embers"><span id="emberCount">240</span> ◆<small>embers</small></div>
           </div>
@@ -226,12 +232,17 @@
             <span><span class="name">Pop the smoke puffs</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
+          <button class="quest" data-quest data-makeover data-reward="15">
+            <span class="icon" style="background:#ffe9f3">🎨</span>
+            <span><span class="name">Steve's makeover</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span class="box"></span>
+          </button>
         </div>
 
         <div class="view" id="view-quests">
           <div class="panel">
             <h3>📜 Quest log</h3>
-            <p>Today's quests live on the Home tab. Tomorrow brings seven new tiny steps — and one day, a quest that leads all the way down to the town.</p>
+            <p>Today's quests live on the Home tab. Tomorrow brings eight new tiny steps — and one day, a quest that leads all the way down to the town.</p>
             <p><strong>Coming soon:</strong> weekly quests, brave quests, and a very small quest about saying hello to a neighbor.</p>
           </div>
         </div>
@@ -362,6 +373,42 @@
         </div>
 
 
+
+        <div class="tracer" id="makeoverPanel">
+          <div class="tracer-card">
+            <h3>🎨 Steve's makeover</h3>
+            <p style="text-align:left"><strong>How to play:</strong> Steve the rock has a big day coming up. He wants to look his best.<br>
+            1️⃣ Tap accessories below to put them on Steve — <strong>drag them</strong> to place them just right.<br>
+            2️⃣ Give him at least <strong>3 accessories</strong>.<br>
+            3️⃣ Then take his <strong>selfie with Poof</strong> 📸 — you can save the picture!</p>
+            <div class="game-scene" id="steveStage" style="background:linear-gradient(#ffe9c9,#ffd9a8)">
+              <div class="steve-rock" id="steveRock">🪨</div>
+            </div>
+            <div class="acc-tray" id="accTray">
+              <button data-acc="eyes" data-emoji="👀" data-fx="0.5" data-fy="0.44" data-rem="2.6">👀</button>
+              <button data-acc="shades" data-emoji="🕶️" data-fx="0.5" data-fy="0.44" data-rem="2.9">🕶️</button>
+              <button data-acc="hat" data-emoji="🎩" data-fx="0.5" data-fy="0.17" data-rem="2.8">🎩</button>
+              <button data-acc="crown" data-emoji="👑" data-fx="0.5" data-fy="0.15" data-rem="2.6">👑</button>
+              <button data-acc="stache" data-emoji="🥸" data-fx="0.5" data-fy="0.62" data-rem="2.4">🥸</button>
+              <button data-acc="bow" data-emoji="🎀" data-fx="0.69" data-fy="0.22" data-rem="2">🎀</button>
+              <button data-acc="flower" data-emoji="🌸" data-fx="0.3" data-fy="0.24" data-rem="1.9">🌸</button>
+              <button data-acc="star" data-emoji="⭐" data-fx="0.5" data-fy="0.78" data-rem="1.7">⭐</button>
+            </div>
+            <div class="tracer-msg" id="makeoverMsg">Steve is ready for his glow-up.</div>
+            <img id="selfieImg" alt="Selfie of Poof with Steve the rock, all dressed up">
+            <div class="tracer-btns">
+              <button id="makeoverSelfie">📸 Take his selfie</button>
+              <button id="makeoverComplete" style="display:none">Complete ✓</button>
+              <button id="makeoverClose" class="ghost">Not now</button>
+            </div>
+            <div class="tracer-btns">
+              <button id="makeoverRandom" class="ghost">🎲 Surprise me</button>
+              <button id="makeoverClear" class="ghost">↺ Bare Steve</button>
+              <a id="selfieDownload" class="ghost" style="display:none;font:inherit;font-weight:800;border-radius:999px;padding:9px 18px;border:2px solid #ff8a3d;color:#b35c12;text-decoration:none" download="steve-selfie.png">💾 Save selfie</a>
+            </div>
+          </div>
+        </div>
+
         <div class="tracer" id="memoryPanel">
           <div class="tracer-card">
             <h3>🧠 Flame Memory</h3>
@@ -479,7 +526,7 @@
     };
     function playSfx(a) { if (!a) return; a.currentTime = 0; a.play().catch(function () {}); }
     var CIRC = 163.4;
-    var total = 7, done = 0, embers = 240;
+    var total = 8, done = 0, embers = 240;
     var ringFg = document.getElementById('ringFg');
     var ringNum = document.getElementById('ringNum');
     var progressText = document.getElementById('progressText');
@@ -489,13 +536,14 @@
     var celebrate = document.getElementById('celebrate');
     var celebrateVideo = document.getElementById('celebrateVideo');
     var messages = [
-      'Seven tiny steps. Poof believes in you.',
+      'Eight tiny steps. Poof believes in you.',
       'One down. The flame flickers taller.',
       'Two down! Poof is doing a tiny dance.',
       'Three down — the cave feels warmer already.',
       'Four down! The town lights look a little closer.',
       'Five down! Poof packed a tiny bag. Just in case.',
-      'Six down — one brave step left!',
+      'Six down! Steve is waving. (Rocks can wave.)',
+      'Seven down — one brave step left!',
       'All done. Today, you were brave together.'
     ];
 
@@ -565,6 +613,7 @@
         else if (card.hasAttribute('data-crystals')) openCrystals(card);
         else if (card.hasAttribute('data-jar')) openJar(card);
         else if (card.hasAttribute('data-puffs')) openPuffs(card);
+        else if (card.hasAttribute('data-makeover')) openMakeover(card);
       });
     });
 
@@ -1314,6 +1363,168 @@
       playSfx(sfx.click);
     });
 
+    /* ----- Steve's Makeover: dress the rock, then a selfie with Poof ----- */
+    var makeoverPanel = document.getElementById('makeoverPanel');
+    var steveStage = document.getElementById('steveStage');
+    var makeoverMsg = document.getElementById('makeoverMsg');
+    var makeoverCard = null, stevePieces = {}, dragPiece = null;
+    var makeoverCompleteBtn = document.getElementById('makeoverComplete');
+    var selfieImg = document.getElementById('selfieImg');
+    var selfieDownload = document.getElementById('selfieDownload');
+    var ACC_KEYS = ['eyes', 'shades', 'hat', 'crown', 'stache', 'bow', 'flower', 'star'];
+    function steveCount() { return Object.keys(stevePieces).length; }
+    function steveMsgUpdate() {
+      var n = steveCount();
+      if (n === 0) makeoverMsg.textContent = 'Steve is ready for his glow-up.';
+      else if (n < 3) makeoverMsg.textContent = n + ' on… Steve needs ' + (3 - n) + ' more to feel fancy.';
+      else makeoverMsg.textContent = 'Looking SHARP, Steve. 📸 Selfie time!';
+    }
+    function addPiece(btn) {
+      var key = btn.getAttribute('data-acc');
+      if (stevePieces[key]) return;
+      var el = document.createElement('span');
+      el.className = 'acc-piece';
+      el.textContent = btn.getAttribute('data-emoji');
+      el.style.fontSize = btn.getAttribute('data-rem') + 'rem';
+      el.setAttribute('data-fx', btn.getAttribute('data-fx'));
+      el.setAttribute('data-fy', btn.getAttribute('data-fy'));
+      el.setAttribute('data-rem', btn.getAttribute('data-rem'));
+      el.setAttribute('data-key', key);
+      placePiece(el);
+      el.addEventListener('pointerdown', function (e) {
+        e.preventDefault();
+        dragPiece = el;
+        el.setPointerCapture(e.pointerId);
+        movePiece(el, e);
+      });
+      el.addEventListener('pointermove', function (e) { if (dragPiece === el) movePiece(el, e); });
+      ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { dragPiece = null; }); });
+      steveStage.appendChild(el);
+      stevePieces[key] = el;
+      btn.classList.add('on');
+    }
+    function placePiece(el) {
+      var W = steveStage.clientWidth, H = steveStage.clientHeight;
+      el.style.left = (parseFloat(el.getAttribute('data-fx')) * W) + 'px';
+      el.style.top = (parseFloat(el.getAttribute('data-fy')) * H) + 'px';
+    }
+    function movePiece(el, e) {
+      var r = steveStage.getBoundingClientRect();
+      var fx = Math.max(0.03, Math.min(0.97, (e.clientX - r.left) / r.width));
+      var fy = Math.max(0.03, Math.min(0.97, (e.clientY - r.top) / r.height));
+      el.setAttribute('data-fx', fx.toFixed(3));
+      el.setAttribute('data-fy', fy.toFixed(3));
+      placePiece(el);
+    }
+    function removePiece(btn) {
+      var key = btn.getAttribute('data-acc');
+      if (stevePieces[key]) { stevePieces[key].remove(); delete stevePieces[key]; }
+      btn.classList.remove('on');
+    }
+    document.querySelectorAll('#accTray button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        if (stevePieces[btn.getAttribute('data-acc')]) removePiece(btn); else addPiece(btn);
+        playSfx(sfx.click);
+        steveMsgUpdate();
+      });
+    });
+    function clearSteve() {
+      document.querySelectorAll('#accTray button').forEach(function (btn) { removePiece(btn); });
+      steveMsgUpdate();
+    }
+    document.getElementById('makeoverClear').addEventListener('click', function () { playSfx(sfx.click); clearSteve(); });
+    document.getElementById('makeoverRandom').addEventListener('click', function () {
+      clearSteve();
+      var shuffled = ACC_KEYS.slice().sort(function () { return Math.random() - 0.5; }).slice(0, 4 + Math.floor(Math.random() * 3));
+      document.querySelectorAll('#accTray button').forEach(function (btn) {
+        if (shuffled.indexOf(btn.getAttribute('data-acc')) >= 0) addPiece(btn);
+      });
+      playSfx(sfx.sparkle);
+      steveMsgUpdate();
+    });
+    function takeSelfie() {
+      if (steveCount() < 3) {
+        makeoverMsg.textContent = 'Steve needs at least 3 accessories before his close-up! 🎬';
+        playSfx(sfx.click);
+        return;
+      }
+      var S = 640, cv = document.createElement('canvas');
+      cv.width = S; cv.height = S;
+      var c = cv.getContext('2d');
+      var g = c.createLinearGradient(0, 0, 0, S);
+      g.addColorStop(0, '#8ec9e8'); g.addColorStop(0.55, '#ffd9a0'); g.addColorStop(1, '#ffab73');
+      c.fillStyle = g; c.fillRect(0, 0, S, S);
+      c.beginPath(); c.arc(S * 0.78, S * 0.2, 52, 0, Math.PI * 2); c.fillStyle = '#fff3b0'; c.fill();
+      c.fillStyle = '#7a9e6e'; c.beginPath(); c.ellipse(S * 0.5, S * 1.02, S * 0.75, S * 0.2, 0, Math.PI, Math.PI * 2); c.fill();
+      var rockName = document.getElementById('yourRockName').textContent || 'Rocko';
+      var rockDone = document.getElementById('rockStat').style.display !== 'none';
+      function drawScene() {
+        c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.font = (S * 0.34) + 'px serif';
+        c.fillText('🪨', S * 0.62, S * 0.58);
+        Object.keys(stevePieces).forEach(function (k) {
+          var el = stevePieces[k];
+          var rem = parseFloat(el.getAttribute('data-rem'));
+          // stage coords (Steve at 50%/55% of the stage) -> selfie coords (rock at 62%/58%)
+          var dx = (parseFloat(el.getAttribute('data-fx')) - 0.5) * S * 0.62;
+          var dy = (parseFloat(el.getAttribute('data-fy')) - 0.55) * S * 0.62;
+          c.font = (rem * 16 * (S / 300)) + 'px serif';
+          c.fillText(el.textContent, S * 0.62 + dx, S * 0.58 + dy);
+        });
+        if (rockDone) {
+          c.font = (S * 0.13) + 'px serif';
+          c.fillText('🪨', S * 0.86, S * 0.78);
+          c.font = '700 ' + (S * 0.045) + 'px system-ui, sans-serif';
+          c.fillStyle = '#5b3a1e';
+          c.fillText(rockName, S * 0.86, S * 0.9);
+        }
+        c.font = '900 ' + (S * 0.055) + 'px system-ui, sans-serif';
+        c.shadowColor = 'rgba(90,40,0,0.45)'; c.shadowBlur = 8; c.shadowOffsetY = 3;
+        c.fillStyle = '#ffffff';
+        c.fillText(rockDone ? 'Steve & ' + rockName + ' — best friends 💛' : 'Steve, styled by you 💛', S * 0.5, S * 0.94);
+        c.shadowBlur = 0; c.shadowOffsetY = 0;
+        var url = cv.toDataURL('image/png');
+        selfieImg.src = url;
+        selfieImg.style.display = 'block';
+        selfieDownload.href = url;
+        selfieDownload.style.display = '';
+        makeoverMsg.textContent = '📸 Got it! Poof is framing this one.';
+        playSfx(sfx.sparkle);
+        makeoverCompleteBtn.style.display = '';
+      }
+      var img = new Image();
+      img.onload = function () {
+        c.save();
+        c.beginPath(); c.arc(S * 0.24, S * 0.6, S * 0.17, 0, Math.PI * 2); c.clip();
+        c.drawImage(img, S * 0.24 - S * 0.17, S * 0.6 - S * 0.17, S * 0.34, S * 0.34);
+        c.restore();
+        c.beginPath(); c.arc(S * 0.24, S * 0.6, S * 0.17, 0, Math.PI * 2); c.lineWidth = 8; c.strokeStyle = '#ffffff'; c.stroke();
+        drawScene();
+      };
+      img.onerror = function () { drawScene(); };
+      img.src = 'assets/poof-front.jpg';
+    }
+    document.getElementById('makeoverSelfie').addEventListener('click', takeSelfie);
+    makeoverCompleteBtn.addEventListener('click', function () {
+      makeoverPanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (makeoverCard) setQuest(makeoverCard, true);
+    });
+    function openMakeover(card) {
+      makeoverCard = card;
+      makeoverCompleteBtn.style.display = 'none';
+      selfieImg.style.display = 'none';
+      selfieDownload.style.display = 'none';
+      steveMsgUpdate();
+      makeoverPanel.classList.add('show');
+      Object.keys(stevePieces).forEach(function (k) { placePiece(stevePieces[k]); });
+      playSfx(sfx.click);
+    }
+    document.getElementById('makeoverClose').addEventListener('click', function () {
+      makeoverPanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
     document.getElementById('celebrateClose').addEventListener('click', function () {
       celebrate.classList.remove('show');
       celebrateVideo.pause();
@@ -1352,7 +1563,7 @@
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
       // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
       setInterval(function () {
-        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show') || memoryPanel.classList.contains('show') || crystalPanel.classList.contains('show') || jarPanel.classList.contains('show') || puffPanel.classList.contains('show');
+        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show') || memoryPanel.classList.contains('show') || crystalPanel.classList.contains('show') || jarPanel.classList.contains('show') || puffPanel.classList.contains('show') || makeoverPanel.classList.contains('show');
         if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
         if (!caveVideo.paused) playOverlay.classList.remove('show');
       }, 2500);
