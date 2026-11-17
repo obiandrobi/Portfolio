@@ -88,6 +88,18 @@
     .tracer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .tracer-btns button { font: inherit; font-weight: 800; border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 2px solid #ff8a3d; background: #ff8a3d; color: #fff; }
     .tracer-btns button.ghost { background: transparent; color: #b35c12; }
+    .rock-step { display: none; }
+    .rock-step.show { display: block; }
+    .rock-input { font: inherit; font-weight: 700; text-align: center; width: 100%; max-width: 240px; padding: 10px 14px; border-radius: 999px; border: 2px solid #f3c98f; background: #fff; color: #33241f; margin-bottom: 6px; }
+    .rock-input:focus { outline: 2px solid #ff8a3d; }
+    .rock-pals { display: flex; align-items: flex-end; justify-content: center; gap: 10px; margin: 10px 0 4px; }
+    .rock-pal { text-align: center; }
+    .rock-pal .rock-emoji { font-size: 3.2rem; display: block; animation: rockbounce 1.2s ease-in-out infinite alternate; }
+    .rock-pal:nth-child(3) .rock-emoji { animation-delay: .35s; }
+    @keyframes rockbounce { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+    .rock-pal .rock-name { display: block; font-weight: 900; color: #8a5a12; margin-top: 2px; }
+    .rock-pal .rock-sub { display: block; font-size: .72rem; color: #b09468; font-weight: 700; }
+    .rock-heart { font-size: 1.5rem; padding-bottom: 26px; animation: rockbounce .8s ease-in-out infinite alternate; }
 
     /* Celebration */
     .celebrate { position: absolute; inset: 0; z-index: 40; background: rgba(26,10,4,.82); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 22px; text-align: center; color: #fff; }
@@ -103,7 +115,7 @@
     <div class="about">
       <h1>Poof</h1>
       <p class="sub">Portfolio Piece #2 — Animated App Home Screen</p>
-      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a stretch, a doodle, a glass of water — grow the living flame on his head. Small steps, for both of you.</p>
+      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a stretch, a traced flame, a cool rock that needs a name — grow the living flame on his head. Small steps, for both of you.</p>
       <ul>
         <li>Animated cave-home header, generated from an original character design</li>
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
@@ -111,7 +123,7 @@
         <li>Finish all three quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone. The flame quest is an <strong>active quest</strong> — tap it and you'll have to trace the ember flame with your finger or mouse, and actually trace it well, to complete it. Finish all three for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone. Two are <strong>active quests</strong>: trace the ember flame well enough to light it, and go find a real cool rock, name it, and introduce it to Poof's rock, Steve. Finish all three for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -161,9 +173,9 @@
             <span><span class="name">Trace the ember flame</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
-          <button class="quest" data-quest data-reward="10">
-            <span class="icon" style="background:#e2f7ee">💧</span>
-            <span><span class="name">Drink a glass of water</span><br><span class="reward">+10 ◆ embers</span></span>
+          <button class="quest" data-quest data-rock data-reward="15">
+            <span class="icon" style="background:#e8e4da">🪨</span>
+            <span><span class="name">Find a cool rock</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
         </div>
@@ -194,6 +206,7 @@
               <div class="stat-row"><span>Level</span><strong>3 · Cozy Sprout</strong></div>
               <div class="stat-row"><span>Streak</span><strong><span id="profileStreak">12</span> days 🔥</strong></div>
               <div class="stat-row"><span>Embers</span><strong><span id="profileEmbers">240</span> ◆</strong></div>
+              <div class="stat-row" id="rockStat" style="display:none"><span>Rock friends</span><strong id="rockStatVal">—</strong></div>
               <div class="stat-row"><span>Home</span><strong>A cave in the hills</strong></div>
               <div class="stat-row"><span>Dream</span><strong>Visit the town ✨</strong></div>
             </div>
@@ -216,6 +229,40 @@
             <div class="tracer-btns">
               <button id="traceRetry">↺ Start over</button>
               <button id="traceClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer" id="rockPanel">
+          <div class="tracer-card">
+            <div class="rock-step show" id="rockStep1">
+              <h3>🪨 Find a cool rock</h3>
+              <p>Somewhere near you is a cool rock waiting for a friend. Go find it — any size, any shape, as long as it's cool. Poof is an expert. He can tell.</p>
+              <div class="tracer-btns">
+                <button id="rockFound">I found one! 🪨</button>
+                <button id="rockClose1" class="ghost">Not now</button>
+              </div>
+            </div>
+            <div class="rock-step" id="rockStep2">
+              <h3>✏️ Name your rock</h3>
+              <p>Every cool rock deserves a name. Choose wisely — this is forever. (It's not forever. But choose wisely anyway.)</p>
+              <input class="rock-input" id="rockName" type="text" maxlength="16" placeholder="e.g. Rocko" autocomplete="off">
+              <div class="tracer-btns">
+                <button id="rockNameBtn">That's the name</button>
+                <button id="rockClose2" class="ghost">Not now</button>
+              </div>
+            </div>
+            <div class="rock-step" id="rockStep3">
+              <h3>💛 New friends!</h3>
+              <div class="rock-pals">
+                <div class="rock-pal"><span class="rock-emoji">🪨</span><span class="rock-name" id="yourRockName">Rocko</span><span class="rock-sub">your rock</span></div>
+                <div class="rock-heart">💛</div>
+                <div class="rock-pal"><span class="rock-emoji">🪨</span><span class="rock-name">Steve</span><span class="rock-sub">Poof's rock</span></div>
+              </div>
+              <p id="rockMsg" style="color:#8a5a12;font-weight:700"></p>
+              <div class="tracer-btns">
+                <button id="rockDoneBtn">Best friends forever ✓</button>
+              </div>
             </div>
           </div>
         </div>
@@ -296,6 +343,8 @@
       card.addEventListener('click', function () {
         if (card.hasAttribute('data-trace') && !card.classList.contains('done')) {
           openTracer(card);
+        } else if (card.hasAttribute('data-rock') && !card.classList.contains('done')) {
+          openRock(card);
         } else {
           setQuest(card, !card.classList.contains('done'));
         }
@@ -412,6 +461,41 @@
       tracer.classList.remove('show'); playSfx(sfx.click);
     });
 
+    /* ----- Rock quest: find a cool rock, name it, meet Steve ----- */
+    var rockPanel = document.getElementById('rockPanel');
+    var rockCard = null;
+    function rockStep(n) {
+      [1, 2, 3].forEach(function (i) {
+        document.getElementById('rockStep' + i).classList.toggle('show', i === n);
+      });
+    }
+    function openRock(card) {
+      rockCard = card;
+      rockStep(1);
+      rockPanel.classList.add('show');
+      playSfx(sfx.click);
+    }
+    function closeRock() { rockPanel.classList.remove('show'); playSfx(sfx.click); }
+    document.getElementById('rockFound').addEventListener('click', function () {
+      playSfx(sfx.chime); rockStep(2);
+      setTimeout(function () { document.getElementById('rockName').focus(); }, 60);
+    });
+    document.getElementById('rockNameBtn').addEventListener('click', function () {
+      var name = document.getElementById('rockName').value.trim() || 'Rocko';
+      document.getElementById('yourRockName').textContent = name;
+      document.getElementById('rockMsg').textContent = 'Poof named his rock Steve. I think ' + name + ' & Steve will be friends.';
+      document.getElementById('rockStatVal').textContent = name + ' & Steve 🪨';
+      document.getElementById('rockStat').style.display = '';
+      playSfx(sfx.sparkle);
+      rockStep(3);
+    });
+    document.getElementById('rockDoneBtn').addEventListener('click', function () {
+      rockPanel.classList.remove('show');
+      if (rockCard) setQuest(rockCard, true);
+    });
+    document.getElementById('rockClose1').addEventListener('click', closeRock);
+    document.getElementById('rockClose2').addEventListener('click', closeRock);
+
     document.getElementById('celebrateClose').addEventListener('click', function () {
       celebrate.classList.remove('show');
       celebrateVideo.pause();
@@ -450,7 +534,7 @@
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
       // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
       setInterval(function () {
-        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show');
+        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show');
         if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
         if (!caveVideo.paused) playOverlay.classList.remove('show');
       }, 2500);
