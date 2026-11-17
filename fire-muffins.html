@@ -48,6 +48,7 @@
     .overlay video { width: 200px; border-radius: 16px; margin-bottom: 12px; }
     .overlay button { margin-top: 16px; background: #ff8a3d; color: #fff; border: 0; font: inherit; font-weight: 800; font-size: 1.05rem; padding: 12px 30px; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
     .overlay button:hover { transform: scale(1.04); }
+    .overlay button.flair { background: linear-gradient(135deg, #d42a1e, #7f1d1d); }
   </style>
 </head>
 <body>
@@ -61,6 +62,7 @@
         <li>Drag, mouse, or arrow keys — Poof follows with a little hop on every catch</li>
         <li>Difficulty ramps: the muffins fall faster the more you catch</li>
         <li>Catch 15 to win. Drop 3 and the muffins win</li>
+        <li>🔥 Flair Mode: endless catching — no cap, just don't drop 3</li>
         <li>Sound effects throughout, chopped from ElevenLabs generations</li>
       </ul>
       <div class="try"><strong>How to play:</strong> press Start, then drag (or move your mouse) to slide Poof left and right. Catch the falling fire muffins — don't let them splat.</div>
@@ -82,7 +84,9 @@
         <p>Fire muffins are falling over the hills! Slide Poof to catch them.</p>
         <p>Catch <strong>15</strong> to win — but drop <strong>3</strong> and it's muffin chaos.</p>
         <p id="startBest" style="display:none;color:#ffd23e;font-weight:700"></p>
+        <p id="startFlairBest" style="display:none;color:#ff9d5c;font-weight:700"></p>
         <button id="startBtn">Start catching</button>
+        <button id="flairBtn" class="flair">🔥 Flair Mode — endless</button>
       </div>
 
       <div class="overlay" id="endOverlay">
@@ -118,8 +122,13 @@
     var endBest = document.getElementById('endBest');
     var fmBest = 0;
     try { fmBest = parseInt(localStorage.getItem('fmBest') || '0', 10) || 0; } catch (e) {}
+    var fmFlairBest = 0;
+    try { fmFlairBest = parseInt(localStorage.getItem('fmFlairBest') || '0', 10) || 0; } catch (e) {}
+    var flairMode = false;
     function renderStartBest() {
       if (fmBest > 0) { startBest.textContent = '🏆 Your best: ' + fmBest + ' muffins caught'; startBest.style.display = ''; }
+      var sfb = document.getElementById('startFlairBest');
+      if (fmFlairBest > 0) { sfb.textContent = '🔥 Flair best: ' + fmFlairBest + ' muffins caught'; sfb.style.display = ''; }
     }
 
     var WIN_SCORE = 15;
@@ -169,18 +178,27 @@
       cancelAnimationFrame(rafId);
       muffins.forEach(function (m) { m.el.remove(); });
       muffins = [];
-      endTitle.textContent = won ? 'Muffin Master! 🏆' : 'The muffins got away…';
-      endText.textContent = won
-        ? 'Poof caught ' + score + ' fire muffins and only got slightly singed. Today, he was brave AND well-fed.'
-        : 'Poof caught ' + score + ' fire muffins before the splats won. He is already asking for a rematch.';
-      var newBest = score > fmBest;
-      if (newBest) { fmBest = score; try { localStorage.setItem('fmBest', String(fmBest)); } catch (e) {} }
-      endBest.textContent = fmBest > 0 ? ('🏆 Best: ' + fmBest + ' muffins caught' + (newBest ? ' — new best! 🎉' : '')) : '';
+      if (flairMode) {
+        endTitle.textContent = '🔥 Flair run over!';
+        endText.textContent = 'Poof caught ' + score + ' fire muffins before the splats won. Flair Mode has no cap — only gravity.';
+        var newFlair = score > fmFlairBest;
+        if (newFlair) { fmFlairBest = score; try { localStorage.setItem('fmFlairBest', String(fmFlairBest)); } catch (e) {} }
+        endBest.textContent = fmFlairBest > 0 ? ('🔥 Flair best: ' + fmFlairBest + ' muffins caught' + (newFlair ? ' — new best! 🎉' : '')) : '';
+        playSfx(sfx.click);
+      } else {
+        endTitle.textContent = won ? 'Muffin Master! 🏆' : 'The muffins got away…';
+        endText.textContent = won
+          ? 'Poof caught ' + score + ' fire muffins and only got slightly singed. Today, he was brave AND well-fed.'
+          : 'Poof caught ' + score + ' fire muffins before the splats won. He is already asking for a rematch.';
+        var newBest = score > fmBest;
+        if (newBest) { fmBest = score; try { localStorage.setItem('fmBest', String(fmBest)); } catch (e) {} }
+        endBest.textContent = fmBest > 0 ? ('🏆 Best: ' + fmBest + ' muffins caught' + (newBest ? ' — new best! 🎉' : '')) : '';
+        playSfx(won ? sfx.sparkle : sfx.click);
+      }
       renderStartBest();
       endOverlay.classList.add('show');
       endVideo.currentTime = 0;
       endVideo.play().catch(function () {});
-      playSfx(won ? sfx.sparkle : sfx.click);
     }
     function loop(now) {
       if (!running) return;
@@ -210,7 +228,7 @@
           poof.classList.remove('hop'); void poof.offsetWidth; poof.classList.add('hop');
           playSfx(sfx.chime);
           m.el.remove();
-          if (score >= WIN_SCORE) { endGame(true); return false; }
+          if (!flairMode && score >= WIN_SCORE) { endGame(true); return false; }
           return false;
         }
         if (m.y > H - 18) {
@@ -239,7 +257,8 @@
       rafId = requestAnimationFrame(loop);
     }
 
-    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('startBtn').addEventListener('click', function () { flairMode = false; startGame(); });
+    document.getElementById('flairBtn').addEventListener('click', function () { flairMode = true; startGame(); });
     document.getElementById('againBtn').addEventListener('click', startGame);
 
     function pointToTarget(clientX) {

@@ -88,6 +88,10 @@
     .tracer-msg { min-height: 1.4em; margin-top: 10px; font-weight: 800; color: #b35c12; font-size: .92rem; }
     .tracer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .tracer-btns button { font: inherit; font-weight: 800; border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 2px solid #ff8a3d; background: #ff8a3d; color: #fff; }
+    .tracer-btns button.flair { background: linear-gradient(135deg, #d42a1e, #7f1d1d); border-color: #7f1d1d; }
+    button { touch-action: manipulation; }
+    .game-scene, #danceStage, #steveStage { touch-action: none; }
+    .rock-input { font-size: 16px; }
     .tracer-btns button.ghost { background: transparent; color: #b35c12; }
     .rock-step { display: none; }
     .rock-step.show { display: block; }
@@ -150,6 +154,7 @@
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
         <li>Working quest cards, progress ring, and ember rewards</li>
         <li>Seven active quests — reflexes, memory, timing, a real-world rock, and one very fashionable rock</li>
+        <li>🔥 Flair Mode on the scored games: endless runs with no score cap — just don't lose</li>
         <li>High scores for every game, saved on the device — replay quests to beat your best</li>
         <li>Finish all seven quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
@@ -270,6 +275,12 @@
               <div class="stat-row"><span>🧠 Flame Memory</span><strong id="best-memory">—</strong></div>
               <div class="stat-row"><span>🫙 Ember Jar</span><strong id="best-jar">—</strong></div>
               <div class="stat-row"><span>💨 Smoke puffs</span><strong id="best-puffs">—</strong></div>
+              <div class="stat-row"><span><strong>🔥 Flair Mode bests</strong></span><strong></strong></div>
+              <div class="stat-row"><span>🕺 Cool Poof down!</span><strong id="flair-dance">—</strong></div>
+              <div class="stat-row"><span>✨ Follow the ember</span><strong id="flair-follow">—</strong></div>
+              <div class="stat-row"><span>🧠 Flame Memory</span><strong id="flair-memory">—</strong></div>
+              <div class="stat-row"><span>🫙 Ember Jar</span><strong id="flair-jar">—</strong></div>
+              <div class="stat-row"><span>💨 Smoke puffs</span><strong id="flair-puffs">—</strong></div>
             </div>
             <p style="margin-bottom:0">Tap any finished quest to play it again and beat your best. Scores live on this device.</p>
           </div>
@@ -294,6 +305,7 @@
             <div class="best-line" id="followBest"></div>
             <div class="tracer-btns">
               <button id="followStart">▶ Start</button>
+              <button id="followFlair" class="flair">🔥 Flair Mode</button>
               <button id="followComplete" style="display:none">Complete ✓</button>
               <button id="traceRetry" style="display:none">Try again</button>
               <button id="traceClose" class="ghost">Not now</button>
@@ -351,11 +363,12 @@
               <span class="dance-zzz" id="danceZzz">💤</span>
             </div>
             <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
-            <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/12</span></div>
+            <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span><span id="douseGoal">/12</span></span></div>
             <div class="tracer-msg" id="danceMsg"></div>
             <div class="best-line" id="danceBest"></div>
             <div class="tracer-btns">
               <button id="danceStart">▶ Start</button>
+              <button id="danceFlair" class="flair">🔥 Flair Mode</button>
               <button id="danceComplete" style="display:none">Complete ✓</button>
               <button id="danceRetry" style="display:none">Try again 🕺</button>
               <button id="danceClose" class="ghost">Not now</button>
@@ -417,6 +430,7 @@
             <div class="best-line" id="memoryBest"></div>
             <div class="tracer-btns">
               <button id="memoryStart">▶ Start</button>
+              <button id="memoryFlair" class="flair">🔥 Flair Mode</button>
               <button id="memoryComplete" style="display:none">Complete ✓</button>
               <button id="memoryRetry" style="display:none">Try again</button>
               <button id="memoryClose" class="ghost">Not now</button>
@@ -434,11 +448,12 @@
             <div class="game-scene" id="jarScene">
               <div class="jar-el" id="jarEl" style="left:50%">🫙</div>
             </div>
-            <div class="hud-line"><span>✨ Caught: <span id="jarCount">0</span>/15</span><span>💔 Cracks: <span id="jarCracks">0</span>/3</span></div>
+            <div class="hud-line"><span>✨ Caught: <span id="jarCount">0</span><span id="jarGoalTxt">/15</span></span><span>💔 Cracks: <span id="jarCracks">0</span>/3</span></div>
             <div class="tracer-msg" id="jarMsg"></div>
             <div class="best-line" id="jarBest"></div>
             <div class="tracer-btns">
               <button id="jarStart">▶ Start</button>
+              <button id="jarFlair" class="flair">🔥 Flair Mode</button>
               <button id="jarComplete" style="display:none">Complete ✓</button>
               <button id="jarRetry" style="display:none">Try again</button>
               <button id="jarClose" class="ghost">Not now</button>
@@ -454,11 +469,12 @@
             2️⃣ Do NOT pop the <strong>smoke puffs</strong> 💨 — they cost a heart!<br>
             3️⃣ Lose 3 hearts ❤️ and the smoke wins.</p>
             <div class="game-scene" id="puffScene"></div>
-            <div class="hud-line"><span>🌟 Popped: <span id="puffCount">0</span>/15</span><span>❤️ × <span id="puffHearts">3</span></span></div>
+            <div class="hud-line"><span>🌟 Popped: <span id="puffCount">0</span><span id="puffGoalTxt">/15</span></span><span>❤️ × <span id="puffHearts">3</span></span></div>
             <div class="tracer-msg" id="puffMsg"></div>
             <div class="best-line" id="puffBest"></div>
             <div class="tracer-btns">
               <button id="puffStart">▶ Start</button>
+              <button id="puffFlair" class="flair">🔥 Flair Mode</button>
               <button id="puffComplete" style="display:none">Complete ✓</button>
               <button id="puffRetry" style="display:none">Try again</button>
               <button id="puffClose" class="ghost">Not now</button>
@@ -533,13 +549,28 @@
       if (k === 'puffs') return b.t ? '🏆 Best: 15 stars in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/15 popped';
       return '';
     }
+    function getFlair(k) { try { var v = localStorage.getItem('poofFlair_' + k); return v === null ? null : JSON.parse(v); } catch (e) { return null; } }
+    function setFlair(k, v) { try { localStorage.setItem('poofFlair_' + k, JSON.stringify(v)); } catch (e) {} renderBests(); }
+    function flairText(k) {
+      var b = getFlair(k);
+      if (!b) return '';
+      if (k === 'dance') return '🔥 Flair best: ' + (b.n || 0) + ' doused';
+      if (k === 'follow') return '🔥 Flair best: ' + (b.n || 0) + ' trips in a row';
+      if (k === 'memory') return '🔥 Flair best: sequence of ' + (b.n || 0);
+      if (k === 'jar') return '🔥 Flair best: ' + (b.n || 0) + ' caught';
+      if (k === 'puffs') return '🔥 Flair best: ' + (b.n || 0) + ' stars';
+      return '';
+    }
     function renderBests() {
       ['dance', 'follow', 'memory', 'jar', 'puffs'].forEach(function (k) {
         var line = bestText(k);
+        var ft = flairText(k);
         var panelEl = document.getElementById(k + 'Best');
-        if (panelEl) panelEl.textContent = line;
+        if (panelEl) panelEl.textContent = (line && ft) ? line + '  ·  ' + ft : (line || ft);
         var profEl = document.getElementById('best-' + k);
         if (profEl) profEl.textContent = line ? line.replace('🏆 Best: ', '').replace('🏆 Best try: ', 'try: ') : '—';
+        var flairEl = document.getElementById('flair-' + k);
+        if (flairEl) flairEl.textContent = ft ? ft.replace('🔥 Flair best: ', '') : '—';
       });
     }
 
@@ -592,9 +623,11 @@
     var followCard = null, followPlaying = false, followT = 0, followGood = 0, followBad = 0;
     var followPtr = null, followRAF = null, followLast = 0, followWon = false;
     var followStartBtn = document.getElementById('followStart');
+    var followFlairBtn = document.getElementById('followFlair');
     var followCompleteBtn = document.getElementById('followComplete');
     var followRetryBtn = document.getElementById('traceRetry');
     var FOLLOW_TRIP_MS = 13000, FOLLOW_PASS = 70, FOLLOW_TOL = 38;
+    var followFlairMode = false, followTrips = 0, followTripMs = FOLLOW_TRIP_MS;
 
     function emberPos() {
       var f = followT * (guidePts.length - 1);
@@ -651,7 +684,7 @@
         var e = emberPos();
         var dx = e[0] - followPtr[0], dy = e[1] - followPtr[1];
         if (dx * dx + dy * dy <= FOLLOW_TOL * FOLLOW_TOL) followGood += dt; else followBad += dt;
-        followT += dt / FOLLOW_TRIP_MS;
+        followT += dt / followTripMs;
       }
       drawFollow();
       if (followT >= 1) { finishFollow(); return; }
@@ -661,6 +694,29 @@
       followPlaying = false;
       var totalMs = followGood + followBad;
       var pct = totalMs > 0 ? Math.round(100 * followGood / totalMs) : 0;
+      if (followFlairMode) {
+        if (pct >= FOLLOW_PASS) {
+          followTrips++;
+          var fb = getFlair('follow');
+          if (!fb || followTrips > (fb.n || 0)) setFlair('follow', { n: followTrips });
+          tracerMsg.textContent = '🔥 Trip ' + followTrips + ' cleared at ' + pct + '%! The ember speeds up… hold on!';
+          playSfx(sfx.sparkle);
+          followT = 0; followGood = 0; followBad = 0; followWon = false;
+          followTripMs = Math.max(6000, Math.round(followTripMs * 0.92));
+          followPlaying = true;
+          followLast = 0;
+          followRAF = requestAnimationFrame(followLoop);
+          drawFollow();
+        } else {
+          var fb2 = getFlair('follow');
+          if (!fb2 || followTrips > (fb2.n || 0)) setFlair('follow', { n: followTrips });
+          tracerMsg.textContent = '🔥 Flair run over — the ember slipped away at ' + pct + '% on trip ' + (followTrips + 1) + '. You cleared ' + followTrips + (followTrips === 1 ? ' trip.' : ' trips.');
+          playSfx(sfx.click);
+          followRetryBtn.textContent = '↻ Run it again';
+          followRetryBtn.style.display = '';
+        }
+        return;
+      }
       var b = getBest('follow');
       if (!b || pct > (b.p || 0)) setBest('follow', { p: pct });
       if (pct >= FOLLOW_PASS) {
@@ -683,7 +739,9 @@
       if (followRAF) cancelAnimationFrame(followRAF);
       followT = 0; followGood = 0; followBad = 0; followPtr = null; followWon = false;
       tracerMsg.textContent = '';
+      followFlairMode = false; followTrips = 0; followTripMs = FOLLOW_TRIP_MS;
       followStartBtn.style.display = '';
+      followFlairBtn.style.display = '';
       followCompleteBtn.style.display = 'none';
       followRetryBtn.style.display = 'none';
       drawFollow();
@@ -708,15 +766,22 @@
     ['pointerup', 'pointercancel'].forEach(function (ev) {
       traceCanvas.addEventListener(ev, function () { followPtr = null; });
     });
-    followStartBtn.addEventListener('click', function () {
+    function startFollowRun(flair) {
       followReset();
+      followFlairMode = flair;
       followStartBtn.style.display = 'none';
+      followFlairBtn.style.display = 'none';
       followPlaying = true;
       followLast = 0;
       playSfx(sfx.click);
       followRAF = requestAnimationFrame(followLoop);
+    }
+    followStartBtn.addEventListener('click', function () { startFollowRun(false); });
+    followFlairBtn.addEventListener('click', function () { startFollowRun(true); });
+    followRetryBtn.addEventListener('click', function () {
+      playSfx(sfx.click);
+      if (followFlairMode) startFollowRun(true); else followReset();
     });
-    followRetryBtn.addEventListener('click', function () { playSfx(sfx.click); followReset(); });
     followCompleteBtn.addEventListener('click', function () {
       tracer.classList.remove('show');
       playSfx(sfx.click);
@@ -773,6 +838,9 @@
     var douseCountEl = document.getElementById('douseCount');
     var danceMsg = document.getElementById('danceMsg');
     var danceRetry = document.getElementById('danceRetry');
+    var danceFlairBtn = document.getElementById('danceFlair');
+    var douseGoalEl = document.getElementById('douseGoal');
+    var danceFlairMode = false;
     var danceCard = null, danceTimer = null, danceHeat = 0, doused = 0, danceTick = 0, danceOver = false, danceStartTime = 0;
     var DOUSE_GOAL = 12;
 
@@ -798,15 +866,18 @@
         danceHeat = Math.max(0, danceHeat - 8);
         douseCountEl.textContent = doused;
         playSfx(sfx.chime);
-        if (doused >= DOUSE_GOAL) winDance();
+        if (!danceFlairMode && doused >= DOUSE_GOAL) winDance();
       });
       danceStage.appendChild(b);
     }
     function danceStep() {
       danceTick++;
       var active = danceStage.querySelectorAll('.dance-flame').length;
-      if (danceTick % 6 === 0 && active < 5) spawnFlame();
-      danceHeat = Math.min(100, danceHeat + active * 0.30);
+      var spawnEvery = danceFlairMode ? Math.max(3, 6 - Math.floor(doused / 10)) : 6;
+      var maxFlames = danceFlairMode ? Math.min(8, 5 + Math.floor(doused / 15)) : 5;
+      if (danceTick % spawnEvery === 0 && active < maxFlames) spawnFlame();
+      var heatRate = danceFlairMode ? 0.30 + Math.min(0.15, doused * 0.002) : 0.30;
+      danceHeat = Math.min(100, danceHeat + active * heatRate);
       heatBar.style.width = danceHeat + '%';
       if (danceHeat >= 100) sleepFail();
     }
@@ -819,6 +890,7 @@
       heatBar.style.width = '0%';
       danceMsg.textContent = '';
       danceStartBtn.style.display = 'none';
+      danceFlairBtn.style.display = 'none';
       danceRetry.style.display = 'none';
       danceCompleteBtn.style.display = 'none';
       danceEndImg.classList.remove('show');
@@ -861,10 +933,17 @@
       danceEndImg.classList.add('show');
       dancePoof.classList.add('sleepy');
       danceZzz.classList.add('show');
-      var db2 = getBest('dance');
-      if (!db2 || (!db2.t && doused > (db2.n || 0))) setBest('dance', { n: doused });
-      danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
-      danceRetry.textContent = 'Try again 🕺';
+      if (danceFlairMode) {
+        var fb = getFlair('dance');
+        if (!fb || doused > (fb.n || 0)) setFlair('dance', { n: doused });
+        danceMsg.textContent = '🔥 Flair run over! Poof overheated at ' + doused + ' doused. Even fire monsters have limits.';
+        danceRetry.textContent = '↻ Run it again';
+      } else {
+        var db2 = getBest('dance');
+        if (!db2 || (!db2.t && doused > (db2.n || 0))) setBest('dance', { n: doused });
+        danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
+        danceRetry.textContent = 'Try again 🕺';
+      }
       danceRetry.style.display = '';
       playSfx(sfx.click);
     }
@@ -878,6 +957,8 @@
       danceRetry.style.display = 'none';
       danceCompleteBtn.style.display = 'none';
       danceStartBtn.style.display = '';
+      danceFlairBtn.style.display = '';
+      danceFlairMode = false; douseGoalEl.textContent = '/12';
       danceEndImg.classList.remove('show');
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
@@ -886,7 +967,8 @@
       dancePanel.classList.add('show');
       playSfx(sfx.click);
     }
-    danceStartBtn.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
+    danceStartBtn.addEventListener('click', function () { playSfx(sfx.click); danceFlairMode = false; douseGoalEl.textContent = '/12'; startDance(); });
+    danceFlairBtn.addEventListener('click', function () { playSfx(sfx.click); danceFlairMode = true; douseGoalEl.textContent = '/∞'; startDance(); });
     danceRetry.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
     document.getElementById('danceClose').addEventListener('click', function () {
       stopDance();
@@ -902,6 +984,8 @@
     var memoryStartBtn = document.getElementById('memoryStart');
     var memoryCompleteBtn = document.getElementById('memoryComplete');
     var memoryRetryBtn = document.getElementById('memoryRetry');
+    var memoryFlairBtn = document.getElementById('memoryFlair');
+    var memFlairMode = false;
     var memPads = Array.prototype.slice.call(document.querySelectorAll('.mem-pad'));
     var MEM_WIN_LEN = 7;
     function memFlash(pad, ms) {
@@ -930,9 +1014,16 @@
       var completed = memSeq.length - 1;
       var b = getBest('memory');
       if (!b || completed > (b.r || 0)) setBest('memory', { r: completed });
-      memoryMsg.textContent = 'The flame fizzled! 🔥💨 You cleared up to a sequence of ' + completed + '.';
+      if (memFlairMode) {
+        var fb = getFlair('memory');
+        if (!fb || completed > (fb.n || 0)) setFlair('memory', { n: completed });
+        memoryMsg.textContent = '🔥 Flair run over! The flame fizzled at a sequence of ' + (completed + 1) + ' — you cleared ' + completed + '.';
+        memoryRetryBtn.textContent = '↻ Run it again';
+      } else {
+        memoryMsg.textContent = 'The flame fizzled! 🔥💨 You cleared up to a sequence of ' + completed + '.';
+        memoryRetryBtn.textContent = 'Try again';
+      }
       playSfx(sfx.click);
-      memoryRetryBtn.textContent = 'Try again';
       memoryRetryBtn.style.display = '';
     }
     function memWin() {
@@ -955,8 +1046,8 @@
           memIdx++;
           if (memIdx >= memSeq.length) {
             memAccepting = false;
-            if (memSeq.length >= MEM_WIN_LEN) { memWin(); return; }
-            memoryMsg.textContent = 'Got it! 🎉 Next round…';
+            if (!memFlairMode && memSeq.length >= MEM_WIN_LEN) { memWin(); return; }
+            memoryMsg.textContent = (memFlairMode && memSeq.length === MEM_WIN_LEN) ? '🔥 7 cleared — Flair Mode has no cap! Next…' : 'Got it! 🎉 Next round…';
             playSfx(sfx.sparkle);
             memNextRound();
           }
@@ -966,6 +1057,7 @@
     function startMemory() {
       memSeq = []; memIdx = 0; memAccepting = false;
       memoryStartBtn.style.display = 'none';
+      memoryFlairBtn.style.display = 'none';
       memoryRetryBtn.style.display = 'none';
       memoryCompleteBtn.style.display = 'none';
       memoryMsg.textContent = 'Get ready…';
@@ -973,16 +1065,18 @@
     }
     function openMemory(card) {
       memoryCard = card;
-      memSeq = []; memAccepting = false;
+      memSeq = []; memAccepting = false; memFlairMode = false;
       memPads.forEach(function (pd) { pd.classList.remove('lit'); });
       memoryMsg.textContent = 'Press Start, then watch…';
       memoryStartBtn.style.display = '';
+      memoryFlairBtn.style.display = '';
       memoryRetryBtn.style.display = 'none';
       memoryCompleteBtn.style.display = 'none';
       memoryPanel.classList.add('show');
       playSfx(sfx.click);
     }
-    memoryStartBtn.addEventListener('click', function () { playSfx(sfx.click); startMemory(); });
+    memoryStartBtn.addEventListener('click', function () { playSfx(sfx.click); memFlairMode = false; startMemory(); });
+    memoryFlairBtn.addEventListener('click', function () { playSfx(sfx.click); memFlairMode = true; startMemory(); });
     memoryRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startMemory(); });
     memoryCompleteBtn.addEventListener('click', function () {
       memoryPanel.classList.remove('show');
@@ -1006,6 +1100,9 @@
     var jarStartBtn = document.getElementById('jarStart');
     var jarCompleteBtn = document.getElementById('jarComplete');
     var jarRetryBtn = document.getElementById('jarRetry');
+    var jarFlairBtn = document.getElementById('jarFlair');
+    var jarGoalEl = document.getElementById('jarGoalTxt');
+    var jarFlairMode = false;
     var JAR_GOAL = 15;
     function jarHud() { jarCountEl.textContent = jarCaught; jarCracksEl.textContent = jarCracks; }
     function jarSpawn(now) {
@@ -1015,14 +1112,14 @@
       el.textContent = isDrop ? '💧' : '🔥';
       el.style.fontSize = isDrop ? '1.4rem' : '1.15rem';
       jarScene.appendChild(el);
-      jarItems.push({ el: el, x: 0.06 + Math.random() * 0.88, y: -30, vy: 165 + Math.random() * 90, drop: isDrop });
+      jarItems.push({ el: el, x: 0.06 + Math.random() * 0.88, y: -30, vy: 165 + Math.random() * 90 + (jarFlairMode ? Math.min(60, jarCaught * 2) : 0), drop: isDrop });
       jarSpawnLast = now;
     }
     function jarLoop(now) {
       if (!jarPlaying) return;
       var dt = Math.min(0.05, (now - jarLast) / 1000 || 0.016);
       jarLast = now;
-      if (now - jarSpawnLast > 540) jarSpawn(now);
+      if (now - jarSpawnLast > (jarFlairMode ? Math.max(380, 540 - jarCaught * 4) : 540)) jarSpawn(now);
       jarX += (jarTargetX - jarX) * Math.min(1, dt * 16);
       jarEl.style.left = (jarX * 100) + '%';
       var W = jarScene.clientWidth, H = jarScene.clientHeight;
@@ -1039,7 +1136,7 @@
             jarMsg.textContent = 'Splash! 💧 The jar cracks a little…';
           } else {
             jarCaught++; jarHud(); playSfx(sfx.chime);
-            if (jarCaught >= JAR_GOAL) { jarWin(); return false; }
+            if (!jarFlairMode && jarCaught >= JAR_GOAL) { jarWin(); return false; }
           }
           return false;
         }
@@ -1069,9 +1166,16 @@
       jarStop();
       var b = getBest('jar');
       if (!b || (!b.t && jarCaught > (b.n || 0))) setBest('jar', { n: jarCaught });
-      jarMsg.textContent = 'Crack! 💔 The jar gave up at ' + jarCaught + '/15 embers. Poof sweeps up, no hard feelings.';
+      if (jarFlairMode) {
+        var fb = getFlair('jar');
+        if (!fb || jarCaught > (fb.n || 0)) setFlair('jar', { n: jarCaught });
+        jarMsg.textContent = '🔥 Flair run over! The jar cracked out at ' + jarCaught + ' embers. Poof sweeps up, no hard feelings.';
+        jarRetryBtn.textContent = '↻ Run it again';
+      } else {
+        jarMsg.textContent = 'Crack! 💔 The jar gave up at ' + jarCaught + '/15 embers. Poof sweeps up, no hard feelings.';
+        jarRetryBtn.textContent = 'Try again';
+      }
       playSfx(sfx.click);
-      jarRetryBtn.textContent = 'Try again';
       jarRetryBtn.style.display = '';
     }
     function startJar() {
@@ -1081,6 +1185,7 @@
       jarHud();
       jarMsg.textContent = '';
       jarStartBtn.style.display = 'none';
+      jarFlairBtn.style.display = 'none';
       jarRetryBtn.style.display = 'none';
       jarCompleteBtn.style.display = 'none';
       jarPlaying = true;
@@ -1094,6 +1199,8 @@
       jarCaught = 0; jarCracks = 0; jarHud();
       jarMsg.textContent = '';
       jarStartBtn.style.display = '';
+      jarFlairBtn.style.display = '';
+      jarFlairMode = false; jarGoalEl.textContent = '/15';
       jarRetryBtn.style.display = 'none';
       jarCompleteBtn.style.display = 'none';
       jarPanel.classList.add('show');
@@ -1107,7 +1214,8 @@
       var r = jarScene.getBoundingClientRect();
       jarTargetX = Math.max(0.06, Math.min(0.94, (e.clientX - r.left) / r.width));
     });
-    jarStartBtn.addEventListener('click', function () { playSfx(sfx.click); startJar(); });
+    jarStartBtn.addEventListener('click', function () { playSfx(sfx.click); jarFlairMode = false; jarGoalEl.textContent = '/15'; startJar(); });
+    jarFlairBtn.addEventListener('click', function () { playSfx(sfx.click); jarFlairMode = true; jarGoalEl.textContent = '/∞'; startJar(); });
     jarRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startJar(); });
     jarCompleteBtn.addEventListener('click', function () {
       jarPanel.classList.remove('show');
@@ -1130,6 +1238,9 @@
     var puffStartBtn = document.getElementById('puffStart');
     var puffCompleteBtn = document.getElementById('puffComplete');
     var puffRetryBtn = document.getElementById('puffRetry');
+    var puffFlairBtn = document.getElementById('puffFlair');
+    var puffGoalEl = document.getElementById('puffGoalTxt');
+    var puffFlairMode = false;
     var PUFF_GOAL = 15;
     function puffHud() { puffCountEl.textContent = puffPopped; puffHeartsEl.textContent = puffHearts; }
     function puffSpawn(now) {
@@ -1152,7 +1263,7 @@
           if (puffHearts <= 0) puffFail();
         } else {
           puffPopped++; puffHud(); playSfx(sfx.chime);
-          if (puffPopped >= PUFF_GOAL) puffWin();
+          if (!puffFlairMode && puffPopped >= PUFF_GOAL) puffWin();
         }
       });
       puffItems.push(item);
@@ -1162,7 +1273,7 @@
       if (!puffPlaying) return;
       var dt = Math.min(0.05, (now - puffLast) / 1000 || 0.016);
       puffLast = now;
-      if (now - puffSpawnLast > 460 && puffItems.length < 12) puffSpawn(now);
+      if (now - puffSpawnLast > (puffFlairMode ? Math.max(360, 460 - puffPopped * 3) : 460) && puffItems.length < 12) puffSpawn(now);
       var W = puffScene.clientWidth;
       puffItems = puffItems.filter(function (it) {
         if (it.dead) return false;
@@ -1196,9 +1307,16 @@
       puffStop();
       var b = getBest('puffs');
       if (!b || (!b.t && puffPopped > (b.n || 0))) setBest('puffs', { n: puffPopped });
-      puffMsg.textContent = 'Too smoky! 💨 Poof is coughing at ' + puffPopped + '/15 stars. Achoo.';
+      if (puffFlairMode) {
+        var fb = getFlair('puffs');
+        if (!fb || puffPopped > (fb.n || 0)) setFlair('puffs', { n: puffPopped });
+        puffMsg.textContent = '🔥 Flair run over! The smoke got you at ' + puffPopped + ' stars. Achoo.';
+        puffRetryBtn.textContent = '↻ Run it again';
+      } else {
+        puffMsg.textContent = 'Too smoky! 💨 Poof is coughing at ' + puffPopped + '/15 stars. Achoo.';
+        puffRetryBtn.textContent = 'Try again';
+      }
       playSfx(sfx.click);
-      puffRetryBtn.textContent = 'Try again';
       puffRetryBtn.style.display = '';
     }
     function startPuffs() {
@@ -1206,6 +1324,7 @@
       puffPopped = 0; puffHearts = 3; puffHud();
       puffMsg.textContent = '';
       puffStartBtn.style.display = 'none';
+      puffFlairBtn.style.display = 'none';
       puffRetryBtn.style.display = 'none';
       puffCompleteBtn.style.display = 'none';
       puffPlaying = true;
@@ -1219,12 +1338,15 @@
       puffPopped = 0; puffHearts = 3; puffHud();
       puffMsg.textContent = '';
       puffStartBtn.style.display = '';
+      puffFlairBtn.style.display = '';
+      puffFlairMode = false; puffGoalEl.textContent = '/15';
       puffRetryBtn.style.display = 'none';
       puffCompleteBtn.style.display = 'none';
       puffPanel.classList.add('show');
       playSfx(sfx.click);
     }
-    puffStartBtn.addEventListener('click', function () { playSfx(sfx.click); startPuffs(); });
+    puffStartBtn.addEventListener('click', function () { playSfx(sfx.click); puffFlairMode = false; puffGoalEl.textContent = '/15'; startPuffs(); });
+    puffFlairBtn.addEventListener('click', function () { playSfx(sfx.click); puffFlairMode = true; puffGoalEl.textContent = '/∞'; startPuffs(); });
     puffRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startPuffs(); });
     puffCompleteBtn.addEventListener('click', function () {
       puffPanel.classList.remove('show');
