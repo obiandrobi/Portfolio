@@ -114,6 +114,7 @@
         <p id="endText"></p>
         <p id="endBest" style="color:#ffd23e;font-weight:700"></p>
         <button id="againBtn">Play again</button>
+        <button id="endFlairBtn" class="flair">🔥 Try Flair Mode</button>
         <button id="poofBtn" class="back">Back to Poof 🏠</button>
       </div>
     </div>
@@ -262,7 +263,7 @@
     try { fmBest = parseInt(localStorage.getItem('fmBest') || '0', 10) || 0; } catch (e) {}
     var fmFlairBest = 0;
     try { fmFlairBest = parseInt(localStorage.getItem('fmFlairBest') || '0', 10) || 0; } catch (e) {}
-    var flairMode = false, fmStartPerf = 0;
+    var flairMode = false, fmStartPerf = 0, lastRunFlair = false;
     function renderStartBest() {
       if (fmBest > 0) { startBest.textContent = '🏆 Your best: ' + fmBest + ' muffins caught'; startBest.style.display = ''; }
       var sfb = document.getElementById('startFlairBest');
@@ -349,6 +350,8 @@
       }
       if (runBestStreak >= 3) endText.textContent += ' Longest streak: 🔥 ×' + runBestStreak + '.';
       document.getElementById('poofBtn').textContent = (won && !flairMode) ? '✓ Complete — back to Poof 🏠' : 'Back to Poof 🏠';
+      lastRunFlair = flairMode;
+      document.getElementById('endFlairBtn').textContent = flairMode ? '▶ Play normal mode' : '🔥 Try Flair Mode';
       renderStartBest();
       endOverlay.classList.add('show');
       endVideo.currentTime = 0;
@@ -424,6 +427,7 @@
     document.getElementById('flairBtn').addEventListener('click', function () { flairMode = true; startGame(); });
     document.getElementById('againBtn').addEventListener('click', startGame);
     document.getElementById('poofBtn').addEventListener('click', function () { location.href = 'poof.html'; });
+    document.getElementById('endFlairBtn').addEventListener('click', function () { flairMode = !lastRunFlair; startGame(); });
 
     function pointToTarget(clientX) {
       var r = stage.getBoundingClientRect();
