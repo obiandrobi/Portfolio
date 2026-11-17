@@ -172,6 +172,33 @@
     .celebrate h3 { margin: 16px 0 4px; font-size: 1.3rem; }
     .celebrate p { margin: 0 0 16px; opacity: .9; }
     .celebrate button { background: #ff8a3d; color: #fff; border: 0; font: inherit; font-weight: 800; padding: 11px 30px; border-radius: 999px; cursor: pointer; }
+
+    /* Small-screen fit (e.g. a 4-inch iPhone SE, 320x568): the cave header is
+       fixed outside the scrolling content, so at its normal 41% / min 225px
+       it eats nearly half a tiny screen and leaves no room to read or play.
+       On short screens it becomes a slim animated banner instead — Poof is
+       still moving up top, but the quests get the screen. Game scenes also
+       shorten so a whole panel fits with far less scrolling. These rules sit
+       at the end of the stylesheet so they win over the base rules above. */
+    @media (max-width: 760px) and (max-height: 660px) {
+      .app-header { height: 118px; min-height: 0; }
+      .app-header .cave-anim, .app-header .cave-poster { object-position: center 40%; }
+      .statusbar { padding: 6px 14px 0; font-size: .68rem; }
+      .streak-chip { top: 28px; right: 10px; font-size: .72rem; padding: 4px 9px; }
+      .build-tag { top: 28px; left: 10px; font-size: .6rem; padding: 2px 7px; }
+      .greeting { left: 12px; bottom: 8px; }
+      .greeting h2 { font-size: 1.02rem; }
+      .greeting p { display: none; }
+      .view { padding: 10px 10px 6px; }
+      .game-scene, .dance-stage { height: 200px; }
+      .tabbar { padding: 4px 8px 8px; }
+    }
+    @media (max-width: 340px) {
+      .quest { padding: 11px 12px; gap: 10px; }
+      .quest .icon { width: 36px; height: 36px; font-size: 1.1rem; }
+      .tracer { padding: 10px; }
+      .tracer-card { padding: 14px; }
+    }
   </style>
 </head>
 <body>
@@ -203,7 +230,7 @@
           <img class="cave-anim" src="assets/cave-hero-v2.webp" alt="Poof's cozy cave home in the hills, overlooking the glowing town far below" fetchpriority="high">
           <div class="statusbar"><span>7:02</span><span>📶 🔋</span></div>
           <div class="streak-chip"><span class="flame" id="streakFlame">🔥</span><span><span id="streakDays">12</span> day streak</span></div>
-          <div class="build-tag">✨ build 1146 · webp v2</div>
+          <div class="build-tag">✨ build 1425 · SE fit</div>
           <div class="greeting">
             <h2>Hello there! ☀️</h2>
             <p>Poof is waiting in the cave. Ready?</p>
