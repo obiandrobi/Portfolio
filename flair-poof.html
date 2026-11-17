@@ -257,7 +257,9 @@
   <!-- New Game: the face reveal -->
   <div class="panel" id="revealPanel" role="dialog" aria-modal="true" aria-labelledby="revealTitle">
     <div class="card">
-      <img class="reveal-img" src="assets/poof-front.jpg" alt="Flair Poof, a fluffy red monster with a flame tuft, horns and a purple cape, smiling at the camera">
+      <video class="reveal-img" id="revealVideo" muted loop playsinline preload="metadata" poster="assets/poof-front.jpg" aria-label="Flair Poof, a fluffy red monster with a flame tuft, horns and a purple cape, hopping and waving">
+        <source src="assets/flair-poof-reveal.mp4" type="video/mp4">
+      </video>
       <h2 id="revealTitle">You found Poof!</h2>
       <p>The adventure begins soon. This is a title screen demo, so Poof is still stretching, fluffing his cape, and learning his first hop.</p>
       <p class="small">Character, scene and animation created with AI tools, then built into this page with HTML, CSS and JavaScript.</p>
@@ -295,8 +297,15 @@
       toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
     }
 
-    function openPanel(panel) { panel.classList.add('open'); }
-    function closePanel(panel) { panel.classList.remove('open'); }
+    const revealVideo = document.getElementById('revealVideo');
+    function openPanel(panel) {
+      panel.classList.add('open');
+      if (panel === revealPanel) { revealVideo.currentTime = 0; revealVideo.play(); }
+    }
+    function closePanel(panel) {
+      panel.classList.remove('open');
+      if (panel === revealPanel) { revealVideo.pause(); }
+    }
 
     // Menu actions
     document.getElementById('btnNewGame').addEventListener('click', () => openPanel(revealPanel));
