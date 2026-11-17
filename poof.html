@@ -100,6 +100,17 @@
     .rock-pal .rock-name { display: block; font-weight: 900; color: #8a5a12; margin-top: 2px; }
     .rock-pal .rock-sub { display: block; font-size: .72rem; color: #b09468; font-weight: 700; }
     .rock-heart { font-size: 1.5rem; padding-bottom: 26px; animation: rockbounce .8s ease-in-out infinite alternate; }
+    .dance-stage { position: relative; height: 248px; background: linear-gradient(#fff1de, #ffe3c2); border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; overflow: hidden; }
+    .dance-stage img { position: absolute; left: 50%; bottom: 10px; width: 148px; height: 148px; margin-left: -74px; border-radius: 30px; }
+    .dance-stage img.dancing { animation: poofdance .45s ease-in-out infinite alternate; }
+    @keyframes poofdance { from { transform: rotate(-5deg) translateY(0); } to { transform: rotate(5deg) translateY(-10px); } }
+    .dance-stage img.sleepy { filter: sepia(.5) saturate(.6); transform: rotate(-10deg); }
+    .dance-zzz { position: absolute; left: 62%; bottom: 150px; font-size: 1.6rem; display: none; }
+    .dance-zzz.show { display: block; animation: rockbounce 1s ease-in-out infinite alternate; }
+    .dance-flame { position: absolute; font-size: 1.9rem; background: none; border: 0; cursor: pointer; padding: 2px; line-height: 1; animation: flick .28s ease-in-out infinite alternate; z-index: 3; }
+    .heat-wrap { height: 14px; background: #f3e2d3; border-radius: 999px; overflow: hidden; margin: 10px 0 2px; }
+    .heat-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ffd23e, #ff8a3d, #e63b2e); transition: width .15s linear; }
+    .heat-label { display: flex; justify-content: space-between; font-size: .78rem; font-weight: 800; color: #b35c12; }
 
     /* Celebration */
     .celebrate { position: absolute; inset: 0; z-index: 40; background: rgba(26,10,4,.82); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 22px; text-align: center; color: #fff; }
@@ -115,7 +126,7 @@
     <div class="about">
       <h1>Poof</h1>
       <p class="sub">Portfolio Piece #2 — Animated App Home Screen</p>
-      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a stretch, a traced flame, a cool rock that needs a name — grow the living flame on his head. Small steps, for both of you.</p>
+      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a dance rescue, a traced flame, a cool rock that needs a name — grow the living flame on his head. Small steps, for both of you.</p>
       <ul>
         <li>Animated cave-home header, generated from an original character design</li>
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
@@ -123,7 +134,7 @@
         <li>Finish all three quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone. Two are <strong>active quests</strong>: trace the ember flame well enough to light it, and go find a real cool rock, name it, and introduce it to Poof's rock, Steve. Finish all three for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all three are <strong>active quests</strong> now: cool dancing Poof down by tapping the extra flames off his fur (don't let him overheat and fall asleep!), trace the ember flame well enough to light it, and go find a real cool rock, name it, and introduce it to Poof's rock, Steve. Finish all three for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -163,9 +174,9 @@
             <div class="embers"><span id="emberCount">240</span> ◆<small>embers</small></div>
           </div>
 
-          <button class="quest" data-quest data-reward="10">
-            <span class="icon" style="background:#ffe9d6">🧘</span>
-            <span><span class="name">Morning stretch</span><br><span class="reward">+10 ◆ embers</span></span>
+          <button class="quest" data-quest data-dance data-reward="15">
+            <span class="icon" style="background:#fff3c4">🕺</span>
+            <span><span class="name">Cool Poof down!</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-trace data-reward="15">
@@ -267,6 +278,24 @@
           </div>
         </div>
 
+        <div class="tracer" id="dancePanel">
+          <div class="tracer-card">
+            <h3>🕺 Cool Poof down!</h3>
+            <p>Poof is dancing — but he's TOO HOT! Extra flames keep popping out of his fur. Tap them off to cool him down. Douse <strong>10 flames</strong> — if the heat maxes out, he overheats and falls asleep. (He loves fire. This is a whole thing.)</p>
+            <div class="dance-stage" id="danceStage">
+              <img id="dancePoof" src="assets/poof-front.jpg" alt="Flair Poof dancing">
+              <span class="dance-zzz" id="danceZzz">💤</span>
+            </div>
+            <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
+            <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/10</span></div>
+            <div class="tracer-msg" id="danceMsg"></div>
+            <div class="tracer-btns">
+              <button id="danceRetry" style="display:none">Try again 🕺</button>
+              <button id="danceClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
         <svg width="0" height="0" style="position:absolute" aria-hidden="true">
           <path id="flamePath" d="M150 280 C 96 248, 74 198, 84 144 C 88 120, 102 102, 112 80 C 122 58, 138 42, 150 16 C 162 42, 180 60, 190 86 C 200 110, 216 126, 222 160 C 230 206, 202 250, 150 280 Z" fill="none"></path>
         </svg>
@@ -345,6 +374,8 @@
           openTracer(card);
         } else if (card.hasAttribute('data-rock') && !card.classList.contains('done')) {
           openRock(card);
+        } else if (card.hasAttribute('data-dance') && !card.classList.contains('done')) {
+          openDance(card);
         } else {
           setQuest(card, !card.classList.contains('done'));
         }
@@ -496,6 +527,98 @@
     document.getElementById('rockClose1').addEventListener('click', closeRock);
     document.getElementById('rockClose2').addEventListener('click', closeRock);
 
+    /* ----- Dance quest: tap the extra flames off Poof before he overheats ----- */
+    var dancePanel = document.getElementById('dancePanel');
+    var danceStage = document.getElementById('danceStage');
+    var dancePoof = document.getElementById('dancePoof');
+    var danceZzz = document.getElementById('danceZzz');
+    var heatBar = document.getElementById('heatBar');
+    var douseCountEl = document.getElementById('douseCount');
+    var danceMsg = document.getElementById('danceMsg');
+    var danceRetry = document.getElementById('danceRetry');
+    var danceCard = null, danceTimer = null, danceHeat = 0, doused = 0, danceTick = 0, danceOver = false;
+    var DOUSE_GOAL = 10;
+
+    function clearFlames() {
+      danceStage.querySelectorAll('.dance-flame').forEach(function (f) { f.remove(); });
+    }
+    function stopDance() {
+      if (danceTimer) { clearInterval(danceTimer); danceTimer = null; }
+      clearFlames();
+    }
+    function spawnFlame() {
+      var b = document.createElement('button');
+      b.className = 'dance-flame';
+      b.type = 'button';
+      b.textContent = '🔥';
+      b.setAttribute('aria-label', 'Douse this flame');
+      b.style.left = (4 + Math.random() * 84) + '%';
+      b.style.top = (2 + Math.random() * 58) + '%';
+      b.addEventListener('click', function () {
+        if (danceOver) return;
+        b.remove();
+        doused++;
+        danceHeat = Math.max(0, danceHeat - 9);
+        douseCountEl.textContent = doused;
+        playSfx(sfx.chime);
+        if (doused >= DOUSE_GOAL) winDance();
+      });
+      danceStage.appendChild(b);
+    }
+    function danceStep() {
+      danceTick++;
+      var active = danceStage.querySelectorAll('.dance-flame').length;
+      if (danceTick % 7 === 0 && active < 5) spawnFlame();
+      danceHeat = Math.min(100, danceHeat + active * 0.35);
+      heatBar.style.width = danceHeat + '%';
+      if (danceHeat >= 100) sleepFail();
+    }
+    function startDance() {
+      stopDance();
+      danceHeat = 0; doused = 0; danceTick = 0; danceOver = false;
+      douseCountEl.textContent = '0';
+      heatBar.style.width = '0%';
+      danceMsg.textContent = '';
+      danceRetry.style.display = 'none';
+      danceZzz.classList.remove('show');
+      dancePoof.classList.remove('sleepy');
+      dancePoof.classList.add('dancing');
+      spawnFlame(); spawnFlame();
+      danceTimer = setInterval(danceStep, 100);
+    }
+    function winDance() {
+      danceOver = true;
+      stopDance();
+      danceMsg.textContent = 'Cool and grooving! 🕺 Poof dances on — at a safe temperature.';
+      playSfx(sfx.sparkle);
+      setTimeout(function () {
+        dancePanel.classList.remove('show');
+        if (danceCard) setQuest(danceCard, true);
+      }, 1300);
+    }
+    function sleepFail() {
+      danceOver = true;
+      stopDance();
+      dancePoof.classList.remove('dancing');
+      dancePoof.classList.add('sleepy');
+      danceZzz.classList.add('show');
+      danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
+      danceRetry.style.display = '';
+      playSfx(sfx.click);
+    }
+    function openDance(card) {
+      danceCard = card;
+      dancePanel.classList.add('show');
+      playSfx(sfx.click);
+      startDance();
+    }
+    danceRetry.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
+    document.getElementById('danceClose').addEventListener('click', function () {
+      stopDance();
+      dancePanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
     document.getElementById('celebrateClose').addEventListener('click', function () {
       celebrate.classList.remove('show');
       celebrateVideo.pause();
@@ -534,7 +657,7 @@
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
       // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
       setInterval(function () {
-        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show');
+        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show');
         if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
         if (!caveVideo.paused) playOverlay.classList.remove('show');
       }, 2500);
