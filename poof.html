@@ -135,8 +135,9 @@
     .jar-el { position: absolute; bottom: 4px; font-size: 2.7rem; transform: translateX(-50%); pointer-events: none; z-index: 3; }
     .fall-item { position: absolute; transform: translate(-50%, 0); pointer-events: none; z-index: 2; }
     .puff { position: absolute; background: none; border: 0; cursor: pointer; transform: translate(-50%, 0); z-index: 2; line-height: 1; padding: 2px; }
-    .acc-piece { position: absolute; transform: translate(-50%, -50%); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; z-index: 3; line-height: 1; }
-    .steve-rock { position: absolute; left: 50%; top: 55%; transform: translate(-50%, -50%); font-size: 7rem; z-index: 2; line-height: 1; }
+    .acc-piece { position: absolute; transform: translate(-50%, -50%); cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; z-index: 3; line-height: 1; padding: 12px; }
+    .steve-wrap { position: absolute; left: 50%; top: 55%; width: 7.6rem; height: 7.6rem; transform: translate(-50%, -50%); z-index: 2; touch-action: none; }
+    .steve-rock { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 7rem; line-height: 1; pointer-events: none; }
     .acc-tray { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-top: 10px; }
     .acc-tray button { font: inherit; font-size: 1.05rem; border-radius: 999px; padding: 5px 11px; cursor: pointer; border: 2px solid #f3e2d3; background: #fff; }
     .acc-tray button.on { border-color: #ff8a3d; background: #fff1e2; }
@@ -273,7 +274,7 @@
         <div class="view" id="view-quests">
           <div class="panel">
             <h3>📜 Quest log</h3>
-            <p>Today's quests live on the Home tab. Tomorrow brings eight new tiny steps — and one day, a quest that leads all the way down to the town.</p>
+            <p>Today's quests live on the Home tab. Tomorrow brings seven new tiny steps — and one day, a quest that leads all the way down to the town.</p>
             <p><strong>Coming soon:</strong> weekly quests, brave quests, and a very small quest about saying hello to a neighbor.</p>
           </div>
         </div>
@@ -418,26 +419,26 @@
           <div class="tracer-card">
             <h3>🎨 Steve's makeover</h3>
             <p style="text-align:left"><strong>How to play:</strong> Steve the rock has a big day coming up. He wants to look his best.<br>
-            1️⃣ Tap accessories below to put them on Steve — <strong>drag them</strong> to place them just right.<br>
+            1️⃣ Tap accessories below — they land right on Steve. <strong>Drag them</strong> to nudge them into place.<br>
             2️⃣ Give him at least <strong>3 accessories</strong>.<br>
-            3️⃣ Then take his <strong>beach selfie</strong> 📸 — you can save the picture!</p>
+            3️⃣ Then take his <strong>portrait</strong> 📸 at home in the cave — you can save the picture!</p>
             <div class="game-scene" id="steveStage" style="background:linear-gradient(#ffe9c9,#ffd9a8)">
-              <div class="steve-rock" id="steveRock">🪨</div>
+              <div class="steve-wrap" id="steveWrap"><div class="steve-rock" id="steveRock">🪨</div></div>
             </div>
             <div class="acc-tray" id="accTray">
-              <button data-acc="eyes" data-emoji="👀" data-fx="0.5" data-fy="0.44" data-rem="2.6">👀</button>
-              <button data-acc="shades" data-emoji="🕶️" data-fx="0.5" data-fy="0.44" data-rem="2.9">🕶️</button>
-              <button data-acc="hat" data-emoji="🎩" data-fx="0.5" data-fy="0.17" data-rem="2.8">🎩</button>
-              <button data-acc="crown" data-emoji="👑" data-fx="0.5" data-fy="0.15" data-rem="2.6">👑</button>
-              <button data-acc="cap" data-emoji="🧢" data-fx="0.5" data-fy="0.18" data-rem="2.6">🧢</button>
-              <button data-acc="bow" data-emoji="🎀" data-fx="0.69" data-fy="0.22" data-rem="2">🎀</button>
-              <button data-acc="flower" data-emoji="🌸" data-fx="0.3" data-fy="0.24" data-rem="1.9">🌸</button>
-              <button data-acc="star" data-emoji="⭐" data-fx="0.5" data-fy="0.78" data-rem="1.7">⭐</button>
+              <button data-acc="eyes" data-emoji="👀" data-fx="0.5" data-fy="0.47" data-rem="2.6">👀</button>
+              <button data-acc="shades" data-emoji="🕶️" data-fx="0.5" data-fy="0.47" data-rem="2.9">🕶️</button>
+              <button data-acc="hat" data-emoji="🎩" data-fx="0.5" data-fy="0.13" data-rem="2.8">🎩</button>
+              <button data-acc="crown" data-emoji="👑" data-fx="0.5" data-fy="0.11" data-rem="2.6">👑</button>
+              <button data-acc="cap" data-emoji="🧢" data-fx="0.5" data-fy="0.14" data-rem="2.6">🧢</button>
+              <button data-acc="bow" data-emoji="🎀" data-fx="0.71" data-fy="0.2" data-rem="2">🎀</button>
+              <button data-acc="flower" data-emoji="🌸" data-fx="0.28" data-fy="0.22" data-rem="1.9">🌸</button>
+              <button data-acc="star" data-emoji="⭐" data-fx="0.5" data-fy="0.76" data-rem="1.7">⭐</button>
             </div>
             <div class="tracer-msg" id="makeoverMsg">Steve is ready for his glow-up.</div>
-            <img id="selfieImg" alt="Steve the rock at the beach, all dressed up">
+            <img id="selfieImg" alt="Steve the rock at home in the cave, all dressed up">
             <div class="tracer-btns">
-              <button id="makeoverSelfie">📸 Take his selfie</button>
+              <button id="makeoverSelfie">📸 Take his portrait</button>
               <button id="makeoverComplete" style="display:none">Complete ✓</button>
               <button id="makeoverClose" class="ghost">Not now</button>
             </div>
@@ -1422,11 +1423,12 @@
       playSfx(sfx.click);
     });
 
-    /* ----- Steve's Makeover: dress the rock, then his beach selfie ----- */
+    /* ----- Steve's Makeover: dress the rock, then his cave portrait ----- */
     var makeoverPanel = document.getElementById('makeoverPanel');
     var steveStage = document.getElementById('steveStage');
     var makeoverMsg = document.getElementById('makeoverMsg');
-    var makeoverCard = null, stevePieces = {}, dragPiece = null;
+    var makeoverCard = null, stevePieces = {}, dragPiece = null, dragOffX = 0, dragOffY = 0, accZ = 3;
+    var steveWrap = document.getElementById('steveWrap');
     var makeoverCompleteBtn = document.getElementById('makeoverComplete');
     var selfieImg = document.getElementById('selfieImg');
     var selfieDownload = document.getElementById('selfieDownload');
@@ -1452,25 +1454,30 @@
       placePiece(el);
       el.addEventListener('pointerdown', function (e) {
         e.preventDefault();
+        e.stopPropagation();
+        var r = steveWrap.getBoundingClientRect();
         dragPiece = el;
-        el.setPointerCapture(e.pointerId);
-        movePiece(el, e);
+        el.style.zIndex = ++accZ;
+        // remember where on the piece the finger grabbed, so it doesn't jump to center on the finger
+        dragOffX = (e.clientX - r.left) - parseFloat(el.getAttribute('data-fx')) * r.width;
+        dragOffY = (e.clientY - r.top) - parseFloat(el.getAttribute('data-fy')) * r.height;
+        try { el.setPointerCapture(e.pointerId); } catch (err) {}
       });
       el.addEventListener('pointermove', function (e) { if (dragPiece === el) movePiece(el, e); });
-      ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { dragPiece = null; }); });
-      steveStage.appendChild(el);
+      ['pointerup', 'pointercancel'].forEach(function (ev) { el.addEventListener(ev, function () { if (dragPiece === el) dragPiece = null; }); });
+      steveWrap.appendChild(el);
       stevePieces[key] = el;
       btn.classList.add('on');
     }
     function placePiece(el) {
-      var W = steveStage.clientWidth, H = steveStage.clientHeight;
+      var W = steveWrap.clientWidth, H = steveWrap.clientHeight;
       el.style.left = (parseFloat(el.getAttribute('data-fx')) * W) + 'px';
       el.style.top = (parseFloat(el.getAttribute('data-fy')) * H) + 'px';
     }
     function movePiece(el, e) {
-      var r = steveStage.getBoundingClientRect();
-      var fx = Math.max(0.03, Math.min(0.97, (e.clientX - r.left) / r.width));
-      var fy = Math.max(0.03, Math.min(0.97, (e.clientY - r.top) / r.height));
+      var r = steveWrap.getBoundingClientRect();
+      var fx = Math.max(0.02, Math.min(0.98, ((e.clientX - r.left) - dragOffX) / r.width));
+      var fy = Math.max(0.02, Math.min(0.98, ((e.clientY - r.top) - dragOffY) / r.height));
       el.setAttribute('data-fx', fx.toFixed(3));
       el.setAttribute('data-fy', fy.toFixed(3));
       placePiece(el);
@@ -1510,45 +1517,49 @@
       var S = 640, cv = document.createElement('canvas');
       cv.width = S; cv.height = S;
       var c = cv.getContext('2d');
-      var g = c.createLinearGradient(0, 0, 0, S * 0.62);
-      g.addColorStop(0, '#7ec8f2'); g.addColorStop(1, '#d8f3ff');
-      c.fillStyle = g; c.fillRect(0, 0, S, S * 0.62);
-      c.beginPath(); c.arc(S * 0.82, S * 0.16, 46, 0, Math.PI * 2); c.fillStyle = '#fff3b0'; c.fill();
-      var sea = c.createLinearGradient(0, S * 0.42, 0, S * 0.66);
-      sea.addColorStop(0, '#2ea3c7'); sea.addColorStop(1, '#7fd4e8');
-      c.fillStyle = sea; c.fillRect(0, S * 0.42, S, S * 0.24);
-      c.fillStyle = 'rgba(255,255,255,0.75)'; c.fillRect(0, S * 0.645, S, 7);
-      var sandG = c.createLinearGradient(0, S * 0.66, 0, S);
-      sandG.addColorStop(0, '#ffe6b3'); sandG.addColorStop(1, '#f7cf8b');
-      c.fillStyle = sandG; c.fillRect(0, S * 0.66, S, S * 0.34);
+      // Steve stays home: a cozy cave portrait (the beach trip is retired — it looked weird)
+      var g = c.createLinearGradient(0, 0, 0, S);
+      g.addColorStop(0, '#5a3620'); g.addColorStop(0.7, '#3d2415'); g.addColorStop(1, '#2b1810');
+      c.fillStyle = g; c.fillRect(0, 0, S, S);
+      var glow = c.createRadialGradient(S * 0.5, S * 0.52, 40, S * 0.5, S * 0.52, S * 0.62);
+      glow.addColorStop(0, 'rgba(255,190,90,0.5)'); glow.addColorStop(1, 'rgba(255,190,90,0)');
+      c.fillStyle = glow; c.fillRect(0, 0, S, S);
+      // string lights across the top
+      c.strokeStyle = 'rgba(0,0,0,0.35)'; c.lineWidth = 3;
+      c.beginPath(); c.moveTo(S * 0.04, S * 0.05); c.quadraticCurveTo(S * 0.5, S * 0.2, S * 0.96, S * 0.05); c.stroke();
+      var bulbCols = ['#ffd23e', '#ff8a3d', '#ffe9a8', '#ffb3c7'];
+      for (var bi = 0; bi <= 8; bi++) {
+        var bx = S * (0.06 + bi * 0.11), by = S * 0.05 + Math.sin(bi / 8 * Math.PI) * S * 0.062 + S * 0.028;
+        c.beginPath(); c.arc(bx, by, 9, 0, Math.PI * 2); c.fillStyle = bulbCols[bi % 4]; c.fill();
+      }
+      // his rug
+      c.beginPath(); c.ellipse(S * 0.5, S * 0.82, S * 0.36, S * 0.075, 0, 0, Math.PI * 2); c.fillStyle = '#b3492e'; c.fill();
+      c.beginPath(); c.ellipse(S * 0.5, S * 0.82, S * 0.27, S * 0.052, 0, 0, Math.PI * 2); c.fillStyle = '#d4693b'; c.fill();
       var rockName = document.getElementById('yourRockName').textContent || 'Rocko';
       var rockDone = document.getElementById('rockStat').style.display !== 'none';
       function drawScene() {
         c.textAlign = 'center'; c.textBaseline = 'middle';
-        c.font = (S * 0.2) + 'px serif';
-        c.fillText('🌴', S * 0.09, S * 0.72);
-        c.font = (S * 0.07) + 'px serif';
-        c.fillText('🐚', S * 0.16, S * 0.9);
-        c.font = (S * 0.34) + 'px serif';
-        c.fillText('🪨', S * 0.48, S * 0.7);
+        // Same relative-to-Steve math as the stage, so what you placed is what you get
+        var rockFont = S * 0.36, rockCX = S * 0.5, rockCY = S * 0.56, wrapSize = rockFont * (7.6 / 7);
+        c.font = rockFont + 'px serif';
+        c.fillText('🪨', rockCX, rockCY);
         Object.keys(stevePieces).forEach(function (k) {
           var el = stevePieces[k];
           var rem = parseFloat(el.getAttribute('data-rem'));
-          // stage coords (Steve at 50%/55% of the stage) -> selfie coords (rock at 48%/70%)
-          var dx = (parseFloat(el.getAttribute('data-fx')) - 0.5) * S * 0.62;
-          var dy = (parseFloat(el.getAttribute('data-fy')) - 0.55) * S * 0.62;
-          c.font = (rem * 16 * (S / 300)) + 'px serif';
-          c.fillText(el.textContent, S * 0.48 + dx, S * 0.7 + dy);
+          var dx = (parseFloat(el.getAttribute('data-fx')) - 0.5) * wrapSize;
+          var dy = (parseFloat(el.getAttribute('data-fy')) - 0.5) * wrapSize;
+          c.font = (rockFont * rem / 7) + 'px serif';
+          c.fillText(el.textContent, rockCX + dx, rockCY + dy);
         });
         if (rockDone) {
           c.font = (S * 0.13) + 'px serif';
-          c.fillText('🪨', S * 0.86, S * 0.78);
+          c.fillText('🪨', S * 0.85, S * 0.74);
           c.font = '700 ' + (S * 0.045) + 'px system-ui, sans-serif';
-          c.fillStyle = '#5b3a1e';
-          c.fillText(rockName, S * 0.86, S * 0.9);
+          c.fillStyle = '#ffd9a8';
+          c.fillText(rockName, S * 0.85, S * 0.85);
         }
         c.font = '900 ' + (S * 0.055) + 'px system-ui, sans-serif';
-        c.shadowColor = 'rgba(60,30,0,0.85)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
+        c.shadowColor = 'rgba(0,0,0,0.85)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
         c.fillStyle = '#ffffff';
         c.fillText(rockDone ? 'Steve & ' + rockName + ' — best friends 💛' : 'Steve, styled by you 💛', S * 0.5, S * 0.94);
         c.shadowBlur = 0; c.shadowOffsetY = 0;
@@ -1557,7 +1568,7 @@
         selfieImg.style.display = 'block';
         selfieDownload.href = url;
         selfieDownload.style.display = '';
-        makeoverMsg.textContent = "📸 Got it! Steve's beach day — one for the fridge.";
+        makeoverMsg.textContent = "📸 Got it! Steve at home, looking sharp — one for the fridge.";
         playSfx(sfx.sparkle);
         makeoverCompleteBtn.style.display = '';
       }
