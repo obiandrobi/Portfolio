@@ -180,7 +180,7 @@
 
         <div class="app-header">
           <video id="caveVideo" autoplay muted loop playsinline poster="assets/poof-cave-poster.jpg">
-            <source src="assets/poof-cave-loop.mp4" type="video/mp4">
+            <source src="assets/poof-cave-loop2.mp4" type="video/mp4">
           </video>
           <button class="play-overlay" id="playOverlay" aria-label="Play the cave animation">
             <span class="circle">▶</span>
@@ -1879,8 +1879,11 @@
     // Try to play; if still paused shortly after load, show a friendly tap-to-play button.
     var caveVideo = document.getElementById('caveVideo');
     var playOverlay = document.getElementById('playOverlay');
+    caveVideo.muted = true; /* property too, not just the attribute — some in-app browsers insist */
+    caveVideo.playsInline = true;
     var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     function tryPlayCave() {
+      if (caveVideo.error || caveVideo.networkState === 3) caveVideo.load();
       caveVideo.play().then(function () { playOverlay.classList.remove('show'); }).catch(function () {});
     }
     if (reducedMotion) {
@@ -1897,10 +1900,17 @@
       tryPlayCave();
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
       // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
+      // Also watch for the nastier case: the element claims to be playing but the
+      // picture never advances (a decode stall) — show the wake button then too.
+      var caveLastT = -1, caveStuck = 0;
       setInterval(function () {
         var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show') || memoryPanel.classList.contains('show') || jarPanel.classList.contains('show') || puffPanel.classList.contains('show') || makeoverPanel.classList.contains('show');
-        if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
-        if (!caveVideo.paused) playOverlay.classList.remove('show');
+        if (!caveVideo.paused && caveVideo.readyState >= 2) {
+          if (caveVideo.currentTime === caveLastT) { caveStuck++; } else { caveStuck = 0; }
+          caveLastT = caveVideo.currentTime;
+        }
+        if (!busy && !document.hidden && (caveVideo.paused || caveStuck >= 2)) playOverlay.classList.add('show');
+        if (!caveVideo.paused && caveStuck < 2) playOverlay.classList.remove('show');
       }, 2500);
     }
     render();
