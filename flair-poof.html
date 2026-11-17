@@ -237,6 +237,10 @@
   </video>
   <div class="shade"></div>
 
+  <!-- Title music: "Sunset Keepsake", generated with ElevenLabs. Browsers only allow sound after a tap, so it starts on the music button. -->
+  <audio id="bgm" loop preload="none" src="assets/sunset-keepsake.mp3"></audio>
+  <button type="button" id="musicBtn" aria-pressed="false" style="position:fixed;right:18px;bottom:18px;z-index:4;font-family:'Baloo 2','Nunito',sans-serif;font-weight:800;font-size:1rem;padding:10px 18px;border-radius:999px;border:2px solid rgba(255,210,62,0.55);background:rgba(43,20,74,0.62);color:#fff7ea;cursor:pointer;">&#9836; Music: Off</button>
+
   <div class="screen">
     <a class="back-link" href="index.html">&larr; Portfolio</a>
 
@@ -274,6 +278,10 @@
       <label class="setting-row">
         <span>Background motion</span>
         <input type="checkbox" id="motionToggle" checked>
+      </label>
+      <label class="setting-row">
+        <span>Music — “Sunset Keepsake”</span>
+        <input type="checkbox" id="musicToggle">
       </label>
       <p class="small">Turning motion off pauses the animated background and the floating title. Everything else keeps working.</p>
       <button type="button" id="btnSettingsBack">Done</button>
@@ -322,6 +330,19 @@
         if (event.target === panel) closePanel(panel);
       });
     });
+
+    // Music: the corner button and the Settings toggle control the same audio
+    const bgm = document.getElementById('bgm');
+    const musicBtn = document.getElementById('musicBtn');
+    const musicToggle = document.getElementById('musicToggle');
+    function setMusic(on) {
+      if (on) { bgm.play(); } else { bgm.pause(); }
+      musicBtn.innerHTML = on ? '&#9836; Music: On' : '&#9836; Music: Off';
+      musicBtn.setAttribute('aria-pressed', String(on));
+      musicToggle.checked = on;
+    }
+    musicBtn.addEventListener('click', () => setMusic(bgm.paused));
+    musicToggle.addEventListener('change', (event) => setMusic(event.target.checked));
 
     // Settings: background motion on/off
     document.getElementById('motionToggle').addEventListener('change', (event) => {
