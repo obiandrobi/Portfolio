@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Poof: Fire Muffin Catch · Portfolio Piece #3</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin: 0; background: #171019; color: #f6efe8; min-height: 100vh; }
+    .layout { max-width: 980px; margin: 0 auto; padding: 48px 24px 64px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: start; }
+    @media (max-width: 820px) { .layout { grid-template-columns: 1fr; justify-items: center; } }
+    .about h1 { font-size: 2.2rem; line-height: 1.1; margin: 0 0 6px; }
+    .about .sub { color: #ffb347; font-weight: 700; margin: 0 0 18px; }
+    .about p { color: #d8cfc6; line-height: 1.55; }
+    .about ul { color: #d8cfc6; line-height: 1.7; padding-left: 20px; }
+    .about a { color: #ffb347; }
+    .try { background: #241728; border: 1px solid #3d2a44; border-radius: 12px; padding: 14px 18px; margin-top: 20px; }
+
+    /* ---------- Game stage ---------- */
+    .stage {
+      position: relative; width: min(480px, 94vw); height: min(600px, 74vh);
+      border-radius: 24px; overflow: hidden; background: #2b144a;
+      box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 2px #3a2c40;
+      touch-action: none; user-select: none; -webkit-user-select: none;
+    }
+    .stage .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .stage .shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(27,10,40,.25), transparent 30%, transparent 62%, rgba(27,10,40,.45)); }
+    .hud { position: absolute; top: 0; left: 0; right: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; color: #fff; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
+    .hud .score { font-size: 1.15rem; background: rgba(43,20,8,.5); padding: 5px 14px; border-radius: 999px; }
+    .hud .hearts { font-size: 1.05rem; letter-spacing: 2px; }
+    .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: rgba(20,8,4,.35); z-index: 2; }
+    #poof { position: absolute; bottom: 12px; left: 50%; width: 96px; height: 96px; margin-left: -48px; z-index: 5; border-radius: 26px; box-shadow: 0 10px 24px rgba(0,0,0,.45); will-change: transform; }
+    #poof.hop { animation: hop .38s ease; }
+    @keyframes hop { 40% { margin-bottom: 16px; } }
+    .muffin { position: absolute; left: 0; top: 0; z-index: 4; width: 46px; height: 52px; margin-left: -23px; text-align: center; will-change: transform; pointer-events: none; }
+    .muffin .flame { display: block; font-size: 1.05rem; line-height: 1; animation: flick .3s ease-in-out infinite alternate; }
+    .muffin .cake { display: block; font-size: 2rem; line-height: 1.05; filter: drop-shadow(0 4px 6px rgba(0,0,0,.4)); }
+    @keyframes flick { from { transform: scale(1) rotate(-4deg); } to { transform: scale(1.18) rotate(4deg); } }
+    .splat { position: absolute; z-index: 3; font-size: 1.6rem; transform: translate(-50%, 0); animation: splatfade .6s ease forwards; pointer-events: none; }
+    @keyframes splatfade { to { opacity: 0; transform: translate(-50%, -14px) scale(1.3); } }
+    .float-score { position: absolute; z-index: 7; font-weight: 900; color: #ffd23e; text-shadow: 0 2px 6px rgba(0,0,0,.7); transform: translate(-50%, 0); animation: floatup .7s ease forwards; pointer-events: none; }
+    @keyframes floatup { to { opacity: 0; transform: translate(-50%, -44px); } }
+
+    .overlay { position: absolute; inset: 0; z-index: 10; background: rgba(22,9,36,.78); display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 26px; color: #fff; }
+    .overlay.show { display: flex; }
+    .overlay h2 { font-size: 1.7rem; margin: 0 0 8px; color: #ffd23e; }
+    .overlay p { margin: 4px 0; line-height: 1.55; color: #f3e9ff; max-width: 340px; }
+    .overlay video { width: 200px; border-radius: 16px; margin-bottom: 12px; }
+    .overlay button { margin-top: 16px; background: #ff8a3d; color: #fff; border: 0; font: inherit; font-weight: 800; font-size: 1.05rem; padding: 12px 30px; border-radius: 999px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,.4); }
+    .overlay button:hover { transform: scale(1.04); }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="about">
+      <h1>Fire Muffin Catch</h1>
+      <p class="sub">Portfolio Piece #3 — A Playable Poof Mini-Moment</p>
+      <p>Disaster in the hills: **fire muffins** are raining from the sky. They're Poof's favorite — warm, sweet, and slightly on fire — but he's still Poof, so catching them takes all the bravery he has. Which, today, is just enough.</p>
+      <ul>
+        <li>A real playable game loop: move, catch, miss, score, hearts, win and lose states</li>
+        <li>Drag, mouse, or arrow keys — Poof follows with a little hop on every catch</li>
+        <li>Difficulty ramps: the muffins fall faster the more you catch</li>
+        <li>Catch 15 to win. Drop 3 and the muffins win</li>
+        <li>Sound effects throughout, chopped from ElevenLabs generations</li>
+      </ul>
+      <div class="try"><strong>How to play:</strong> press Start, then drag (or move your mouse) to slide Poof left and right. Catch the falling fire muffins — don't let them splat.</div>
+      <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="poof.html">Piece #2: Poof app home screen</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
+    </div>
+
+    <div class="stage" id="stage" aria-label="Fire Muffin Catch game">
+      <img class="bg" src="assets/flair-poof-poster.jpg" alt="">
+      <div class="shade"></div>
+      <div class="hud">
+        <span class="score">🧁 × <span id="score">0</span></span>
+        <span class="hearts" id="hearts">❤️❤️❤️</span>
+      </div>
+      <div class="ground"></div>
+      <img id="poof" src="assets/poof-front.jpg" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins">
+
+      <div class="overlay show" id="startOverlay">
+        <h2>🔥 Fire Muffin Catch 🧁</h2>
+        <p>Fire muffins are falling over the hills! Slide Poof to catch them.</p>
+        <p>Catch <strong>15</strong> to win — but drop <strong>3</strong> and it's muffin chaos.</p>
+        <button id="startBtn">Start catching</button>
+      </div>
+
+      <div class="overlay" id="endOverlay">
+        <video id="endVideo" muted loop playsinline poster="assets/poof-front.jpg">
+          <source src="assets/flair-poof-reveal.mp4" type="video/mp4">
+        </video>
+        <h2 id="endTitle">Muffin Master!</h2>
+        <p id="endText"></p>
+        <button id="againBtn">Play again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    var sfx = {
+      chime: new Audio('assets/sfx/sfx-chime.mp3'),
+      click: new Audio('assets/sfx/sfx-click.mp3'),
+      sparkle: new Audio('assets/sfx/sfx-sparkle.mp3')
+    };
+    function playSfx(a) { if (!a) return; a.currentTime = 0; a.play().catch(function () {}); }
+
+    var stage = document.getElementById('stage');
+    var poof = document.getElementById('poof');
+    var scoreEl = document.getElementById('score');
+    var heartsEl = document.getElementById('hearts');
+    var startOverlay = document.getElementById('startOverlay');
+    var endOverlay = document.getElementById('endOverlay');
+    var endTitle = document.getElementById('endTitle');
+    var endText = document.getElementById('endText');
+    var endVideo = document.getElementById('endVideo');
+
+    var WIN_SCORE = 15;
+    var running = false, score = 0, hearts = 3;
+    var poofX = 0.5, targetX = 0.5; // as fractions of stage width
+    var muffins = [], lastSpawn = 0, lastTime = 0, rafId = null;
+    var keys = {};
+
+    function stageW() { return stage.clientWidth; }
+    function stageH() { return stage.clientHeight; }
+
+    function renderHud() {
+      scoreEl.textContent = score;
+      heartsEl.textContent = '❤️'.repeat(hearts) + '🖤'.repeat(3 - hearts);
+    }
+    function placePoof() {
+      poof.style.transform = 'translateX(' + ((poofX - 0.5) * stageW()) + 'px)';
+    }
+    function spawnMuffin(now) {
+      var el = document.createElement('div');
+      el.className = 'muffin';
+      el.innerHTML = '<span class="flame">🔥</span><span class="cake">🧁</span>';
+      stage.appendChild(el);
+      muffins.push({ el: el, x: 0.08 + Math.random() * 0.84, y: -56, speed: 165 + Math.random() * 60 + score * 7 });
+      lastSpawn = now;
+    }
+    function floatText(x, y, text) {
+      var el = document.createElement('div');
+      el.className = 'float-score';
+      el.textContent = text;
+      el.style.left = (x * 100) + '%';
+      el.style.top = y + 'px';
+      stage.appendChild(el);
+      setTimeout(function () { el.remove(); }, 720);
+    }
+    function splat(x) {
+      var el = document.createElement('div');
+      el.className = 'splat';
+      el.textContent = '💥';
+      el.style.left = (x * 100) + '%';
+      el.style.bottom = '8px';
+      stage.appendChild(el);
+      setTimeout(function () { el.remove(); }, 620);
+    }
+    function endGame(won) {
+      running = false;
+      cancelAnimationFrame(rafId);
+      muffins.forEach(function (m) { m.el.remove(); });
+      muffins = [];
+      endTitle.textContent = won ? 'Muffin Master! 🏆' : 'The muffins got away…';
+      endText.textContent = won
+        ? 'Poof caught ' + score + ' fire muffins and only got slightly singed. Today, he was brave AND well-fed.'
+        : 'Poof caught ' + score + ' fire muffins before the splats won. He is already asking for a rematch.';
+      endOverlay.classList.add('show');
+      endVideo.currentTime = 0;
+      endVideo.play().catch(function () {});
+      playSfx(won ? sfx.sparkle : sfx.click);
+    }
+    function loop(now) {
+      if (!running) return;
+      var dt = Math.min(0.05, (now - lastTime) / 1000 || 0.016);
+      lastTime = now;
+
+      if (keys.ArrowLeft) targetX -= dt * 1.4;
+      if (keys.ArrowRight) targetX += dt * 1.4;
+      targetX = Math.max(0.09, Math.min(0.91, targetX));
+      poofX += (targetX - poofX) * Math.min(1, dt * 14);
+      placePoof();
+
+      var spawnEvery = Math.max(520, 950 - score * 26);
+      if (now - lastSpawn > spawnEvery) spawnMuffin(now);
+
+      var H = stageH(), W = stageW();
+      var poofTop = H - 12 - 96;
+      muffins = muffins.filter(function (m) {
+        m.y += m.speed * dt;
+        m.el.style.transform = 'translate(' + (m.x * W) + 'px,' + m.y + 'px)';
+        var muffinBottom = m.y + 52;
+        var overlapX = Math.abs(m.x - poofX) * W < 74;
+        if (muffinBottom >= poofTop + 26 && muffinBottom <= H - 4 && overlapX) {
+          score++;
+          renderHud();
+          floatText(m.x, poofTop - 8, '+1 🧁');
+          poof.classList.remove('hop'); void poof.offsetWidth; poof.classList.add('hop');
+          playSfx(sfx.chime);
+          m.el.remove();
+          if (score >= WIN_SCORE) { endGame(true); return false; }
+          return false;
+        }
+        if (m.y > H - 18) {
+          hearts--;
+          renderHud();
+          splat(m.x);
+          playSfx(sfx.click);
+          m.el.remove();
+          if (hearts <= 0) { endGame(false); return false; }
+          return false;
+        }
+        return true;
+      });
+
+      rafId = requestAnimationFrame(loop);
+    }
+    function startGame() {
+      score = 0; hearts = 3; poofX = 0.5; targetX = 0.5;
+      renderHud(); placePoof();
+      startOverlay.classList.remove('show');
+      endOverlay.classList.remove('show');
+      endVideo.pause();
+      running = true;
+      lastSpawn = 0; lastTime = performance.now();
+      playSfx(sfx.click);
+      rafId = requestAnimationFrame(loop);
+    }
+
+    document.getElementById('startBtn').addEventListener('click', startGame);
+    document.getElementById('againBtn').addEventListener('click', startGame);
+
+    function pointToTarget(clientX) {
+      var r = stage.getBoundingClientRect();
+      targetX = (clientX - r.left) / r.width;
+    }
+    stage.addEventListener('pointermove', function (e) { pointToTarget(e.clientX); });
+    stage.addEventListener('pointerdown', function (e) { pointToTarget(e.clientX); });
+    document.addEventListener('keydown', function (e) { keys[e.key] = true; });
+    document.addEventListener('keyup', function (e) { keys[e.key] = false; });
+
+    renderHud(); placePoof();
+  </script>
+</body>
+</html>

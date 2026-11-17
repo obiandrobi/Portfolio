@@ -21,7 +21,9 @@ This site solves a simple problem: clients and collaborators can see my AI anima
 2. **Piece #2: Poof — animated app home screen.** A cozy daily-quest companion app starring the same character: Poof lives in a cave in the hills, too shy to visit the glowing town below, and the tiny quests you finish together grow the living flame on his head (the streak counter). I designed and animated his cave home overlooking the town, then built the interactive home screen: tappable quest cards, an animated progress ring, ember rewards, a growing streak flame, a celebration when all quests are done, and four working tabs — all presented in a phone mockup.
    - Try it live: https://obiandrobi.github.io/Portfolio/poof.html
    - ![Poof in his cave home overlooking the town at sunrise](assets/poof-cave.jpg)
-3. Piece #3: To be announced
+3. **Piece #3: Fire Muffin Catch — a playable Poof mini-moment.** A tiny complete game: fire muffins (Poof's favorite, slightly on fire) rain over the hills and Poof slides to catch them — drag, mouse, or arrow keys. Catch 15 to win, drop 3 and the muffins win. Built with HTML, CSS and JavaScript: a requestAnimationFrame game loop, collision detection, score and hearts, win/lose states, sound effects, and a difficulty ramp.
+   - Play it live: https://obiandrobi.github.io/Portfolio/fire-muffins.html
+   - ![Flair Poof, ready to catch fire muffins](assets/poof-front.jpg)
 
 ## Live site
 
