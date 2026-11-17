@@ -558,7 +558,7 @@
         if (danceOver) return;
         b.remove();
         doused++;
-        danceHeat = Math.max(0, danceHeat - 9);
+        danceHeat = Math.max(0, danceHeat - 12);
         douseCountEl.textContent = doused;
         playSfx(sfx.chime);
         if (doused >= DOUSE_GOAL) winDance();
@@ -568,8 +568,8 @@
     function danceStep() {
       danceTick++;
       var active = danceStage.querySelectorAll('.dance-flame').length;
-      if (danceTick % 7 === 0 && active < 5) spawnFlame();
-      danceHeat = Math.min(100, danceHeat + active * 0.35);
+      if (danceTick % 8 === 0 && active < 4) spawnFlame();
+      danceHeat = Math.min(100, danceHeat + active * 0.14);
       heatBar.style.width = danceHeat + '%';
       if (danceHeat >= 100) sleepFail();
     }
