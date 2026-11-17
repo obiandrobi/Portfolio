@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ember Roast Coffee Co. — Riverside, CA</title>
+<meta name="description" content="Ember Roast Coffee Co. — a cozy neighborhood coffee shop in Riverside, California. Small-batch beans roasted in-house, fresh pastries, and the warmest seat in the Inland Empire.">
+<style>
+  :root {
+    --cream: #faf5ec;
+    --paper: #fffdf8;
+    --ink: #2b1a12;
+    --soft: #6f5a4c;
+    --ember: #e07b39;
+    --ember-deep: #b3541e;
+    --line: #e8dcc8;
+    --green: #3e7d4e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--cream); color: var(--ink); line-height: 1.55; }
+  h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; line-height: 1.15; }
+  a { color: var(--ember-deep); }
+  img { max-width: 100%; display: block; }
+
+  /* Header */
+  .site-header { position: sticky; top: 0; z-index: 50; background: rgba(250,245,236,.96); border-bottom: 1px solid var(--line); }
+  .header-in { max-width: 1080px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; gap: 16px; }
+  .logo { font-family: Georgia, serif; font-size: 1.3rem; font-weight: 700; color: var(--ink); text-decoration: none; white-space: nowrap; }
+  .logo .flame { color: var(--ember); }
+  nav.main-nav { margin-left: auto; display: flex; gap: 22px; align-items: center; }
+  nav.main-nav a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: .95rem; }
+  nav.main-nav a:hover { color: var(--ember-deep); }
+  .call-btn { background: var(--ember); color: #fff !important; padding: 9px 16px; border-radius: 999px; }
+  .call-btn:hover { background: var(--ember-deep); }
+  .burger { display: none; margin-left: auto; background: none; border: 1px solid var(--line); border-radius: 8px; font-size: 1.15rem; padding: 6px 12px; cursor: pointer; color: var(--ink); }
+
+  /* Hero */
+  .hero { max-width: 1080px; margin: 0 auto; padding: 44px 20px 30px; display: grid; grid-template-columns: 1fr 1.15fr; gap: 36px; align-items: center; }
+  .hero-copy .kicker { text-transform: uppercase; letter-spacing: .14em; font-size: .78rem; font-weight: 700; color: var(--ember-deep); margin-bottom: 12px; }
+  .hero-copy h1 { font-size: 2.9rem; margin-bottom: 14px; }
+  .hero-copy p { color: var(--soft); font-size: 1.08rem; margin-bottom: 22px; max-width: 46ch; }
+  .open-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--paper); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: .9rem; font-weight: 600; margin-bottom: 20px; }
+  .open-badge .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+  .open-badge.closed .dot { background: #b03a2e; }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn { display: inline-block; text-decoration: none; font-weight: 700; padding: 13px 24px; border-radius: 999px; font-size: 1rem; }
+  .btn-primary { background: var(--ember); color: #fff; }
+  .btn-primary:hover { background: var(--ember-deep); }
+  .btn-ghost { background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
+  .hero-img { border-radius: 18px; overflow: hidden; box-shadow: 0 18px 40px rgba(43,26,18,.18); }
+  .hero-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Fact strip */
+  .facts { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--paper); }
+  .facts-in { max-width: 1080px; margin: 0 auto; padding: 16px 20px; display: flex; flex-wrap: wrap; gap: 10px 34px; justify-content: center; font-weight: 600; font-size: .95rem; color: var(--soft); }
+
+  /* Sections */
+  section.block { max-width: 1080px; margin: 0 auto; padding: 56px 20px 8px; }
+  section.block h2 { font-size: 2rem; margin-bottom: 8px; }
+  section.block .sub { color: var(--soft); margin-bottom: 26px; max-width: 62ch; }
+
+  /* Menu */
+  .menu-tabs { display: flex; gap: 8px; margin-bottom: 22px; flex-wrap: wrap; }
+  .menu-tabs button { font: inherit; font-weight: 700; padding: 9px 20px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); cursor: pointer; }
+  .menu-tabs button.active { background: var(--ink); color: var(--cream); border-color: var(--ink); }
+  .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 48px; }
+  .menu-item { display: flex; gap: 12px; padding: 13px 0; border-bottom: 1px dashed var(--line); }
+  .menu-item .mi-main { flex: 1; }
+  .menu-item .mi-name { font-weight: 700; }
+  .menu-item .mi-name .tag { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: #fff; background: var(--ember); border-radius: 4px; padding: 2px 6px; margin-left: 8px; vertical-align: 2px; }
+  .menu-item .mi-desc { color: var(--soft); font-size: .92rem; }
+  .menu-item .mi-price { font-weight: 700; font-family: Georgia, serif; font-size: 1.05rem; }
+  .menu-panel { display: none; }
+  .menu-panel.active { display: block; }
+  .menu-note { color: var(--soft); font-size: .92rem; margin-top: 16px; }
+
+  /* Story */
+  .story { display: grid; grid-template-columns: 1.2fr 1fr; gap: 36px; align-items: center; }
+  .story p { color: var(--soft); margin-bottom: 14px; }
+  .story .card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .story .card h3 { margin-bottom: 10px; font-size: 1.25rem; }
+  .story .card ul { list-style: none; }
+  .story .card li { padding: 7px 0; border-bottom: 1px dashed var(--line); font-weight: 600; font-size: .95rem; }
+  .story .card li:last-child { border-bottom: none; }
+  .story .card li span { color: var(--ember-deep); margin-right: 8px; }
+
+  /* Reviews */
+  .reviews { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .review { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px; }
+  .review .stars { color: var(--ember); letter-spacing: 2px; margin-bottom: 10px; }
+  .review p { font-size: .97rem; margin-bottom: 12px; }
+  .review .who { color: var(--soft); font-size: .88rem; font-weight: 600; }
+
+  /* Visit */
+  .visit { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
+  .visit .v-card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 24px; }
+  .visit h3 { margin-bottom: 12px; font-size: 1.25rem; }
+  .hours { width: 100%; border-collapse: collapse; font-size: .97rem; }
+  .hours td { padding: 7px 0; border-bottom: 1px dashed var(--line); }
+  .hours tr:last-child td { border-bottom: none; }
+  .hours td:last-child { text-align: right; font-weight: 600; }
+  .hours tr.today td { color: var(--ember-deep); font-weight: 700; }
+  .visit address { font-style: normal; font-size: 1.05rem; margin-bottom: 6px; }
+  .visit .v-line { color: var(--soft); margin-bottom: 14px; }
+
+  /* Footer */
+  footer { margin-top: 64px; background: var(--ink); color: #e9dcc9; }
+  .foot-in { max-width: 1080px; margin: 0 auto; padding: 36px 20px; display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: center; justify-content: space-between; }
+  footer .f-logo { font-family: Georgia, serif; font-size: 1.2rem; font-weight: 700; color: #fff; }
+  footer a { color: #f0b27a; }
+  footer .fine { width: 100%; font-size: .82rem; color: #a68d76; border-top: 1px solid #453325; padding-top: 16px; }
+
+  /* Mobile call bar */
+  .mobile-bar { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: var(--paper); border-top: 1px solid var(--line); padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); gap: 10px; }
+  .mobile-bar a { flex: 1; text-align: center; }
+
+  @media (max-width: 760px) {
+    nav.main-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--cream); border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; padding: 10px 20px 16px; gap: 4px; }
+    nav.main-nav.open { display: flex; }
+    nav.main-nav a { padding: 10px 4px; }
+    nav.main-nav .call-btn { text-align: center; margin-top: 6px; }
+    .burger { display: block; }
+    .hero { grid-template-columns: 1fr; padding-top: 28px; }
+    .hero-copy h1 { font-size: 2.2rem; }
+    .menu-grid, .story, .visit { grid-template-columns: 1fr; }
+    .reviews { grid-template-columns: 1fr; }
+    .mobile-bar { display: flex; }
+    body { padding-bottom: 74px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-in">
+    <a class="logo" href="#"><span class="flame">🔥</span> Ember Roast</a>
+    <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false">☰</button>
+    <nav class="main-nav" id="mainNav">
+      <a href="#menu">Menu</a>
+      <a href="#story">Our Story</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#visit">Visit</a>
+      <a class="call-btn" href="tel:+19515550147">Call the shop</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-copy">
+    <p class="kicker">Riverside, California · Est. 2019</p>
+    <h1>Good coffee, poured slow.</h1>
+    <div class="open-badge" id="openBadge"><span class="dot"></span><span id="openText">Checking hours…</span></div>
+    <p>Small-batch beans roasted in-house every Tuesday, pastries from our friends at Crumb &amp; Craft, and a sunny corner seat with your name on it. This is the neighborhood's living room — come sit awhile.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-primary" href="#menu">See the menu</a>
+      <a class="btn btn-ghost" href="https://www.google.com/maps/search/?api=1&amp;query=Ember+Roast+Coffee+Riverside+CA" target="_blank" rel="noopener">Get directions</a>
+    </div>
+  </div>
+  <div class="hero-img">
+    <img src="assets/ember-roast-hero.jpg" alt="Inside Ember Roast Coffee Co. — a warm wooden counter with an espresso machine, shelves of mugs and coffee bags, and sunlight pouring through big windows" fetchpriority="high">
+  </div>
+</div>
+
+<div class="facts">
+  <div class="facts-in">
+    <span>☕ Roasted in-house</span>
+    <span>🥛 Oat milk, no upcharge</span>
+    <span>📶 Fast Wi-Fi</span>
+    <span>🐶 Dogs welcome on the patio</span>
+    <span>🎓 Students: 10% off Tuesdays</span>
+  </div>
+</div>
+
+<section class="block" id="menu">
+  <h2>The menu</h2>
+  <p class="sub">Everything is made to order. Every drink can be iced, and every milk drink can be made with oat, almond, or whole milk — always the same price.</p>
+  <div class="menu-tabs" role="tablist">
+    <button class="active" data-tab="coffee" role="tab">Coffee</button>
+    <button data-tab="notcoffee" role="tab">Not Coffee</button>
+    <button data-tab="eats" role="tab">Eats</button>
+  </div>
+
+  <div class="menu-panel active" id="panel-coffee">
+    <div class="menu-grid">
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Ember Latte<span class="tag">House favorite</span></div><div class="mi-desc">Double shot, smoked-maple syrup, velvety steamed milk, a whisper of cinnamon.</div></div><div class="mi-price">$5.50</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Classic Cappuccino</div><div class="mi-desc">Equal parts espresso, steamed milk, and foam. Dusting of cocoa, always.</div></div><div class="mi-price">$4.75</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Pour Over</div><div class="mi-desc">Single-origin, rotating weekly. Ask what's on the bar — we love talking about it.</div></div><div class="mi-price">$5.00</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Cold Brew</div><div class="mi-desc">Steeped 18 hours, served over ice. Smooth, chocolatey, dangerously drinkable.</div></div><div class="mi-price">$4.50</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Cortado</div><div class="mi-desc">Small, strong, and warm — espresso cut with just enough steamed milk.</div></div><div class="mi-price">$4.25</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Mocha</div><div class="mi-desc">Espresso, single-origin cacao, steamed milk, hand-whisked cream on top.</div></div><div class="mi-price">$5.75</div></div>
+    </div>
+  </div>
+
+  <div class="menu-panel" id="panel-notcoffee">
+    <div class="menu-grid">
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Golden Chai</div><div class="mi-desc">House-spiced black tea with turmeric and steamed milk. Warm hug, mug format.</div></div><div class="mi-price">$5.00</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Matcha Latte</div><div class="mi-desc">Ceremonial-grade matcha whisked to order, your choice of milk.</div></div><div class="mi-price">$5.50</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name"> Hibiscus Cooler</div><div class="mi-desc">Iced hibiscus tea with mint and a squeeze of lime. The patio drink.</div></div><div class="mi-price">$4.25</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Hot Chocolate</div><div class="mi-desc">Real melted cacao, steamed milk, one very large marshmallow.</div></div><div class="mi-price">$4.50</div></div>
+    </div>
+  </div>
+
+  <div class="menu-panel" id="panel-eats">
+    <div class="menu-grid">
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Butter Croissant</div><div class="mi-desc">From Crumb &amp; Craft, delivered at 6 AM. Shatteringly flaky.</div></div><div class="mi-price">$3.75</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Cardamom Morning Bun<span class="tag">Weekends</span></div><div class="mi-desc">Swirled, sticky, gone by ten most Saturdays. Come early.</div></div><div class="mi-price">$4.50</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Breakfast Sandwich</div><div class="mi-desc">Egg, aged cheddar, and tomato jam on a toasted brioche bun.</div></div><div class="mi-price">$8.50</div></div>
+      <div class="menu-item"><div class="mi-main"><div class="mi-name">Avocado Toast</div><div class="mi-desc">Thick-cut sourdough, smashed avocado, chili crunch, soft herbs.</div></div><div class="mi-price">$9.00</div></div>
+    </div>
+  </div>
+  <p class="menu-note">Beans by the bag, roasted Tuesdays: $18 / 12 oz — ask at the counter and we'll grind it how you like.</p>
+</section>
+
+<section class="block" id="story">
+  <h2>Our story</h2>
+  <p class="sub">Ember Roast started as a garage roaster, a farmers-market stand, and a stubborn belief that Riverside deserved a coffee shop that felt like a deep breath.</p>
+  <div class="story">
+    <div>
+      <p>In 2019, Maya and Jordan Park started roasting beans in their garage off Magnolia Avenue, selling bags off a folding table at the Saturday market. The line kept getting longer. The folding table became a food truck; the food truck became this little sunlit shop on Main Street.</p>
+      <p>Six years on, the beans still get roasted in small batches, the regulars still have "their" seats, and the chalkboard by the door still gets a new terrible coffee pun every Monday. Some things should never change.</p>
+      <p>Come for the coffee. Stay because nobody here is in a hurry to make you leave.</p>
+    </div>
+    <div class="card">
+      <h3>The house rules</h3>
+      <ul>
+        <li><span>✦</span>Laptops welcome — outlets at every table</li>
+        <li><span>✦</span>First refill of drip coffee is always free</li>
+        <li><span>✦</span>Kids get a free babyccino, forever</li>
+        <li><span>✦</span>Bring a mug from home, save 25¢</li>
+        <li><span>✦</span>The corner armchair is first come, first served</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="reviews">
+  <h2>Neighbors say</h2>
+  <p class="sub">4.9 stars across 600+ reviews — but we'd rather let the regulars talk.</p>
+  <div class="reviews">
+    <div class="review"><div class="stars">★★★★★</div><p>"The Ember Latte ruined every other coffee shop for me. I plan my Saturday mornings around this place now."</p><div class="who">— Dana R., Saturday regular</div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>"I wrote most of my thesis in the corner armchair. The staff learned my order by week two. It feels like a second home."</p><div class="who">— Marcus T., UCR grad student</div></div>
+    <div class="review"><div class="stars">★★★★★</div><p>"Brought my dog, my toddler, and my laptop. All three were welcome. The morning bun alone is worth the drive."</p><div class="who">— Priya S., weekend visitor</div></div>
+  </div>
+</section>
+
+<section class="block" id="visit">
+  <h2>Come visit</h2>
+  <p class="sub">Two blocks from the Mission Inn, with free parking behind the shop off 6th Street.</p>
+  <div class="visit">
+    <div class="v-card">
+      <h3>Hours</h3>
+      <table class="hours" id="hoursTable">
+        <tr data-day="1"><td>Monday</td><td>7:00 AM – 6:00 PM</td></tr>
+        <tr data-day="2"><td>Tuesday</td><td>7:00 AM – 6:00 PM</td></tr>
+        <tr data-day="3"><td>Wednesday</td><td>7:00 AM – 6:00 PM</td></tr>
+        <tr data-day="4"><td>Thursday</td><td>7:00 AM – 6:00 PM</td></tr>
+        <tr data-day="5"><td>Friday</td><td>7:00 AM – 6:00 PM</td></tr>
+        <tr data-day="6"><td>Saturday</td><td>8:00 AM – 5:00 PM</td></tr>
+        <tr data-day="0"><td>Sunday</td><td>8:00 AM – 3:00 PM</td></tr>
+      </table>
+    </div>
+    <div class="v-card">
+      <h3>Find us</h3>
+      <address>3741 Main Street<br>Riverside, CA 92501</address>
+      <p class="v-line">Free parking behind the shop · Bike racks out front · Fully wheelchair accessible</p>
+      <p class="v-line">📞 <a href="tel:+19515550147">(951) 555-0147</a><br>✉️ <a href="mailto:hello@emberroast.coffee">hello@emberroast.coffee</a></p>
+      <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&amp;query=Ember+Roast+Coffee+Riverside+CA" target="_blank" rel="noopener">Get directions</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-in">
+    <div class="f-logo">🔥 Ember Roast Coffee Co.</div>
+    <div><a href="#menu">Menu</a> · <a href="#story">Our Story</a> · <a href="#visit">Visit</a> · <a href="https://instagram.com" target="_blank" rel="noopener">Instagram</a></div>
+    <div class="fine">© 2026 Ember Roast Coffee Co. · Concept website built as a portfolio project by Eric Gimarse — business details are illustrative. <a href="index.html">← Back to portfolio</a></div>
+  </div>
+</footer>
+
+<div class="mobile-bar">
+  <a class="btn btn-ghost" href="tel:+19515550147">📞 Call</a>
+  <a class="btn btn-primary" href="https://www.google.com/maps/search/?api=1&amp;query=Ember+Roast+Coffee+Riverside+CA" target="_blank" rel="noopener">Directions</a>
+</div>
+
+<script>
+  // Mobile nav
+  var burger = document.getElementById('burger');
+  var nav = document.getElementById('mainNav');
+  burger.addEventListener('click', function () {
+    var open = nav.classList.toggle('open');
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  nav.addEventListener('click', function (e) { if (e.target.tagName === 'A') nav.classList.remove('open'); });
+
+  // Menu tabs
+  var tabs = document.querySelectorAll('.menu-tabs button');
+  tabs.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabs.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.menu-panel').forEach(function (p) { p.classList.remove('active'); });
+      document.getElementById('panel-' + btn.getAttribute('data-tab')).classList.add('active');
+    });
+  });
+
+  // Open-now badge + today highlight. Hours: [open, close] in 24h, by JS day (0 = Sunday).
+  var HOURS = { 0: [8, 15], 1: [7, 18], 2: [7, 18], 3: [7, 18], 4: [7, 18], 5: [7, 18], 6: [8, 17] };
+  function fmt(h) { var ap = h >= 12 ? 'PM' : 'AM'; var hh = h % 12; if (hh === 0) hh = 12; return hh + ' ' + ap; }
+  (function () {
+    var now = new Date();
+    var day = now.getDay();
+    var today = HOURS[day];
+    var badge = document.getElementById('openBadge');
+    var text = document.getElementById('openText');
+    var h = now.getHours() + now.getMinutes() / 60;
+    if (h >= today[0] && h < today[1]) {
+      text.textContent = 'Open now · closes ' + fmt(today[1]);
+    } else {
+      badge.classList.add('closed');
+      if (h < today[0]) {
+        text.textContent = 'Closed · opens ' + fmt(today[0]) + ' today';
+      } else {
+        var next = HOURS[(day + 1) % 7];
+        text.textContent = 'Closed · opens ' + fmt(next[0]) + ' tomorrow';
+      }
+    }
+    var row = document.querySelector('#hoursTable tr[data-day="' + day + '"]');
+    if (row) row.classList.add('today');
+  })();
+</script>
+</body>
+</html>

@@ -24,6 +24,9 @@ This site solves a simple problem: clients and collaborators can see my AI anima
 3. **Piece #3: Fire Muffin Catch — a playable Poof mini-moment.** A tiny complete game: fire muffins (Poof's favorite, slightly on fire) rain over the hills and Poof slides to catch them — drag, mouse, or arrow keys. Catch 15 to win, drop 3 and the muffins win. Built with HTML, CSS and JavaScript: a requestAnimationFrame game loop, collision detection, score and hearts, win/lose states, sound effects, and a difficulty ramp.
    - Play it live: https://obiandrobi.github.io/Portfolio/fire-muffins.html
    - ![Flair Poof, ready to catch fire muffins](assets/poof-front.jpg)
+4. **Piece #4: Ember Roast Coffee Co. — a local business landing page.** A complete one-page website for a fictional neighborhood coffee shop in Riverside, CA — the kind of project a real local client hires a freelancer for. Built with HTML, CSS and JavaScript: a sticky header with mobile menu, a hero with a live "open now / closed" badge computed from the shop's hours, a tabbed menu (Coffee / Not Coffee / Eats), a story section, customer reviews, an hours table that highlights today, tap-to-call and directions links, and a sticky call/directions bar on mobile. Hero artwork generated with AI.
+   - Visit it live: https://obiandrobi.github.io/Portfolio/ember-roast.html
+   - ![Inside Ember Roast Coffee Co., a warm sunlit coffee shop](assets/ember-roast-hero.jpg)
 
 ## Live site
 
