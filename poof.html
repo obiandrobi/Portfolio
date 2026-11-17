@@ -200,6 +200,12 @@
   </div>
 
   <script>
+    var sfx = {
+      chime: new Audio('assets/sfx/sfx-chime.mp3'),
+      click: new Audio('assets/sfx/sfx-click.mp3'),
+      sparkle: new Audio('assets/sfx/sfx-sparkle.mp3')
+    };
+    function playSfx(a) { if (!a) return; a.currentTime = 0; a.play().catch(function () {}); }
     var CIRC = 163.4;
     var total = 3, done = 0, embers = 240;
     var ringFg = document.getElementById('ringFg');
@@ -231,12 +237,15 @@
         var box = card.querySelector('.box');
         if (card.classList.contains('done')) {
           card.classList.remove('done'); box.textContent = ''; done--; embers -= 10;
+          playSfx(sfx.click);
         } else {
           card.classList.add('done'); box.textContent = '✓'; done++; embers += 10;
+          playSfx(sfx.chime);
           card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
           flame.classList.remove('pulse'); void flame.offsetWidth; flame.classList.add('pulse');
           if (done === total) {
             setTimeout(function () {
+              playSfx(sfx.sparkle);
               celebrate.classList.add('show');
               celebrateVideo.currentTime = 0;
               celebrateVideo.play().catch(function () {});
@@ -254,6 +263,7 @@
 
     document.querySelectorAll('[data-tab]').forEach(function (tab) {
       tab.addEventListener('click', function () {
+        playSfx(sfx.click);
         document.querySelectorAll('[data-tab]').forEach(function (t) { t.classList.remove('active'); });
         document.querySelectorAll('.view').forEach(function (v) { v.classList.remove('active'); });
         tab.classList.add('active');

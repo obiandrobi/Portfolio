@@ -315,14 +315,21 @@
       if (panel === revealPanel) { revealVideo.pause(); }
     }
 
+    // Menu sound effects, chopped from an ElevenLabs-generated SFX take
+    const sfxChime = new Audio('assets/sfx/sfx-chime.mp3');
+    const sfxClick = new Audio('assets/sfx/sfx-click.mp3');
+    const sfxSparkle = new Audio('assets/sfx/sfx-sparkle.mp3');
+    function playSfx(a) { a.currentTime = 0; a.play().catch(() => {}); }
+
     // Menu actions
-    document.getElementById('btnNewGame').addEventListener('click', () => openPanel(revealPanel));
+    document.getElementById('btnNewGame').addEventListener('click', () => { playSfx(sfxSparkle); openPanel(revealPanel); });
     document.getElementById('btnContinue').addEventListener('click', () => {
+      playSfx(sfxClick);
       showToast('No saved adventure yet — start a New Game!');
     });
-    document.getElementById('btnSettings').addEventListener('click', () => openPanel(settingsPanel));
-    document.getElementById('btnRevealBack').addEventListener('click', () => closePanel(revealPanel));
-    document.getElementById('btnSettingsBack').addEventListener('click', () => closePanel(settingsPanel));
+    document.getElementById('btnSettings').addEventListener('click', () => { playSfx(sfxClick); openPanel(settingsPanel); });
+    document.getElementById('btnRevealBack').addEventListener('click', () => { playSfx(sfxClick); closePanel(revealPanel); });
+    document.getElementById('btnSettingsBack').addEventListener('click', () => { playSfx(sfxClick); closePanel(settingsPanel); });
 
     // Clicking the dark area outside a card closes it too
     [revealPanel, settingsPanel].forEach(panel => {
@@ -359,6 +366,7 @@
       selectedIndex = (index + menuButtons.length) % menuButtons.length;
       menuButtons.forEach((btn, i) => btn.classList.toggle('selected', i === selectedIndex));
       menuButtons[selectedIndex].focus();
+      playSfx(sfxClick);
     }
     document.addEventListener('keydown', (event) => {
       const anyPanelOpen = revealPanel.classList.contains('open') || settingsPanel.classList.contains('open');
