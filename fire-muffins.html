@@ -62,7 +62,7 @@
         <li>Drag, mouse, or arrow keys — Poof follows with a little hop on every catch</li>
         <li>Difficulty ramps: the muffins fall faster the more you catch</li>
         <li>Catch 15 to win. Drop 3 and the muffins win</li>
-        <li>🔥 Flair Mode: endless catching — no cap, just don't drop 3</li>
+        <li>🔥 Flair Mode: endless catching — no cap, ramps up every 30 seconds, just don't drop 3</li>
         <li>Sound effects throughout, chopped from ElevenLabs generations</li>
       </ul>
       <div class="try"><strong>How to play:</strong> press Start, then drag (or move your mouse) to slide Poof left and right. Catch the falling fire muffins — don't let them splat.</div>
@@ -83,6 +83,7 @@
         <h2>🔥 Fire Muffin Catch 🧁</h2>
         <p>Fire muffins are falling over the hills! Slide Poof to catch them.</p>
         <p>Catch <strong>15</strong> to win — but drop <strong>3</strong> and it's muffin chaos.</p>
+        <p>🔥 <strong>Flair Mode:</strong> the endless version — no cap, it gets harder every 30 seconds, and you play until you drop 3.</p>
         <p id="startBest" style="display:none;color:#ffd23e;font-weight:700"></p>
         <p id="startFlairBest" style="display:none;color:#ff9d5c;font-weight:700"></p>
         <button id="startBtn">Start catching</button>
@@ -124,7 +125,7 @@
     try { fmBest = parseInt(localStorage.getItem('fmBest') || '0', 10) || 0; } catch (e) {}
     var fmFlairBest = 0;
     try { fmFlairBest = parseInt(localStorage.getItem('fmFlairBest') || '0', 10) || 0; } catch (e) {}
-    var flairMode = false;
+    var flairMode = false, fmStartPerf = 0;
     function renderStartBest() {
       if (fmBest > 0) { startBest.textContent = '🏆 Your best: ' + fmBest + ' muffins caught'; startBest.style.display = ''; }
       var sfb = document.getElementById('startFlairBest');
@@ -152,7 +153,7 @@
       el.className = 'muffin';
       el.innerHTML = '<span class="flame">🔥</span><span class="cake">🧁</span>';
       stage.appendChild(el);
-      muffins.push({ el: el, x: 0.08 + Math.random() * 0.84, y: -56, speed: 165 + Math.random() * 60 + score * 7 });
+      muffins.push({ el: el, x: 0.08 + Math.random() * 0.84, y: -56, speed: 165 + Math.random() * 60 + score * 7 + (flairMode ? Math.min(90, Math.floor((performance.now() - fmStartPerf) / 30000) * 10) : 0) });
       lastSpawn = now;
     }
     function floatText(x, y, text) {
@@ -211,7 +212,7 @@
       poofX += (targetX - poofX) * Math.min(1, dt * 14);
       placePoof();
 
-      var spawnEvery = Math.max(520, 950 - score * 26);
+      var spawnEvery = flairMode ? Math.max(420, 950 - score * 26 - Math.floor((now - fmStartPerf) / 30000) * 25) : Math.max(520, 950 - score * 26);
       if (now - lastSpawn > spawnEvery) spawnMuffin(now);
 
       var H = stageH(), W = stageW();
@@ -252,7 +253,7 @@
       endOverlay.classList.remove('show');
       endVideo.pause();
       running = true;
-      lastSpawn = 0; lastTime = performance.now();
+      lastSpawn = 0; lastTime = performance.now(); fmStartPerf = lastTime;
       playSfx(sfx.click);
       rafId = requestAnimationFrame(loop);
     }
