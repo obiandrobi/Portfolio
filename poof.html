@@ -1629,7 +1629,7 @@
       var g = c.createLinearGradient(0, 0, 0, S);
       g.addColorStop(0, '#5a3620'); g.addColorStop(0.7, '#3d2415'); g.addColorStop(1, '#2b1810');
       c.fillStyle = g; c.fillRect(0, 0, S, S);
-      var glow = c.createRadialGradient(S * 0.5, S * 0.52, 40, S * 0.5, S * 0.52, S * 0.62);
+      var glow = c.createRadialGradient(S * 0.5, S * 0.58, 40, S * 0.5, S * 0.58, S * 0.62);
       glow.addColorStop(0, 'rgba(255,190,90,0.5)'); glow.addColorStop(1, 'rgba(255,190,90,0)');
       c.fillStyle = glow; c.fillRect(0, 0, S, S);
       // string lights across the top
@@ -1640,15 +1640,15 @@
         var bx = S * (0.06 + bi * 0.11), by = S * 0.05 + Math.sin(bi / 8 * Math.PI) * S * 0.062 + S * 0.028;
         c.beginPath(); c.arc(bx, by, 9, 0, Math.PI * 2); c.fillStyle = bulbCols[bi % 4]; c.fill();
       }
-      // his rug
-      c.beginPath(); c.ellipse(S * 0.5, S * 0.82, S * 0.36, S * 0.075, 0, 0, Math.PI * 2); c.fillStyle = '#b3492e'; c.fill();
-      c.beginPath(); c.ellipse(S * 0.5, S * 0.82, S * 0.27, S * 0.052, 0, 0, Math.PI * 2); c.fillStyle = '#d4693b'; c.fill();
+      // his rug — moved up to meet Steve, who also sits lower now, so he rests ON it instead of floating
+      c.beginPath(); c.ellipse(S * 0.5, S * 0.79, S * 0.36, S * 0.075, 0, 0, Math.PI * 2); c.fillStyle = '#b3492e'; c.fill();
+      c.beginPath(); c.ellipse(S * 0.5, S * 0.79, S * 0.27, S * 0.052, 0, 0, Math.PI * 2); c.fillStyle = '#d4693b'; c.fill();
       var rockName = document.getElementById('yourRockName').textContent || 'Rocko';
       var rockDone = document.getElementById('rockStat').style.display !== 'none';
       function drawScene() {
         c.textAlign = 'center'; c.textBaseline = 'middle';
         // Same relative-to-Steve math as the stage, so what you placed is what you get
-        var rockFont = S * 0.36, rockCX = S * 0.5, rockCY = S * 0.56, wrapSize = rockFont * (7.6 / 7);
+        var rockFont = S * 0.36, rockCX = S * 0.5, rockCY = S * 0.63, wrapSize = rockFont * (7.6 / 7);
         c.font = rockFont + 'px serif';
         c.fillText('🪨', rockCX, rockCY);
         Object.keys(stevePieces).forEach(function (k) {
@@ -1660,11 +1660,14 @@
           c.fillText(el.textContent, rockCX + dx, rockCY + dy);
         });
         if (rockDone) {
+          // the creator's rock sits right beside Steve on the rug — they're best friends
           c.font = (S * 0.13) + 'px serif';
-          c.fillText('🪨', S * 0.85, S * 0.74);
+          c.fillText('🪨', S * 0.71, S * 0.70);
           c.font = '700 ' + (S * 0.045) + 'px system-ui, sans-serif';
+          c.shadowColor = 'rgba(0,0,0,0.7)'; c.shadowBlur = 6; c.shadowOffsetY = 2;
           c.fillStyle = '#ffd9a8';
-          c.fillText(rockName, S * 0.85, S * 0.85);
+          c.fillText(rockName, S * 0.71, S * 0.815);
+          c.shadowBlur = 0; c.shadowOffsetY = 0;
         }
         c.font = '900 ' + (S * 0.055) + 'px system-ui, sans-serif';
         c.shadowColor = 'rgba(0,0,0,0.85)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
