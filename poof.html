@@ -279,7 +279,11 @@
         <div class="tracer" id="dancePanel">
           <div class="tracer-card">
             <h3>🕺 Cool Poof down!</h3>
-            <p>Poof is dancing — but he's TOO HOT! Extra flames keep popping out of his fur. Tap them off to cool him down. Douse <strong>12 flames</strong> — if the heat maxes out, he overheats and falls asleep. (He loves fire. This is a whole thing.)</p>
+            <p style="text-align:left"><strong>How to play:</strong> Poof is dancing — but he's TOO HOT!<br>
+            1️⃣ Flames 🔥 will pop out of his fur.<br>
+            2️⃣ <strong>Tap each flame</strong> to douse it and cool him down.<br>
+            3️⃣ Douse <strong>12 flames</strong> to win — but if the heat bar fills up first, he overheats and falls asleep! 💤<br>
+            <em>(He loves fire. This is a whole thing.)</em> Press Start when you're ready!</p>
             <div class="dance-stage" id="danceStage">
               <video id="dancePoof" muted loop playsinline preload="metadata" poster="assets/poof-dance-poster.jpg">
                 <source src="assets/poof-dance-loop.mp4" type="video/mp4">
@@ -290,6 +294,7 @@
             <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/12</span></div>
             <div class="tracer-msg" id="danceMsg"></div>
             <div class="tracer-btns">
+              <button id="danceStart">▶ Start</button>
               <button id="danceRetry" style="display:none">Try again 🕺</button>
               <button id="danceClose" class="ghost">Not now</button>
             </div>
@@ -573,12 +578,14 @@
       heatBar.style.width = danceHeat + '%';
       if (danceHeat >= 100) sleepFail();
     }
+    var danceStartBtn = document.getElementById('danceStart');
     function startDance() {
       stopDance();
       danceHeat = 0; doused = 0; danceTick = 0; danceOver = false;
       douseCountEl.textContent = '0';
       heatBar.style.width = '0%';
       danceMsg.textContent = '';
+      danceStartBtn.style.display = 'none';
       danceRetry.style.display = 'none';
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
@@ -590,7 +597,8 @@
     function winDance() {
       danceOver = true;
       stopDance();
-      danceMsg.textContent = 'Cool and grooving! 🕺 Poof dances on — at a safe temperature.';
+      var praise = ['Good job!', 'Great work!', 'You did it!'][Math.floor(Math.random() * 3)];
+      danceMsg.textContent = praise + ' 🎉 Poof is cool and grooving — dancing on at a safe temperature. 🕺';
       playSfx(sfx.sparkle);
       setTimeout(function () {
         dancePanel.classList.remove('show');
@@ -610,10 +618,21 @@
     }
     function openDance(card) {
       danceCard = card;
+      stopDance();
+      danceHeat = 0; doused = 0; danceOver = false;
+      douseCountEl.textContent = '0';
+      heatBar.style.width = '0%';
+      danceMsg.textContent = '';
+      danceRetry.style.display = 'none';
+      danceStartBtn.style.display = '';
+      danceZzz.classList.remove('show');
+      dancePoof.classList.remove('sleepy');
+      dancePoof.pause();
+      dancePoof.currentTime = 0;
       dancePanel.classList.add('show');
       playSfx(sfx.click);
-      startDance();
     }
+    danceStartBtn.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
     danceRetry.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
     document.getElementById('danceClose').addEventListener('click', function () {
       stopDance();
