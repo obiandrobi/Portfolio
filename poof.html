@@ -40,6 +40,8 @@
     .streak-chip { position: absolute; top: 42px; right: 14px; z-index: 5; background: rgba(43,20,8,.55); backdrop-filter: blur(4px); color: #fff; border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: .85rem; display: flex; gap: 6px; align-items: center; }
     .streak-chip .flame { display: inline-block; transition: transform .3s; }
     .streak-chip .flame.pulse { animation: pulse .6s ease; }
+    .music-chip { position: absolute; top: 42px; left: 14px; z-index: 6; background: rgba(43,20,8,.55); backdrop-filter: blur(4px); color: #fff; border: 0; border-radius: 999px; padding: 6px 11px; font-size: .85rem; cursor: pointer; }
+    .music-chip.off { opacity: .55; }
     @keyframes pulse { 40% { transform: scale(1.7) rotate(-6deg); } }
     .play-overlay { position: absolute; inset: 0; z-index: 6; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(30,12,2,.25); border: 0; cursor: pointer; color: #fff; font: inherit; }
     .play-overlay.show { display: flex; }
@@ -205,6 +207,7 @@
           </button>
           <div class="statusbar"><span>7:02</span><span>📶 🔋</span></div>
           <div class="streak-chip"><span class="flame" id="streakFlame">🔥</span><span><span id="streakDays">12</span> day streak</span></div>
+          <button class="music-chip" id="musicChip" aria-label="Toggle music">🎵</button>
           <div class="greeting">
             <h2>Hello there! ☀️</h2>
             <p>Poof is waiting in the cave. Ready?</p>
@@ -646,6 +649,50 @@
         _tone(90, 0, 0.3, 'triangle', 0.05, 320);
       }
     }
+    /* ----- Background music: a slow generative cave loop, synthesized live.
+       Soft chord pads (C – Am – F – G, one 4s bar each) under a sparse
+       pentatonic pluck melody. Browsers block sound before a first tap, so it
+       starts on the first pointerdown; the 🎵 chip toggles it (saved). ----- */
+    var MUSIC_CHORDS = [
+      [130.81, 196.00, 261.63, 329.63],
+      [110.00, 164.81, 220.00, 261.63],
+      [87.31, 174.61, 220.00, 261.63],
+      [98.00, 196.00, 246.94, 293.66]
+    ];
+    var musicOn = true;
+    try { musicOn = localStorage.getItem('poofMusic') !== '0'; } catch (e) {}
+    var musicTimer = null, musicBar = 0;
+    function musicBarPlay() {
+      var chord = MUSIC_CHORDS[musicBar % 4];
+      for (var i = 0; i < chord.length; i++) _tone(chord[i], i * 0.18, 4.4, 'sine', 0.042);
+      _tone(chord[0] / 2, 0, 4.4, 'sine', 0.048);
+      var plucks = Math.random() < 0.35 ? 1 : 2;
+      for (var p = 0; p < plucks; p++) {
+        var f = _pick(_penta);
+        var at = 0.6 + Math.random() * 2.8;
+        _tone(f, at, 1.1, 'triangle', 0.048);
+        _tone(f * 2, at, 0.6, 'sine', 0.014);
+      }
+      musicBar++;
+    }
+    function startMusic() {
+      if (!musicOn || musicTimer) return;
+      musicBarPlay();
+      musicTimer = setInterval(musicBarPlay, 4000);
+    }
+    function stopMusic() { if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+    var musicChip = document.getElementById('musicChip');
+    function renderMusicChip() { musicChip.textContent = musicOn ? '🎵' : '🔇'; musicChip.classList.toggle('off', !musicOn); }
+    musicChip.addEventListener('click', function (ev) {
+      ev.stopPropagation();
+      musicOn = !musicOn;
+      try { localStorage.setItem('poofMusic', musicOn ? '1' : '0'); } catch (e) {}
+      if (musicOn) startMusic(); else stopMusic();
+      renderMusicChip();
+    });
+    renderMusicChip();
+    document.addEventListener('pointerdown', function () { startMusic(); }, { once: true });
+
     var CIRC = 163.4;
     var total = 7, done = 0, embers = 240;
     var ringFg = document.getElementById('ringFg');
