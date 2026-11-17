@@ -1977,7 +1977,7 @@
       var canvas = document.getElementById('caveCanvas');
       if (!canvas) return;
       var ctx = canvas.getContext('2d');
-      var N = 21, frames = [], loaded = 0, idx = 0, dir = 1, timer = null;
+      var N = 24, frames = [], loaded = 0, idx = 0, dir = 1, timer = null;
       var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       function draw() { if (frames[idx]) ctx.drawImage(frames[idx], 0, 0, canvas.width, canvas.height); }
       function step() {
