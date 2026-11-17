@@ -15,9 +15,9 @@ This site solves a simple problem: clients and collaborators can see my AI anima
 
 ## Portfolio pieces
 
-Coming soon — built one polished piece at a time:
-
-1. **Piece #1 (in progress):** An original AI-animated showcase, created from scratch
+1. **Piece #1: Flair Poof — animated game title screen.** An original character (a fluffy red poof monster whose tuft is a living flame) on a cliff above a glowing kingdom. I designed the character, built a front / side / back turnaround sheet for consistency, generated the sunset cliff scene, animated it into a seamless loop, and built the interactive title screen page: full-screen video background, game menu with keyboard navigation, a face-reveal moment on "New Game," and a working motion setting.
+   - Play it live: https://obiandrobi.github.io/Portfolio/flair-poof.html
+   - ![Flair Poof overlooking the kingdom at sunset](assets/flair-poof-cliff.jpg)
 2. Piece #2: To be announced
 3. Piece #3: To be announced
 
