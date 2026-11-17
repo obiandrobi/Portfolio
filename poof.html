@@ -9,6 +9,17 @@
     body { font-family: system-ui, sans-serif; margin: 0; background: #171019; color: #f6efe8; min-height: 100vh; }
     .layout { max-width: 980px; margin: 0 auto; padding: 48px 24px 64px; display: grid; grid-template-columns: 1fr auto; gap: 48px; align-items: start; }
     @media (max-width: 760px) { .layout { grid-template-columns: 1fr; justify-items: center; } }
+    /* On a real phone the mockup goes full-screen app mode: exactly the visible
+       viewport height. Otherwise the frame is taller than the screen, panels
+       center on the frame (not the screen), and their tops end up off-screen
+       where no amount of scrolling can reach them. */
+    @media (max-width: 760px) {
+      .layout { padding: 28px 0 0; gap: 24px; }
+      .about { padding: 0 22px; }
+      .phone { width: 100vw; height: 100dvh; aspect-ratio: auto; border-radius: 0; padding: 0; box-shadow: none; }
+      .screen { border-radius: 0; }
+      .notch { display: none; }
+    }
     .about h1 { font-size: 2.2rem; line-height: 1.1; margin: 0 0 6px; }
     .about .sub { color: #ffb347; font-weight: 700; margin: 0 0 18px; }
     .about p { color: #d8cfc6; line-height: 1.55; }
@@ -795,6 +806,13 @@
         else if (card.hasAttribute('data-jar')) openJar(card);
         else if (card.hasAttribute('data-puffs')) openPuffs(card);
         else if (card.hasAttribute('data-makeover')) openMakeover(card);
+        // Bring the phone (and the fresh panel, reset to its top) into view —
+        // on mobile the page may be scrolled halfway down the frame.
+        var openPanel = document.querySelector('.tracer.show');
+        if (openPanel) {
+          openPanel.scrollTop = 0;
+          document.querySelector('.phone').scrollIntoView({ block: 'start' });
+        }
       });
     });
 
