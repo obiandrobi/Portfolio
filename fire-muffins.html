@@ -23,13 +23,13 @@
       box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 2px #3a2c40;
       touch-action: none; user-select: none; -webkit-user-select: none;
     }
-    .stage .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .stage .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
     .stage .shade { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(27,10,40,.25), transparent 30%, transparent 62%, rgba(27,10,40,.45)); }
     .hud { position: absolute; top: 0; left: 0; right: 0; z-index: 6; display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; color: #fff; font-weight: 800; text-shadow: 0 2px 6px rgba(0,0,0,.6); }
     .hud .score { font-size: 1.15rem; background: rgba(43,20,8,.5); padding: 5px 14px; border-radius: 999px; }
     .hud .hearts { font-size: 1.05rem; letter-spacing: 2px; }
     .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: rgba(20,8,4,.35); z-index: 2; }
-    #poof { position: absolute; bottom: 12px; left: 50%; width: 128px; height: auto; margin-left: -64px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; }
+    #poof { position: absolute; bottom: 12px; left: 50%; width: 128px; height: auto; margin-left: -64px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; pointer-events: none; -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
     #poof.hop { animation: hop .38s ease; }
     @keyframes hop { 40% { margin-bottom: 16px; } }
     .muffin { position: absolute; left: 0; top: 0; z-index: 4; width: 46px; height: 52px; margin-left: -23px; text-align: center; will-change: transform; pointer-events: none; }
@@ -78,7 +78,7 @@
         <span class="hearts" id="hearts">❤️❤️❤️</span>
       </div>
       <div class="ground"></div>
-      <img id="poof" src="assets/poof-catch.png" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins">
+      <img id="poof" src="assets/poof-catch.png" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins" draggable="false">
 
       <div class="overlay show" id="startOverlay">
         <h2>🔥 Fire Muffin Catch 🧁</h2>
@@ -319,6 +319,10 @@
     }
     stage.addEventListener('pointermove', function (e) { pointToTarget(e.clientX); });
     stage.addEventListener('pointerdown', function (e) { pointToTarget(e.clientX); });
+    /* iOS Safari loves to "lift" images you drag and offer Save Image on long-press.
+       Poof and the backdrop are pictures, not controls — touches belong to the stage. */
+    stage.addEventListener('dragstart', function (e) { e.preventDefault(); });
+    stage.addEventListener('contextmenu', function (e) { e.preventDefault(); });
     document.addEventListener('keydown', function (e) { keys[e.key] = true; });
     document.addEventListener('keyup', function (e) { keys[e.key] = false; });
 
