@@ -149,12 +149,12 @@
         <li>Animated cave-home header, generated from an original character design</li>
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
         <li>Working quest cards, progress ring, and ember rewards</li>
-        <li>Eight active quests — reflexes, memory, timing, a real-world rock, and one very fashionable rock</li>
+        <li>Seven active quests — reflexes, memory, timing, a real-world rock, and one very fashionable rock</li>
         <li>High scores for every game, saved on the device — replay quests to beat your best</li>
         <li>Finish all seven quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all seven are <strong>active quests</strong>: cool dancing Poof down, follow the ember, name a cool rock for Steve, test your flame memory, catch embers in a jar, pop smoke puffs, and give Steve a makeover (yes, there's a selfie). Scored games keep a high score, and finished quests can be replayed any time to beat it. Finish all seven for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all seven are <strong>active quests</strong>: cool dancing Poof down, follow the ember, name a cool rock for Steve, test your flame memory, catch embers in a jar, don't pop the smoke puffs, and give Steve a makeover (yes, there's a selfie). Scored games keep a high score, and finished quests can be replayed any time to beat it. Finish all seven for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -221,7 +221,7 @@
           </button>
           <button class="quest" data-quest data-puffs data-reward="15">
             <span class="icon" style="background:#e9e9ee">💨</span>
-            <span><span class="name">Pop the smoke puffs</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span><span class="name">Don't pop the smoke puffs</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-makeover data-reward="15">
@@ -448,7 +448,7 @@
 
         <div class="tracer" id="puffPanel">
           <div class="tracer-card">
-            <h3>💨 Pop the smoke puffs</h3>
+            <h3>💨 Don't pop the smoke puffs</h3>
             <p style="text-align:left"><strong>How to play:</strong> bubbles are floating up from the fire!<br>
             1️⃣ Pop the <strong>golden stars</strong> 🌟 — you need <strong>15</strong>.<br>
             2️⃣ Do NOT pop the <strong>smoke puffs</strong> 💨 — they cost a heart!<br>
@@ -1120,7 +1120,7 @@
       playSfx(sfx.click);
     });
 
-    /* ----- Pop the Smoke Puffs: pop gold, never smoke ----- */
+    /* ----- Don't Pop the Smoke Puffs: pop gold, never smoke ----- */
     var puffPanel = document.getElementById('puffPanel');
     var puffScene = document.getElementById('puffScene');
     var puffMsg = document.getElementById('puffMsg');
@@ -1133,14 +1133,14 @@
     var PUFF_GOAL = 15;
     function puffHud() { puffCountEl.textContent = puffPopped; puffHeartsEl.textContent = puffHearts; }
     function puffSpawn(now) {
-      var isSmoke = Math.random() < 0.32;
+      var isSmoke = Math.random() < 0.55;
       var b = document.createElement('button');
       b.className = 'puff';
       b.type = 'button';
       b.textContent = isSmoke ? '💨' : '🌟';
       b.style.fontSize = isSmoke ? '1.9rem' : '1.6rem';
       puffScene.appendChild(b);
-      var item = { el: b, x: 0.08 + Math.random() * 0.84, y: puffScene.clientHeight + 30, vy: 46 + Math.random() * 42, smoke: isSmoke, sway: Math.random() * Math.PI * 2 };
+      var item = { el: b, x: 0.08 + Math.random() * 0.84, y: puffScene.clientHeight + 30, vy: 64 + Math.random() * 52, smoke: isSmoke, sway: Math.random() * Math.PI * 2 };
       b.addEventListener('click', function () {
         if (!puffPlaying || item.dead) return;
         item.dead = true;
@@ -1162,7 +1162,7 @@
       if (!puffPlaying) return;
       var dt = Math.min(0.05, (now - puffLast) / 1000 || 0.016);
       puffLast = now;
-      if (now - puffSpawnLast > 560 && puffItems.length < 9) puffSpawn(now);
+      if (now - puffSpawnLast > 460 && puffItems.length < 12) puffSpawn(now);
       var W = puffScene.clientWidth;
       puffItems = puffItems.filter(function (it) {
         if (it.dead) return false;
