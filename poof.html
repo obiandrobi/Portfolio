@@ -77,6 +77,18 @@
     .tab .ticon { font-size: 1.25rem; }
     .tab.active { color: #e56f1d; background: #fff1e2; }
 
+    /* Tracing quest */
+    .tracer { position: absolute; inset: 0; z-index: 40; background: rgba(26,10,4,.85); display: none; align-items: center; justify-content: center; padding: 18px; }
+    .tracer.show { display: flex; }
+    .tracer-card { background: #fff7ee; border-radius: 22px; padding: 18px; width: 100%; max-width: 330px; text-align: center; color: #33241f; }
+    .tracer-card h3 { margin: 0 0 4px; font-size: 1.15rem; }
+    .tracer-card p { margin: 0 0 12px; color: #8a7466; font-size: .85rem; line-height: 1.45; }
+    #traceCanvas { width: 100%; max-width: 290px; aspect-ratio: 1; background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; touch-action: none; cursor: crosshair; }
+    .tracer-msg { min-height: 1.4em; margin-top: 10px; font-weight: 800; color: #b35c12; font-size: .92rem; }
+    .tracer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
+    .tracer-btns button { font: inherit; font-weight: 800; border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 2px solid #ff8a3d; background: #ff8a3d; color: #fff; }
+    .tracer-btns button.ghost { background: transparent; color: #b35c12; }
+
     /* Celebration */
     .celebrate { position: absolute; inset: 0; z-index: 40; background: rgba(26,10,4,.82); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 22px; text-align: center; color: #fff; }
     .celebrate.show { display: flex; }
@@ -99,7 +111,7 @@
         <li>Finish all three quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone to check them off. Finish all three for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone. The flame quest is an <strong>active quest</strong> — tap it and you'll have to trace the ember flame with your finger or mouse, and actually trace it well, to complete it. Finish all three for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -139,17 +151,17 @@
             <div class="embers"><span id="emberCount">240</span> ◆<small>embers</small></div>
           </div>
 
-          <button class="quest" data-quest>
+          <button class="quest" data-quest data-reward="10">
             <span class="icon" style="background:#ffe9d6">🧘</span>
             <span><span class="name">Morning stretch</span><br><span class="reward">+10 ◆ embers</span></span>
             <span class="box"></span>
           </button>
-          <button class="quest" data-quest>
-            <span class="icon" style="background:#e6f2ff">✏️</span>
-            <span><span class="name">Draw something</span><br><span class="reward">+10 ◆ embers</span></span>
+          <button class="quest" data-quest data-trace data-reward="15">
+            <span class="icon" style="background:#ffe1e6">🔥</span>
+            <span><span class="name">Trace the ember flame</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
-          <button class="quest" data-quest>
+          <button class="quest" data-quest data-reward="10">
             <span class="icon" style="background:#e2f7ee">💧</span>
             <span><span class="name">Drink a glass of water</span><br><span class="reward">+10 ◆ embers</span></span>
             <span class="box"></span>
@@ -194,6 +206,23 @@
           <button class="tab" data-tab="map"><span class="ticon">🗺️</span>Map</button>
           <button class="tab" data-tab="profile"><span class="ticon">⭐</span>Profile</button>
         </div>
+
+        <div class="tracer" id="tracer">
+          <div class="tracer-card">
+            <h3>🔥 Trace the ember flame</h3>
+            <p>Trace the dashed flame with your finger or mouse. Cover most of the outline to light Poof's flame — miss too much and you'll have to try again!</p>
+            <canvas id="traceCanvas" width="300" height="300"></canvas>
+            <div class="tracer-msg" id="tracerMsg"></div>
+            <div class="tracer-btns">
+              <button id="traceRetry">↺ Start over</button>
+              <button id="traceClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+          <path id="flamePath" d="M150 280 C 96 248, 74 198, 84 144 C 88 120, 102 102, 112 80 C 122 58, 138 42, 150 16 C 162 42, 180 60, 190 86 C 200 110, 216 126, 222 160 C 230 206, 202 250, 150 280 Z" fill="none"></path>
+        </svg>
 
         <div class="celebrate" id="celebrate">
           <video id="celebrateVideo" muted playsinline poster="assets/flair-poof-poster.jpg">
@@ -240,28 +269,147 @@
       flame.style.fontSize = (1 + done * 0.22) + 'em';
     }
 
+    function setQuest(card, makeDone) {
+      var box = card.querySelector('.box');
+      var reward = parseInt(card.getAttribute('data-reward') || '10', 10);
+      if (makeDone && !card.classList.contains('done')) {
+        card.classList.add('done'); box.textContent = '✓'; done++; embers += reward;
+        playSfx(sfx.chime);
+        card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
+        flame.classList.remove('pulse'); void flame.offsetWidth; flame.classList.add('pulse');
+        if (done === total) {
+          setTimeout(function () {
+            playSfx(sfx.sparkle);
+            celebrate.classList.add('show');
+            celebrateVideo.currentTime = 0;
+            celebrateVideo.play().catch(function () {});
+          }, 450);
+        }
+      } else if (!makeDone && card.classList.contains('done')) {
+        card.classList.remove('done'); box.textContent = ''; done--; embers -= reward;
+        playSfx(sfx.click);
+      }
+      render();
+    }
+
     document.querySelectorAll('[data-quest]').forEach(function (card) {
       card.addEventListener('click', function () {
-        var box = card.querySelector('.box');
-        if (card.classList.contains('done')) {
-          card.classList.remove('done'); box.textContent = ''; done--; embers -= 10;
-          playSfx(sfx.click);
+        if (card.hasAttribute('data-trace') && !card.classList.contains('done')) {
+          openTracer(card);
         } else {
-          card.classList.add('done'); box.textContent = '✓'; done++; embers += 10;
-          playSfx(sfx.chime);
-          card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
-          flame.classList.remove('pulse'); void flame.offsetWidth; flame.classList.add('pulse');
-          if (done === total) {
-            setTimeout(function () {
-              playSfx(sfx.sparkle);
-              celebrate.classList.add('show');
-              celebrateVideo.currentTime = 0;
-              celebrateVideo.play().catch(function () {});
-            }, 450);
-          }
+          setQuest(card, !card.classList.contains('done'));
         }
-        render();
       });
+    });
+
+    /* ----- Tracing quest: trace the ember flame, judged on coverage ----- */
+    var tracer = document.getElementById('tracer');
+    var traceCanvas = document.getElementById('traceCanvas');
+    var tracerMsg = document.getElementById('tracerMsg');
+    var tctx = traceCanvas.getContext('2d');
+    var flamePathEl = document.getElementById('flamePath');
+    var guidePts = [];
+    (function () {
+      var L = flamePathEl.getTotalLength();
+      for (var i = 0; i <= 150; i++) { var p = flamePathEl.getPointAtLength(L * i / 150); guidePts.push([p.x, p.y]); }
+    })();
+    var userPts = [], drawing = false, pendingCard = null, traceDone = false;
+    var PASS_COVERAGE = 0.68, TOLERANCE = 30;
+
+    function drawGuide() {
+      tctx.clearRect(0, 0, 300, 300);
+      tctx.beginPath();
+      guidePts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
+      tctx.closePath();
+      tctx.fillStyle = 'rgba(255,138,61,0.07)';
+      tctx.fill();
+      tctx.setLineDash([7, 7]);
+      tctx.strokeStyle = 'rgba(230,111,29,0.55)';
+      tctx.lineWidth = 3;
+      tctx.stroke();
+      tctx.setLineDash([]);
+    }
+    function drawUserStroke() {
+      if (userPts.length < 2) return;
+      tctx.beginPath();
+      userPts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
+      tctx.strokeStyle = '#ff7a2f';
+      tctx.lineWidth = 9;
+      tctx.lineCap = 'round';
+      tctx.lineJoin = 'round';
+      tctx.stroke();
+    }
+    function redrawTrace() { drawGuide(); drawUserStroke(); }
+    function canvasPos(e) {
+      var r = traceCanvas.getBoundingClientRect();
+      return [(e.clientX - r.left) * 300 / r.width, (e.clientY - r.top) * 300 / r.height];
+    }
+    function coverage() {
+      if (userPts.length < 10) return 0;
+      var hit = 0;
+      guidePts.forEach(function (g) {
+        for (var i = 0; i < userPts.length; i++) {
+          var dx = g[0] - userPts[i][0], dy = g[1] - userPts[i][1];
+          if (dx * dx + dy * dy <= TOLERANCE * TOLERANCE) { hit++; return; }
+        }
+      });
+      return hit / guidePts.length;
+    }
+    function judgeTrace() {
+      if (traceDone) return;
+      var c = coverage();
+      if (c >= PASS_COVERAGE) {
+        traceDone = true;
+        // Light the flame: fill it in triumphantly
+        tctx.beginPath();
+        guidePts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
+        tctx.closePath();
+        var grad = tctx.createLinearGradient(0, 280, 0, 20);
+        grad.addColorStop(0, '#ffb347'); grad.addColorStop(1, '#ff5d3a');
+        tctx.fillStyle = grad; tctx.fill();
+        drawUserStroke();
+        tracerMsg.textContent = 'You lit the flame! 🔥';
+        playSfx(sfx.chime);
+        var card = pendingCard;
+        setTimeout(function () {
+          tracer.classList.remove('show');
+          if (card) setQuest(card, true);
+        }, 1100);
+      } else if (c >= 0.35) {
+        tracerMsg.textContent = 'So close — ' + Math.round(c * 100) + '% traced. Fill the gaps and lift your finger to check again!';
+      } else if (userPts.length >= 10) {
+        tracerMsg.textContent = 'Only ' + Math.round(c * 100) + '% — follow the dashed flame closely. Poof believes in you!';
+      }
+    }
+    function openTracer(card) {
+      pendingCard = card;
+      userPts = []; traceDone = false;
+      tracerMsg.textContent = '';
+      tracer.classList.add('show');
+      playSfx(sfx.click);
+      redrawTrace();
+    }
+    traceCanvas.addEventListener('pointerdown', function (e) {
+      if (traceDone) return;
+      drawing = true;
+      traceCanvas.setPointerCapture(e.pointerId);
+      userPts.push(canvasPos(e));
+      redrawTrace();
+    });
+    traceCanvas.addEventListener('pointermove', function (e) {
+      if (!drawing || traceDone) return;
+      var p = canvasPos(e);
+      var last = userPts[userPts.length - 1];
+      if (!last || Math.abs(p[0] - last[0]) + Math.abs(p[1] - last[1]) > 3) { userPts.push(p); redrawTrace(); }
+    });
+    ['pointerup', 'pointercancel'].forEach(function (ev) {
+      traceCanvas.addEventListener(ev, function () { if (drawing) { drawing = false; judgeTrace(); } });
+    });
+    document.getElementById('traceRetry').addEventListener('click', function () {
+      userPts = []; traceDone = false; tracerMsg.textContent = ''; playSfx(sfx.click); redrawTrace();
+    });
+    document.getElementById('traceClose').addEventListener('click', function () {
+      tracer.classList.remove('show'); playSfx(sfx.click);
     });
 
     document.getElementById('celebrateClose').addEventListener('click', function () {
