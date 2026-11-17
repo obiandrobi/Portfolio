@@ -210,18 +210,24 @@
             <div class="embers"><span id="emberCount">240</span> ◆<small>embers</small></div>
           </div>
 
+          <div class="panel" style="margin-top:12px">
+            <h3 style="margin-top:0">🪨 The rock pile</h3>
+            <p style="margin:4px 0"><strong><span id="rockCount">0</span> rocks</strong> <span id="rockPileIcons"></span></p>
+            <p id="rockNext" style="margin-bottom:0">Complete a quest, earn a rock. Pile up 5 and they start a rock band. 🎸</p>
+          </div>
+
           <div class="quest-section">
             <h4>🌅 Start the day</h4>
             <p>Gentle first steps — no timers, no losing. Just you and Poof waking up.</p>
           </div>
           <button class="quest" data-quest data-rock data-reward="15">
             <span class="icon" style="background:#e8e4da">🪨</span>
-            <span><span class="name">Find a cool rock</span><br><span class="reward">Real-world quest · +15 ◆ embers</span></span>
+            <span><span class="name">Find a cool rock</span><br><span class="reward">Real-world quest · +15 ◆ embers · +2 🪨 rocks (yours + Steve)</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-follow data-reward="15">
             <span class="icon" style="background:#ffe1e6">✨</span>
-            <span><span class="name">Follow the ember</span><br><span class="reward">Calm focus quest · +15 ◆ embers</span></span>
+            <span><span class="name">Follow the ember</span><br><span class="reward">Calm focus quest · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
 
@@ -231,7 +237,7 @@
           </div>
           <button class="quest" data-quest data-makeover data-reward="15">
             <span class="icon" style="background:#ffe9f3">🎨</span>
-            <span><span class="name">Steve's makeover</span><br><span class="reward">Creative quest · +15 ◆ embers</span></span>
+            <span><span class="name">Steve's makeover</span><br><span class="reward">Creative quest · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
 
@@ -241,17 +247,17 @@
           </div>
           <button class="quest" data-quest data-memory data-reward="15">
             <span class="icon" style="background:#e6e1ff">🧠</span>
-            <span><span class="name">Flame Memory</span><br><span class="reward">Memory game · +15 ◆ embers</span></span>
+            <span><span class="name">Flame Memory</span><br><span class="reward">Memory game · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-jar data-reward="15">
             <span class="icon" style="background:#fff0d6">🫙</span>
-            <span><span class="name">Ember Jar</span><br><span class="reward">Catching game · +15 ◆ embers</span></span>
+            <span><span class="name">Ember Jar</span><br><span class="reward">Catching game · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-dance data-reward="15">
             <span class="icon" style="background:#fff3c4">🕺</span>
-            <span><span class="name">Cool Poof down!</span><br><span class="reward">Energy game · +15 ◆ embers</span></span>
+            <span><span class="name">Cool Poof down!</span><br><span class="reward">Energy game · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
 
@@ -261,7 +267,7 @@
           </div>
           <button class="quest" data-quest data-puffs data-reward="15">
             <span class="icon" style="background:#e9e9ee">💨</span>
-            <span><span class="name">Don't pop the smoke puffs</span><br><span class="reward">Challenge game · hardest · +15 ◆ embers</span></span>
+            <span><span class="name">Don't pop the smoke puffs</span><br><span class="reward">Challenge game · hardest · +15 ◆ embers · +1 🪨 rock</span></span>
             <span class="box"></span>
           </button>
 
@@ -298,6 +304,7 @@
               <div class="stat-row"><span>Streak</span><strong><span id="profileStreak">12</span> days 🔥</strong></div>
               <div class="stat-row"><span>Embers</span><strong><span id="profileEmbers">240</span> ◆</strong></div>
               <div class="stat-row" id="rockStat" style="display:none"><span>Rock friends</span><strong id="rockStatVal">—</strong></div>
+              <div class="stat-row"><span>Rocks collected</span><strong><span id="profileRocks">0</span> 🪨</strong></div>
               <div class="stat-row"><span>Home</span><strong>A cave in the hills</strong></div>
               <div class="stat-row"><span>Dream</span><strong>Visit the town ✨</strong></div>
             </div>
@@ -318,6 +325,27 @@
               <div class="stat-row"><span>💨 Smoke puffs</span><strong id="flair-puffs">—</strong></div>
             </div>
             <p style="margin-bottom:0">Tap any finished quest to play it again and beat your best. Scores live on this device.</p>
+          </div>
+          <div class="panel" style="margin-top:14px">
+            <h3>🎸 The rock band</h3>
+            <div id="bandLocked">
+              <p style="text-align:left">Pile up <strong>5 rocks</strong> and they start a band. Every quest you finish adds a rock — the rock quest adds two (yours + Steve).</p>
+              <p style="text-align:left;margin-bottom:0"><strong>Band progress: <span id="bandProgress">0/5</span> 🪨</strong></p>
+            </div>
+            <div id="bandFormed" style="display:none">
+              <p style="font-size:2rem;margin:4px 0">🪨🎸 🪨🥁 🪨🎤 🪨🎹 🪨🎺</p>
+              <p style="margin:4px 0">Now performing as<br><strong id="bandNameDisplay" style="font-size:1.15rem">Steve &amp; the Pebbles</strong></p>
+              <p style="text-align:left">Rename the band:</p>
+              <input class="rock-input" id="bandRenameInput" type="text" maxlength="28" autocomplete="off">
+              <div class="tracer-btns" style="justify-content:center">
+                <button id="bandRenameBtn">Save name</button>
+              </div>
+            </div>
+            <div style="text-align:left;margin-top:10px">
+              <div class="stat-row"><span>🎸 5 rocks</span><strong>A rock band forms!</strong></div>
+              <div class="stat-row"><span>🪨💥 50 rocks</span><strong>Rock slide — coming soon</strong></div>
+              <div class="stat-row"><span>🏟️ 100 rocks</span><strong>??? — coming soon</strong></div>
+            </div>
           </div>
         </div>
 
@@ -379,6 +407,19 @@
               <div class="tracer-btns">
                 <button id="rockDoneBtn">Best friends forever ✓</button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer" id="bandPanel">
+          <div class="tracer-card">
+            <h3>🎸 A ROCK BAND IS BORN!</h3>
+            <p style="font-size:2.2rem;margin:6px 0">🪨🎸 🪨🥁 🪨🎤 🪨🎹 🪨🎺</p>
+            <p>Five rocks have piled up… and they've started a band. Steve is lead, obviously. Every legendary band needs a name — Steve's suggestion is <strong>Steve &amp; the Pebbles</strong>, but it's your pile, your call.</p>
+            <input class="rock-input" id="bandNameInput" type="text" maxlength="28" autocomplete="off">
+            <div class="tracer-btns">
+              <button id="bandNameBtn">That's the band ✓</button>
+              <button id="bandClose" class="ghost">Later</button>
             </div>
           </div>
         </div>
@@ -654,11 +695,70 @@
       });
     }
 
+    /* ----- Rock collection: 1 rock per quest (2 for the rock quest), saved on this device.
+       At 5 rocks the pile starts a band. The store idea is parked — rocks are never spent. ----- */
+    var rocks = 0, bandName = '';
+    try {
+      rocks = parseInt(localStorage.getItem('poofRocks') || '0', 10) || 0;
+      bandName = localStorage.getItem('poofBandName') || '';
+    } catch (e) {}
+    var bandPanel = document.getElementById('bandPanel');
+    function bandDisplayName() { return bandName || 'Steve & the Pebbles'; }
+    function saveRocks() {
+      try {
+        localStorage.setItem('poofRocks', String(rocks));
+        if (bandName) localStorage.setItem('poofBandName', bandName);
+      } catch (e) {}
+    }
+    function renderRocks() {
+      document.getElementById('rockCount').textContent = rocks;
+      document.getElementById('profileRocks').textContent = rocks;
+      var icons = '';
+      for (var i = 0; i < Math.min(rocks, 12); i++) icons += '🪨';
+      document.getElementById('rockPileIcons').textContent = icons;
+      var next = document.getElementById('rockNext');
+      if (rocks < 5) next.textContent = (5 - rocks) + ' more ' + (5 - rocks === 1 ? 'rock' : 'rocks') + ' and the pile starts a rock band 🎸';
+      else next.textContent = '🎸 ' + bandDisplayName() + ' is together! Meet the band on the Profile tab.';
+      document.getElementById('bandProgress').textContent = Math.min(rocks, 5) + '/5';
+      var formed = rocks >= 5;
+      document.getElementById('bandLocked').style.display = formed ? 'none' : '';
+      document.getElementById('bandFormed').style.display = formed ? '' : 'none';
+      if (formed) {
+        document.getElementById('bandNameDisplay').textContent = bandDisplayName();
+        document.getElementById('bandRenameInput').value = bandDisplayName();
+      }
+    }
+    function showBandPanel() {
+      document.getElementById('bandNameInput').value = bandDisplayName();
+      bandPanel.classList.add('show');
+      playSfx(sfx.sparkle);
+    }
+    document.getElementById('bandNameBtn').addEventListener('click', function () {
+      bandName = document.getElementById('bandNameInput').value.trim() || 'Steve & the Pebbles';
+      saveRocks(); renderRocks();
+      bandPanel.classList.remove('show');
+      playSfx(sfx.chime);
+    });
+    document.getElementById('bandClose').addEventListener('click', function () {
+      bandPanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+    document.getElementById('bandRenameBtn').addEventListener('click', function () {
+      bandName = document.getElementById('bandRenameInput').value.trim() || 'Steve & the Pebbles';
+      saveRocks(); renderRocks();
+      playSfx(sfx.chime);
+    });
+
     function setQuest(card, makeDone) {
       var box = card.querySelector('.box');
       var reward = parseInt(card.getAttribute('data-reward') || '10', 10);
       if (makeDone && !card.classList.contains('done')) {
         card.classList.add('done'); box.textContent = '✓'; done++; embers += reward;
+        // rocks: the rock quest pays 2 (your rock + Steve), every other quest pays 1
+        var hadBand = rocks >= 5;
+        rocks += card.hasAttribute('data-rock') ? 2 : 1;
+        saveRocks(); renderRocks();
+        if (!hadBand && rocks >= 5) setTimeout(showBandPanel, 1300);
         playSfx(sfx.chime);
         card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop');
         flame.classList.remove('pulse'); void flame.offsetWidth; flame.classList.add('pulse');
@@ -1751,6 +1851,7 @@
     }
     render();
     renderBests();
+    renderRocks();
   </script>
 </body>
 </html>
