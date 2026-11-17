@@ -32,3 +32,7 @@ https://obiandrobi.github.io/Portfolio/
 ## Follow the build
 
 I am learning in public. Each project in this repo will include what I made, how I made it, and what I learned.
+
+## Copyright
+
+© 2026 Eric Gimarse. Flair Poof™ — the character, artwork, and animations — is an original creation. All rights reserved. The code in this repo is shared for learning and portfolio purposes; the character and art are not.

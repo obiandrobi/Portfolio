@@ -281,13 +281,13 @@
         <div class="tracer" id="dancePanel">
           <div class="tracer-card">
             <h3>🕺 Cool Poof down!</h3>
-            <p>Poof is dancing — but he's TOO HOT! Extra flames keep popping out of his fur. Tap them off to cool him down. Douse <strong>10 flames</strong> — if the heat maxes out, he overheats and falls asleep. (He loves fire. This is a whole thing.)</p>
+            <p>Poof is dancing — but he's TOO HOT! Extra flames keep popping out of his fur. Tap them off to cool him down. Douse <strong>12 flames</strong> — if the heat maxes out, he overheats and falls asleep. (He loves fire. This is a whole thing.)</p>
             <div class="dance-stage" id="danceStage">
               <img id="dancePoof" src="assets/poof-front.jpg" alt="Flair Poof dancing">
               <span class="dance-zzz" id="danceZzz">💤</span>
             </div>
             <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
-            <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/10</span></div>
+            <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/12</span></div>
             <div class="tracer-msg" id="danceMsg"></div>
             <div class="tracer-btns">
               <button id="danceRetry" style="display:none">Try again 🕺</button>
@@ -537,7 +537,7 @@
     var danceMsg = document.getElementById('danceMsg');
     var danceRetry = document.getElementById('danceRetry');
     var danceCard = null, danceTimer = null, danceHeat = 0, doused = 0, danceTick = 0, danceOver = false;
-    var DOUSE_GOAL = 10;
+    var DOUSE_GOAL = 12;
 
     function clearFlames() {
       danceStage.querySelectorAll('.dance-flame').forEach(function (f) { f.remove(); });
@@ -558,7 +558,7 @@
         if (danceOver) return;
         b.remove();
         doused++;
-        danceHeat = Math.max(0, danceHeat - 12);
+        danceHeat = Math.max(0, danceHeat - 8);
         douseCountEl.textContent = doused;
         playSfx(sfx.chime);
         if (doused >= DOUSE_GOAL) winDance();
@@ -568,8 +568,8 @@
     function danceStep() {
       danceTick++;
       var active = danceStage.querySelectorAll('.dance-flame').length;
-      if (danceTick % 8 === 0 && active < 4) spawnFlame();
-      danceHeat = Math.min(100, danceHeat + active * 0.14);
+      if (danceTick % 6 === 0 && active < 5) spawnFlame();
+      danceHeat = Math.min(100, danceHeat + active * 0.30);
       heatBar.style.width = danceHeat + '%';
       if (danceHeat >= 100) sleepFail();
     }
