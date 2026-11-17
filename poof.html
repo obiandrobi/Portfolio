@@ -101,11 +101,9 @@
     .rock-pal .rock-sub { display: block; font-size: .72rem; color: #b09468; font-weight: 700; }
     .rock-heart { font-size: 1.5rem; padding-bottom: 26px; animation: rockbounce .8s ease-in-out infinite alternate; }
     .dance-stage { position: relative; height: 248px; background: linear-gradient(#fff1de, #ffe3c2); border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; overflow: hidden; }
-    .dance-stage img { position: absolute; left: 50%; bottom: 10px; width: 148px; height: 148px; margin-left: -74px; border-radius: 30px; }
-    .dance-stage img.dancing { animation: poofdance .45s ease-in-out infinite alternate; }
-    @keyframes poofdance { from { transform: rotate(-5deg) translateY(0); } to { transform: rotate(5deg) translateY(-10px); } }
-    .dance-stage img.sleepy { filter: sepia(.5) saturate(.6); transform: rotate(-10deg); }
-    .dance-zzz { position: absolute; left: 62%; bottom: 150px; font-size: 1.6rem; display: none; }
+    .dance-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .dance-stage video.sleepy { filter: sepia(.5) saturate(.6); }
+    .dance-zzz { position: absolute; right: 10%; top: 8%; font-size: 1.6rem; display: none; z-index: 3; }
     .dance-zzz.show { display: block; animation: rockbounce 1s ease-in-out infinite alternate; }
     .dance-flame { position: absolute; font-size: 1.9rem; background: none; border: 0; cursor: pointer; padding: 2px; line-height: 1; animation: flick .28s ease-in-out infinite alternate; z-index: 3; }
     .heat-wrap { height: 14px; background: #f3e2d3; border-radius: 999px; overflow: hidden; margin: 10px 0 2px; }
@@ -283,7 +281,9 @@
             <h3>🕺 Cool Poof down!</h3>
             <p>Poof is dancing — but he's TOO HOT! Extra flames keep popping out of his fur. Tap them off to cool him down. Douse <strong>12 flames</strong> — if the heat maxes out, he overheats and falls asleep. (He loves fire. This is a whole thing.)</p>
             <div class="dance-stage" id="danceStage">
-              <img id="dancePoof" src="assets/poof-front.jpg" alt="Flair Poof dancing">
+              <video id="dancePoof" muted loop playsinline preload="metadata" poster="assets/poof-dance-poster.jpg">
+                <source src="assets/poof-dance-loop.mp4" type="video/mp4">
+              </video>
               <span class="dance-zzz" id="danceZzz">💤</span>
             </div>
             <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
@@ -582,7 +582,8 @@
       danceRetry.style.display = 'none';
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
-      dancePoof.classList.add('dancing');
+      dancePoof.currentTime = 0;
+      dancePoof.play().catch(function () {});
       spawnFlame(); spawnFlame();
       danceTimer = setInterval(danceStep, 100);
     }
@@ -593,13 +594,14 @@
       playSfx(sfx.sparkle);
       setTimeout(function () {
         dancePanel.classList.remove('show');
+        dancePoof.pause();
         if (danceCard) setQuest(danceCard, true);
       }, 1300);
     }
     function sleepFail() {
       danceOver = true;
       stopDance();
-      dancePoof.classList.remove('dancing');
+      dancePoof.pause();
       dancePoof.classList.add('sleepy');
       danceZzz.classList.add('show');
       danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
@@ -615,6 +617,7 @@
     danceRetry.addEventListener('click', function () { playSfx(sfx.click); startDance(); });
     document.getElementById('danceClose').addEventListener('click', function () {
       stopDance();
+      dancePoof.pause();
       dancePanel.classList.remove('show');
       playSfx(sfx.click);
     });
