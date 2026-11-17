@@ -392,6 +392,7 @@
       var H = stageH(), W = stageW();
       var poofTop = H - 12 - (poof.offsetHeight || 130);
       muffins = muffins.filter(function (m) {
+        if (!running) return false;
         m.y += m.speed * dt;
         m.el.style.transform = 'translate(' + (m.x * W) + 'px,' + m.y + 'px)';
         var muffinBottom = m.y + 52;
@@ -410,7 +411,7 @@
           if (!flairMode && score >= WIN_SCORE) { endGame(true); return false; }
           return false;
         }
-        if (m.y > H - 18) {
+        if (muffinBottom > H - 8) {
           hearts--;
           if (streak >= 5) floatText(m.x, poofTop - 8, '💨 streak lost');
           streak = 0;
@@ -428,6 +429,12 @@
       rafId = requestAnimationFrame(loop);
     }
     function startGame() {
+      // Clear the field completely: muffins left mid-flight when the last run
+      // ended used to survive in the array (invisible) and keep "falling" into
+      // the new run, draining hearts before anything visibly landed.
+      muffins.forEach(function (m) { m.el.remove(); });
+      muffins = [];
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
       setPose('catch', true);
       score = 0; hearts = 3; streak = 0; runBestStreak = 0; poofX = 0.5; targetX = 0.5;
       renderHud(); renderStreak(); placePoof();
