@@ -81,6 +81,7 @@
         <h2>🔥 Fire Muffin Catch 🧁</h2>
         <p>Fire muffins are falling over the hills! Slide Poof to catch them.</p>
         <p>Catch <strong>15</strong> to win — but drop <strong>3</strong> and it's muffin chaos.</p>
+        <p id="startBest" style="display:none;color:#ffd23e;font-weight:700"></p>
         <button id="startBtn">Start catching</button>
       </div>
 
@@ -90,6 +91,7 @@
         </video>
         <h2 id="endTitle">Muffin Master!</h2>
         <p id="endText"></p>
+        <p id="endBest" style="color:#ffd23e;font-weight:700"></p>
         <button id="againBtn">Play again</button>
       </div>
     </div>
@@ -112,6 +114,13 @@
     var endTitle = document.getElementById('endTitle');
     var endText = document.getElementById('endText');
     var endVideo = document.getElementById('endVideo');
+    var startBest = document.getElementById('startBest');
+    var endBest = document.getElementById('endBest');
+    var fmBest = 0;
+    try { fmBest = parseInt(localStorage.getItem('fmBest') || '0', 10) || 0; } catch (e) {}
+    function renderStartBest() {
+      if (fmBest > 0) { startBest.textContent = '🏆 Your best: ' + fmBest + ' muffins caught'; startBest.style.display = ''; }
+    }
 
     var WIN_SCORE = 15;
     var running = false, score = 0, hearts = 3;
@@ -164,6 +173,10 @@
       endText.textContent = won
         ? 'Poof caught ' + score + ' fire muffins and only got slightly singed. Today, he was brave AND well-fed.'
         : 'Poof caught ' + score + ' fire muffins before the splats won. He is already asking for a rematch.';
+      var newBest = score > fmBest;
+      if (newBest) { fmBest = score; try { localStorage.setItem('fmBest', String(fmBest)); } catch (e) {} }
+      endBest.textContent = fmBest > 0 ? ('🏆 Best: ' + fmBest + ' muffins caught' + (newBest ? ' — new best! 🎉' : '')) : '';
+      renderStartBest();
       endOverlay.classList.add('show');
       endVideo.currentTime = 0;
       endVideo.play().catch(function () {});
@@ -238,7 +251,7 @@
     document.addEventListener('keydown', function (e) { keys[e.key] = true; });
     document.addEventListener('keyup', function (e) { keys[e.key] = false; });
 
-    renderHud(); placePoof();
+    renderHud(); placePoof(); renderStartBest();
   </script>
 </body>
 </html>

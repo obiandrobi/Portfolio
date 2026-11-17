@@ -751,7 +751,7 @@
       playSfx(sfx.click);
       followRAF = requestAnimationFrame(followLoop);
     });
-    followRetryBtn.addEventListener('click', function () { playSfx(sfx.click); followStartBtn.click(); });
+    followRetryBtn.addEventListener('click', function () { playSfx(sfx.click); followReset(); });
     followCompleteBtn.addEventListener('click', function () {
       tracer.classList.remove('show');
       playSfx(sfx.click);
