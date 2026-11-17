@@ -29,7 +29,7 @@
     .hud .score { font-size: 1.15rem; background: rgba(43,20,8,.5); padding: 5px 14px; border-radius: 999px; }
     .hud .hearts { font-size: 1.05rem; letter-spacing: 2px; }
     .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: rgba(20,8,4,.35); z-index: 2; }
-    #poof { position: absolute; bottom: 12px; left: 50%; width: 96px; height: 96px; margin-left: -48px; z-index: 5; border-radius: 26px; box-shadow: 0 10px 24px rgba(0,0,0,.45); will-change: transform; }
+    #poof { position: absolute; bottom: 12px; left: 50%; width: 128px; height: auto; margin-left: -64px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; }
     #poof.hop { animation: hop .38s ease; }
     @keyframes hop { 40% { margin-bottom: 16px; } }
     .muffin { position: absolute; left: 0; top: 0; z-index: 4; width: 46px; height: 52px; margin-left: -23px; text-align: center; will-change: transform; pointer-events: none; }
@@ -63,21 +63,22 @@
         <li>Difficulty ramps: the muffins fall faster the more you catch</li>
         <li>Catch 15 to win. Drop 3 and the muffins win</li>
         <li>🔥 Flair Mode: endless catching — no cap, ramps up every 30 seconds, just don't drop 3</li>
-        <li>Sound effects throughout, chopped from ElevenLabs generations</li>
+        <li>Original generated art: a transparent Poof who swaps poses — catching, celebrating, dizzy — on a dedicated cliff backdrop</li>
+        <li>Soft synthesized sound effects, a slightly different note every play</li>
       </ul>
       <div class="try"><strong>How to play:</strong> press Start, then drag (or move your mouse) to slide Poof left and right. Catch the falling fire muffins — don't let them splat.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="poof.html">Piece #2: Poof app home screen</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
     <div class="stage" id="stage" aria-label="Fire Muffin Catch game">
-      <img class="bg" src="assets/flair-poof-poster.jpg" alt="">
+      <img class="bg" src="assets/muffins-bg.jpg" alt="">
       <div class="shade"></div>
       <div class="hud">
         <span class="score">🧁 × <span id="score">0</span></span>
         <span class="hearts" id="hearts">❤️❤️❤️</span>
       </div>
       <div class="ground"></div>
-      <img id="poof" src="assets/poof-front.jpg" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins">
+      <img id="poof" src="assets/poof-catch.png" alt="Flair Poof, a fluffy red monster, ready to catch fire muffins">
 
       <div class="overlay show" id="startOverlay">
         <h2>🔥 Fire Muffin Catch 🧁</h2>
@@ -182,8 +183,17 @@
       scoreEl.textContent = score;
       heartsEl.textContent = '❤️'.repeat(hearts) + '🖤'.repeat(3 - hearts);
     }
+    var POSES = { catch: 'assets/poof-catch.png', happy: 'assets/poof-happy.png', dizzy: 'assets/poof-dizzy.png' };
+    Object.keys(POSES).forEach(function (k) { var i = new Image(); i.src = POSES[k]; });
+    var poseTimer = null;
+    function setPose(name, sticky) {
+      poof.src = POSES[name];
+      if (poseTimer) { clearTimeout(poseTimer); poseTimer = null; }
+      if (!sticky) poseTimer = setTimeout(function () { poof.src = POSES['catch']; }, name === 'dizzy' ? 750 : 500);
+    }
     function placePoof() {
-      poof.style.transform = 'translateX(' + ((poofX - 0.5) * stageW()) + 'px)';
+      var lean = Math.max(-11, Math.min(11, (targetX - poofX) * 46));
+      poof.style.transform = 'translateX(' + ((poofX - 0.5) * stageW()) + 'px) rotate(' + lean.toFixed(1) + 'deg)';
     }
     function spawnMuffin(now) {
       var el = document.createElement('div');
@@ -212,6 +222,7 @@
       setTimeout(function () { el.remove(); }, 620);
     }
     function endGame(won) {
+      setPose(won ? 'happy' : 'dizzy', true);
       running = false;
       cancelAnimationFrame(rafId);
       muffins.forEach(function (m) { m.el.remove(); });
@@ -253,17 +264,18 @@
       if (now - lastSpawn > spawnEvery) spawnMuffin(now);
 
       var H = stageH(), W = stageW();
-      var poofTop = H - 12 - 96;
+      var poofTop = H - 12 - (poof.offsetHeight || 130);
       muffins = muffins.filter(function (m) {
         m.y += m.speed * dt;
         m.el.style.transform = 'translate(' + (m.x * W) + 'px,' + m.y + 'px)';
         var muffinBottom = m.y + 52;
-        var overlapX = Math.abs(m.x - poofX) * W < 74;
+        var overlapX = Math.abs(m.x - poofX) * W < 84;
         if (muffinBottom >= poofTop + 26 && muffinBottom <= H - 4 && overlapX) {
           score++;
           renderHud();
           floatText(m.x, poofTop - 8, '+1 🧁');
           poof.classList.remove('hop'); void poof.offsetWidth; poof.classList.add('hop');
+          setPose('happy');
           playSfx(sfx.chime);
           m.el.remove();
           if (!flairMode && score >= WIN_SCORE) { endGame(true); return false; }
@@ -273,6 +285,7 @@
           hearts--;
           renderHud();
           splat(m.x);
+          setPose('dizzy');
           playSfx(sfx.bad);
           m.el.remove();
           if (hearts <= 0) { endGame(false); return false; }
@@ -284,6 +297,7 @@
       rafId = requestAnimationFrame(loop);
     }
     function startGame() {
+      setPose('catch', true);
       score = 0; hearts = 3; poofX = 0.5; targetX = 0.5;
       renderHud(); placePoof();
       startOverlay.classList.remove('show');
