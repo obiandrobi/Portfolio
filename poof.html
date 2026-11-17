@@ -30,6 +30,10 @@
     .streak-chip .flame { display: inline-block; transition: transform .3s; }
     .streak-chip .flame.pulse { animation: pulse .6s ease; }
     @keyframes pulse { 40% { transform: scale(1.7) rotate(-6deg); } }
+    .play-overlay { position: absolute; inset: 0; z-index: 6; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 8px; background: rgba(30,12,2,.25); border: 0; cursor: pointer; color: #fff; font: inherit; }
+    .play-overlay.show { display: flex; }
+    .play-overlay .circle { width: 62px; height: 62px; border-radius: 50%; background: rgba(255,138,61,.92); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; box-shadow: 0 8px 24px rgba(0,0,0,.4); }
+    .play-overlay .label { font-weight: 800; text-shadow: 0 2px 8px rgba(0,0,0,.6); font-size: .9rem; }
     .greeting { position: absolute; left: 18px; bottom: 14px; z-index: 5; color: #fff; text-shadow: 0 2px 8px rgba(0,0,0,.55); }
     .greeting h2 { margin: 0; font-size: 1.45rem; }
     .greeting p { margin: 3px 0 0; font-size: .88rem; opacity: .95; }
@@ -107,6 +111,10 @@
           <video id="caveVideo" autoplay muted loop playsinline poster="assets/poof-cave-poster.jpg">
             <source src="assets/poof-cave-loop.mp4" type="video/mp4">
           </video>
+          <button class="play-overlay" id="playOverlay" aria-label="Play the cave animation">
+            <span class="circle">▶</span>
+            <span class="label">Tap to wake Poof</span>
+          </button>
           <div class="statusbar"><span>7:02</span><span>📶 📶 🔋</span></div>
           <div class="streak-chip"><span class="flame" id="streakFlame">🔥</span><span><span id="streakDays">12</span> day streak</span></div>
           <div class="greeting">
@@ -271,9 +279,24 @@
       });
     });
 
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      var v = document.getElementById('caveVideo');
-      v.removeAttribute('autoplay'); v.pause();
+    // Header video: iPhones (Low Power Mode, in-app browsers) often block autoplay.
+    // Try to play; if still paused shortly after load, show a friendly tap-to-play button.
+    var caveVideo = document.getElementById('caveVideo');
+    var playOverlay = document.getElementById('playOverlay');
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function tryPlayCave() {
+      caveVideo.play().then(function () { playOverlay.classList.remove('show'); }).catch(function () {});
+    }
+    if (reducedMotion) {
+      caveVideo.removeAttribute('autoplay'); caveVideo.pause();
+    } else {
+      caveVideo.addEventListener('play', function () { playOverlay.classList.remove('show'); });
+      playOverlay.addEventListener('click', function (e) { e.stopPropagation(); tryPlayCave(); });
+      document.querySelector('.screen').addEventListener('pointerdown', function () {
+        if (caveVideo.paused) tryPlayCave();
+      });
+      tryPlayCave();
+      setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
     }
     render();
   </script>

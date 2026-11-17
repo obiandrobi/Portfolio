@@ -359,6 +359,16 @@
       showToast(on ? 'Motion on' : 'Motion off — background paused');
     });
 
+    // iPhones (Low Power Mode, in-app browsers) can block video autoplay:
+    // any first tap or key press restarts the background video.
+    function unlockBgVideo() {
+      if (video.paused && !document.body.classList.contains('motion-off')) {
+        video.play().catch(() => {});
+      }
+    }
+    document.addEventListener('pointerdown', unlockBgVideo);
+    document.addEventListener('keydown', unlockBgVideo);
+
     // Keyboard menu navigation: up/down arrows move the highlight, Enter activates it
     const menuButtons = Array.from(document.querySelectorAll('.menu button'));
     let selectedIndex = 0;
