@@ -103,6 +103,8 @@
     .dance-stage { position: relative; height: 248px; background: linear-gradient(#fff1de, #ffe3c2); border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; overflow: hidden; }
     .dance-stage video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
     .dance-stage video.sleepy { filter: sepia(.5) saturate(.6); }
+    .dance-stage img.end-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; z-index: 2; }
+    .dance-stage img.end-img.show { display: block; }
     .dance-zzz { position: absolute; right: 10%; top: 8%; font-size: 1.6rem; display: none; z-index: 3; }
     .dance-zzz.show { display: block; animation: rockbounce 1s ease-in-out infinite alternate; }
     .dance-flame { position: absolute; font-size: 1.9rem; background: none; border: 0; cursor: pointer; padding: 2px; line-height: 1; animation: flick .28s ease-in-out infinite alternate; z-index: 3; }
@@ -288,6 +290,7 @@
               <video id="dancePoof" muted loop playsinline preload="metadata" poster="assets/poof-dance-poster.jpg">
                 <source src="assets/poof-dance-loop.mp4" type="video/mp4">
               </video>
+              <img class="end-img" id="danceEndImg" src="" alt="Poof's dance outcome">
               <span class="dance-zzz" id="danceZzz">💤</span>
             </div>
             <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
@@ -579,6 +582,7 @@
       if (danceHeat >= 100) sleepFail();
     }
     var danceStartBtn = document.getElementById('danceStart');
+    var danceEndImg = document.getElementById('danceEndImg');
     function startDance() {
       stopDance();
       danceHeat = 0; doused = 0; danceTick = 0; danceOver = false;
@@ -587,6 +591,7 @@
       danceMsg.textContent = '';
       danceStartBtn.style.display = 'none';
       danceRetry.style.display = 'none';
+      danceEndImg.classList.remove('show');
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
       dancePoof.currentTime = 0;
@@ -597,19 +602,23 @@
     function winDance() {
       danceOver = true;
       stopDance();
+      dancePoof.pause();
+      danceEndImg.src = 'assets/poof-win.jpg';
+      danceEndImg.classList.add('show');
       var praise = ['Good job!', 'Great work!', 'You did it!'][Math.floor(Math.random() * 3)];
       danceMsg.textContent = praise + ' 🎉 Poof is cool and grooving — dancing on at a safe temperature. 🕺';
       playSfx(sfx.sparkle);
       setTimeout(function () {
         dancePanel.classList.remove('show');
-        dancePoof.pause();
         if (danceCard) setQuest(danceCard, true);
-      }, 1300);
+      }, 2400);
     }
     function sleepFail() {
       danceOver = true;
       stopDance();
       dancePoof.pause();
+      danceEndImg.src = 'assets/poof-sleep.jpg';
+      danceEndImg.classList.add('show');
       dancePoof.classList.add('sleepy');
       danceZzz.classList.add('show');
       danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
@@ -625,6 +634,7 @@
       danceMsg.textContent = '';
       danceRetry.style.display = 'none';
       danceStartBtn.style.display = '';
+      danceEndImg.classList.remove('show');
       danceZzz.classList.remove('show');
       dancePoof.classList.remove('sleepy');
       dancePoof.pause();
