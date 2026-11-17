@@ -497,9 +497,9 @@
         <div class="tracer" id="memoryPanel">
           <div class="tracer-card">
             <h3>🧠 Flame Memory</h3>
-            <p style="text-align:left"><strong>How to play:</strong> Poof's four flames will flicker a pattern.<br>
-            1️⃣ <strong>Watch</strong> the sequence.<br>
-            2️⃣ <strong>Tap the flames back</strong> in the same order.<br>
+            <p style="text-align:left"><strong>How to play:</strong> Poof's four flames will flicker a pattern — and each flame has its <strong>own note</strong>, so the pattern is a little tune. 🎵<br>
+            1️⃣ <strong>Watch and listen</strong> to the sequence.<br>
+            2️⃣ <strong>Tap the flames back</strong> in the same order — same flames, same notes.<br>
             3️⃣ Each round adds one more flicker. Clear the <strong>7-flame</strong> sequence to win!</p>
             <div class="mem-grid">
               <button class="mem-pad" data-pad="0" style="--h:0deg">🔥</button>
@@ -1240,6 +1240,16 @@
     });
 
     /* ----- Flame Memory: watch the flicker pattern, tap it back ----- */
+    /* ----- Flame Memory: Simon-style pads, each with its OWN fixed note -----
+       The demo and the player's taps play the identical note for a pad, so the
+       sequence becomes a tune you copy — pitch is a second memory channel.
+       (The generic 'good' sound picks a random note, which broke exactly this.) */
+    var MEM_NOTES = [523.25, 659.25, 783.99, 880.0]; /* C5 E5 G5 A5 — pentatonic, low to high */
+    function memTone(pi) {
+      var f = MEM_NOTES[pi] || 523.25;
+      _tone(f, 0, 0.34, 'triangle', 0.14);
+      _tone(f * 2, 0, 0.2, 'sine', 0.04);
+    }
     var memoryPanel = document.getElementById('memoryPanel');
     var memoryMsg = document.getElementById('memoryMsg');
     var memoryCard = null, memSeq = [], memIdx = 0, memAccepting = false, memBusy = false;
@@ -1253,7 +1263,7 @@
     function memFlash(pad, ms) {
       return new Promise(function (res) {
         pad.classList.add('lit');
-        playSfx(sfx.chime);
+        memTone(parseInt(pad.getAttribute('data-pad'), 10));
         setTimeout(function () { pad.classList.remove('lit'); setTimeout(res, 170); }, ms || 430);
       });
     }
