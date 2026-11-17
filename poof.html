@@ -541,7 +541,7 @@
   <script>
     /* Sounds are made live with WebAudio — the old ding MP3 is gone.
        Every play picks a slightly different note, so it never feels like the same beep on loop. */
-    var sfx = { chime: 'good', click: 'tap', sparkle: 'win', bad: 'bad' };
+    var sfx = { chime: 'good', click: 'tap', sparkle: 'win', bad: 'bad', whoosh: 'whoosh' };
     var _ac = null;
     function _audio() {
       if (!_ac) { var AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null; _ac = new AC(); }
@@ -580,6 +580,9 @@
       } else if (kind === 'bad') {
         _tone(150, 0, 0.18, 'sine', 0.16, 62);
         _tone(95, 0.02, 0.14, 'triangle', 0.08, 55);
+      } else if (kind === 'whoosh') {
+        _tone(170, 0, 0.42, 'sine', 0.07, 740);
+        _tone(90, 0, 0.3, 'triangle', 0.05, 320);
       }
     }
     var CIRC = 163.4;
@@ -713,6 +716,69 @@
       return [guidePts[i][0] + (guidePts[i + 1][0] - guidePts[i][0]) * r,
               guidePts[i][1] + (guidePts[i + 1][1] - guidePts[i][1]) * r];
     }
+    /* Completion flame burst: when the trace is finished, a flame goes off —
+       a flash, a flickering flame in the middle of the outline, and embers flying. */
+    var burstStart = 0, burstParts = [], burstRAF = null;
+    var flameCX = 150, flameCY = 155;
+    (function () {
+      var sx = 0, sy = 0;
+      guidePts.forEach(function (p) { sx += p[0]; sy += p[1]; });
+      flameCX = sx / guidePts.length; flameCY = sy / guidePts.length;
+    })();
+    function flameBurst() {
+      burstStart = performance.now();
+      burstParts = [];
+      for (var i = 0; i < 44; i++) {
+        burstParts.push({ a: Math.random() * Math.PI * 2, sp: 26 + Math.random() * 105, sz: 2 + Math.random() * 3.5, dl: Math.random() * 0.25, dur: 0.8 + Math.random() * 0.7, col: ['#ffd23e', '#ff8a3d', '#ff5d3a', '#ffe9a8'][i % 4] });
+      }
+      playSfx(sfx.whoosh);
+      if (!followPlaying) {
+        if (burstRAF) cancelAnimationFrame(burstRAF);
+        burstRAF = requestAnimationFrame(burstTick);
+      }
+    }
+    function burstTick() {
+      drawFollow();
+      if (burstStart && performance.now() - burstStart < 1600) { burstRAF = requestAnimationFrame(burstTick); }
+      else { burstStart = 0; burstRAF = null; drawFollow(); }
+    }
+    function flameShape(cx, baseY, w, h, tipX) {
+      tctx.beginPath();
+      tctx.moveTo(tipX, baseY - h);
+      tctx.bezierCurveTo(cx + w * 0.92, baseY - h * 0.52, cx + w * 0.52, baseY - h * 0.08, cx, baseY);
+      tctx.bezierCurveTo(cx - w * 0.52, baseY - h * 0.08, cx - w * 0.92, baseY - h * 0.52, tipX, baseY - h);
+      tctx.closePath();
+    }
+    function drawBurst(now) {
+      var t = (now - burstStart) / 1000;
+      if (t < 0 || t > 1.6) return;
+      var env = t < 0.18 ? t / 0.18 : (t > 1.05 ? Math.max(0, (1.55 - t) / 0.5) : 1);
+      if (t < 0.3) {
+        var fl = tctx.createRadialGradient(flameCX, flameCY, 4, flameCX, flameCY, 150);
+        fl.addColorStop(0, 'rgba(255,240,190,' + (0.55 * (1 - t / 0.3)) + ')');
+        fl.addColorStop(1, 'rgba(255,140,50,0)');
+        tctx.beginPath(); tctx.arc(flameCX, flameCY, 150, 0, Math.PI * 2); tctx.fillStyle = fl; tctx.fill();
+      }
+      var flick = 1 + Math.sin(now / 47) * 0.05 + Math.sin(now / 31) * 0.035;
+      var baseY = flameCY + 78, H = 168 * env * flick, sway = Math.sin(now / 95) * 5 * env;
+      tctx.save();
+      tctx.globalAlpha = 0.95 * env;
+      flameShape(flameCX, baseY, 118, H, flameCX + sway); tctx.fillStyle = '#ff5d3a'; tctx.fill();
+      flameShape(flameCX, baseY, 84, H * 0.78, flameCX + sway * 0.8); tctx.fillStyle = '#ff8a3d'; tctx.fill();
+      flameShape(flameCX, baseY, 52, H * 0.55, flameCX + sway * 0.6); tctx.fillStyle = '#ffd23e'; tctx.fill();
+      flameShape(flameCX, baseY, 26, H * 0.32, flameCX + sway * 0.4); tctx.fillStyle = '#fff3b0'; tctx.fill();
+      tctx.restore();
+      burstParts.forEach(function (p) {
+        var lt = t - p.dl;
+        if (lt < 0 || lt > p.dur) return;
+        var prog = lt / p.dur;
+        var x = flameCX + Math.cos(p.a) * p.sp * lt + Math.sin(lt * 9 + p.a * 5) * 5;
+        var y = flameCY + Math.sin(p.a) * p.sp * lt * 0.55 - 52 * lt;
+        tctx.globalAlpha = (1 - prog) * env;
+        tctx.beginPath(); tctx.arc(x, y, p.sz * (1 - prog * 0.45), 0, Math.PI * 2); tctx.fillStyle = p.col; tctx.fill();
+      });
+      tctx.globalAlpha = 1;
+    }
     function drawFollow() {
       tctx.clearRect(0, 0, 300, 300);
       tctx.beginPath();
@@ -752,6 +818,7 @@
         tctx.beginPath(); tctx.arc(followPtr[0], followPtr[1], 10, 0, Math.PI * 2);
         tctx.strokeStyle = 'rgba(90,50,160,0.85)'; tctx.lineWidth = 3; tctx.stroke();
       }
+      if (burstStart) drawBurst(performance.now());
     }
     function followLoop(now) {
       if (!followPlaying) return;
@@ -778,6 +845,7 @@
           if (!fb || followTrips > (fb.n || 0)) setFlair('follow', { n: followTrips });
           if (followTrips === 1) setQuest(followCard, true);
           tracerMsg.textContent = '🔥 Trip ' + followTrips + ' cleared at ' + pct + '%! The ember speeds up… hold on!' + (followTrips === 1 ? ' Quest complete ✓ +15 ◆!' : '');
+          flameBurst();
           playSfx(sfx.sparkle);
           followT = 0; followGood = 0; followBad = 0; followWon = false;
           followTripMs = Math.max(6000, Math.round(followTripMs * 0.92));
@@ -800,6 +868,7 @@
       if (pct >= FOLLOW_PASS) {
         followWon = true;
         drawFollow();
+        flameBurst();
         tracerMsg.textContent = praiseWord() + ' 🎉 You stayed on the ember for ' + pct + '% of the trip — the flame is lit! 🔥';
         playSfx(sfx.sparkle);
         followCompleteBtn.style.display = '';
@@ -814,6 +883,8 @@
     }
     function followReset() {
       followPlaying = false;
+      burstStart = 0;
+      if (burstRAF) { cancelAnimationFrame(burstRAF); burstRAF = null; }
       if (followRAF) cancelAnimationFrame(followRAF);
       followT = 0; followGood = 0; followBad = 0; followPtr = null; followWon = false;
       tracerMsg.textContent = '';
