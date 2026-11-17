@@ -429,12 +429,12 @@
             <h3>🫙 Ember Jar</h3>
             <p style="text-align:left"><strong>How to play:</strong> glowing embers are drifting down!<br>
             1️⃣ <strong>Slide the jar</strong> (drag, mouse, or tap) to catch them.<br>
-            2️⃣ Catch <strong>12 embers</strong> ✨ to win.<br>
+            2️⃣ Catch <strong>15 embers</strong> ✨ to win.<br>
             3️⃣ Dodge the <strong>rain drops</strong> 💧 — 3 drops crack the jar!</p>
             <div class="game-scene" id="jarScene">
               <div class="jar-el" id="jarEl" style="left:50%">🫙</div>
             </div>
-            <div class="hud-line"><span>✨ Caught: <span id="jarCount">0</span>/12</span><span>💔 Cracks: <span id="jarCracks">0</span>/3</span></div>
+            <div class="hud-line"><span>✨ Caught: <span id="jarCount">0</span>/15</span><span>💔 Cracks: <span id="jarCracks">0</span>/3</span></div>
             <div class="tracer-msg" id="jarMsg"></div>
             <div class="best-line" id="jarBest"></div>
             <div class="tracer-btns">
@@ -529,7 +529,7 @@
       if (k === 'dance') return b.t ? '🏆 Best: cooled him in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/12 doused';
       if (k === 'follow') return '🏆 Best: ' + (b.p || 0) + '% on the ember';
       if (k === 'memory') return '🏆 Best: sequence of ' + (b.r || 0);
-      if (k === 'jar') return b.t ? '🏆 Best: full jar in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/12 caught';
+      if (k === 'jar') return b.t ? '🏆 Best: full jar in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/15 caught';
       if (k === 'puffs') return b.t ? '🏆 Best: 15 stars in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/15 popped';
       return '';
     }
@@ -1006,23 +1006,23 @@
     var jarStartBtn = document.getElementById('jarStart');
     var jarCompleteBtn = document.getElementById('jarComplete');
     var jarRetryBtn = document.getElementById('jarRetry');
-    var JAR_GOAL = 12;
+    var JAR_GOAL = 15;
     function jarHud() { jarCountEl.textContent = jarCaught; jarCracksEl.textContent = jarCracks; }
     function jarSpawn(now) {
-      var isDrop = Math.random() < 0.26;
+      var isDrop = Math.random() < 0.33;
       var el = document.createElement('div');
       el.className = 'fall-item';
       el.textContent = isDrop ? '💧' : '🔥';
       el.style.fontSize = isDrop ? '1.4rem' : '1.15rem';
       jarScene.appendChild(el);
-      jarItems.push({ el: el, x: 0.06 + Math.random() * 0.88, y: -30, vy: 120 + Math.random() * 70, drop: isDrop });
+      jarItems.push({ el: el, x: 0.06 + Math.random() * 0.88, y: -30, vy: 165 + Math.random() * 90, drop: isDrop });
       jarSpawnLast = now;
     }
     function jarLoop(now) {
       if (!jarPlaying) return;
       var dt = Math.min(0.05, (now - jarLast) / 1000 || 0.016);
       jarLast = now;
-      if (now - jarSpawnLast > 620) jarSpawn(now);
+      if (now - jarSpawnLast > 540) jarSpawn(now);
       jarX += (jarTargetX - jarX) * Math.min(1, dt * 16);
       jarEl.style.left = (jarX * 100) + '%';
       var W = jarScene.clientWidth, H = jarScene.clientHeight;
@@ -1069,7 +1069,7 @@
       jarStop();
       var b = getBest('jar');
       if (!b || (!b.t && jarCaught > (b.n || 0))) setBest('jar', { n: jarCaught });
-      jarMsg.textContent = 'Crack! 💔 The jar gave up at ' + jarCaught + '/12 embers. Poof sweeps up, no hard feelings.';
+      jarMsg.textContent = 'Crack! 💔 The jar gave up at ' + jarCaught + '/15 embers. Poof sweeps up, no hard feelings.';
       playSfx(sfx.click);
       jarRetryBtn.textContent = 'Try again';
       jarRetryBtn.style.display = '';
