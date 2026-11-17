@@ -83,7 +83,8 @@
     .tracer-card { background: #fff7ee; border-radius: 22px; padding: 18px; width: 100%; max-width: 330px; text-align: center; color: #33241f; }
     .tracer-card h3 { margin: 0 0 4px; font-size: 1.15rem; }
     .tracer-card p { margin: 0 0 12px; color: #8a7466; font-size: .85rem; line-height: 1.45; }
-    #traceCanvas { width: 100%; max-width: 290px; aspect-ratio: 1; background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; touch-action: none; cursor: crosshair; }
+    #traceCanvas { width: 100%; max-width: 290px; aspect-ratio: 1; background: #fff; border-radius: 16px; box-shadow: inset 0 0 0 2px #f3e2d3; touch-action: none; cursor: crosshair; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+    #tracer .tracer-card { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
     .tracer-msg { min-height: 1.4em; margin-top: 10px; font-weight: 800; color: #b35c12; font-size: .92rem; }
     .tracer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .tracer-btns button { font: inherit; font-weight: 800; border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 2px solid #ff8a3d; background: #ff8a3d; color: #fff; }
@@ -314,7 +315,7 @@
           <div class="tracer-card">
             <div class="rock-step show" id="rockStep1">
               <h3>🪨 Find a cool rock</h3>
-              <p>Somewhere near you is a cool rock waiting for a friend. Go find it — any size, any shape, as long as it's cool. Poof is an expert. He can tell.</p>
+              <p>Somewhere near you is a cool rock waiting for a friend. Go find it — any size, any shape, as long as it's cool. Poof is an expert. He can tell a cool rock from a boring rock at twenty paces.</p>
               <div class="tracer-btns">
                 <button id="rockFound">I found one! 🪨</button>
                 <button id="rockClose1" class="ghost">Not now</button>
@@ -736,6 +737,7 @@
     }
     traceCanvas.addEventListener('pointerdown', function (e) {
       if (!followPlaying) return;
+      e.preventDefault();
       traceCanvas.setPointerCapture(e.pointerId);
       followPtr = followCanvasPos(e);
     });
