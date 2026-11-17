@@ -478,6 +478,7 @@
             </div>
             <div class="tracer-msg" id="makeoverMsg">Steve is ready for his glow-up.</div>
             <img id="selfieImg" alt="Steve the rock at home in the cave, all dressed up">
+            <p id="selfieHint" style="display:none;margin:4px 0 0;color:#8a5a12;font-weight:700">📱 iPhone: press and hold the portrait, then tap “Save to Photos” — or tap 💾 Save selfie for the share sheet.</p>
             <div class="tracer-btns">
               <button id="makeoverSelfie">📸 Take his portrait</button>
               <button id="makeoverComplete" style="display:none">Complete ✓</button>
@@ -486,7 +487,7 @@
             <div class="tracer-btns">
               <button id="makeoverRandom" class="ghost">🎲 Surprise me</button>
               <button id="makeoverClear" class="ghost">↺ Bare Steve</button>
-              <a id="selfieDownload" class="ghost" style="display:none;font:inherit;font-weight:800;border-radius:999px;padding:9px 18px;border:2px solid #ff8a3d;color:#b35c12;text-decoration:none" download="steve-selfie.png">💾 Save selfie</a>
+              <button id="selfieDownload" class="ghost" style="display:none">💾 Save selfie</button>
             </div>
           </div>
         </div>
@@ -1640,6 +1641,7 @@
     var makeoverCompleteBtn = document.getElementById('makeoverComplete');
     var selfieImg = document.getElementById('selfieImg');
     var selfieDownload = document.getElementById('selfieDownload');
+    var selfieBlob = null;
     var ACC_KEYS = ['eyes', 'shades', 'hat', 'crown', 'cap', 'bow', 'flower', 'star'];
     function steveCount() { return Object.keys(stevePieces).length; }
     function steveMsgUpdate() {
@@ -1777,8 +1779,10 @@
         var url = cv.toDataURL('image/png');
         selfieImg.src = url;
         selfieImg.style.display = 'block';
-        selfieDownload.href = url;
+        selfieBlob = null;
+        if (cv.toBlob) cv.toBlob(function (b) { selfieBlob = b; }, 'image/png');
         selfieDownload.style.display = '';
+        document.getElementById('selfieHint').style.display = '';
         makeoverMsg.textContent = "📸 Got it! Steve at home, looking sharp — one for the fridge.";
         playSfx(sfx.sparkle);
         makeoverCompleteBtn.style.display = '';
@@ -1786,6 +1790,32 @@
       drawScene();
     }
     document.getElementById('makeoverSelfie').addEventListener('click', takeSelfie);
+    /* Save selfie: the old <a download> pointed at a data: URL, which iPhone Safari
+       basically ignores (blank screen, nothing saved). Now: share sheet with the real
+       PNG file where supported (Save Image lives there), blob download elsewhere,
+       and the long-press hint as the always-works path. */
+    selfieDownload.addEventListener('click', function () {
+      playSfx(sfx.click);
+      function fallback() {
+        if (selfieBlob) {
+          var objUrl = URL.createObjectURL(selfieBlob);
+          var a = document.createElement('a');
+          a.href = objUrl; a.download = 'steve-selfie.png';
+          document.body.appendChild(a); a.click(); a.remove();
+          setTimeout(function () { URL.revokeObjectURL(objUrl); }, 4000);
+        }
+        makeoverMsg.textContent = '📱 On iPhone: press and hold the portrait above, then tap “Save to Photos”.';
+      }
+      if (selfieBlob && navigator.share) {
+        var file = null;
+        try { file = new File([selfieBlob], 'steve-selfie.png', { type: 'image/png' }); } catch (e) {}
+        if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file] }).catch(function (err) { if (!err || err.name !== 'AbortError') fallback(); });
+          return;
+        }
+      }
+      fallback();
+    });
     makeoverCompleteBtn.addEventListener('click', function () {
       makeoverPanel.classList.remove('show');
       playSfx(sfx.click);
@@ -1796,6 +1826,7 @@
       makeoverCompleteBtn.style.display = 'none';
       selfieImg.style.display = 'none';
       selfieDownload.style.display = 'none';
+      document.getElementById('selfieHint').style.display = 'none';
       steveMsgUpdate();
       makeoverPanel.classList.add('show');
       Object.keys(stevePieces).forEach(function (k) { placePiece(stevePieces[k]); });
