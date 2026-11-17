@@ -111,6 +111,21 @@
     .heat-wrap { height: 14px; background: #f3e2d3; border-radius: 999px; overflow: hidden; margin: 10px 0 2px; }
     .heat-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #ffd23e, #ff8a3d, #e63b2e); transition: width .15s linear; }
     .heat-label { display: flex; justify-content: space-between; font-size: .78rem; font-weight: 800; color: #b35c12; }
+    .best-line { margin-top: 8px; font-size: .8rem; font-weight: 800; color: #a8741a; min-height: 1.2em; }
+    .hud-line { display: flex; justify-content: space-between; font-size: .8rem; font-weight: 800; color: #b35c12; margin: 10px 0 2px; }
+    .mem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 230px; margin: 4px auto 0; }
+    .mem-pad { font-size: 2.1rem; padding: 13px 0; border-radius: 18px; border: 3px solid #f3e2d3; background: #fff; cursor: pointer; filter: grayscale(.85) opacity(.55); transition: transform .12s, box-shadow .12s, filter .12s; }
+    .mem-pad.lit { filter: hue-rotate(var(--h, 0deg)) saturate(1.5); transform: scale(1.13); box-shadow: 0 0 26px 8px rgba(255,150,50,.55); }
+    .game-scene { position: relative; height: 248px; border-radius: 16px; overflow: hidden; box-shadow: inset 0 0 0 2px #f3e2d3; background: linear-gradient(#fff1de, #ffe3c2); touch-action: none; }
+    .crystal-scene { background: radial-gradient(ellipse at 50% 110%, #4a2b6d, #241536 70%); box-shadow: inset 0 0 0 2px #4a3566; }
+    .crystal { position: absolute; font-size: 2.1rem; background: none; border: 0; cursor: pointer; filter: grayscale(1) opacity(.4); transition: filter .2s, transform .2s; padding: 4px; }
+    .crystal.lit { filter: none; transform: scale(1.35); }
+    .crystal.awake { filter: none; opacity: 1; }
+    .jar-el { position: absolute; bottom: 4px; font-size: 2.7rem; transform: translateX(-50%); pointer-events: none; z-index: 3; }
+    .fall-item { position: absolute; transform: translate(-50%, 0); pointer-events: none; z-index: 2; }
+    .puff { position: absolute; background: none; border: 0; cursor: pointer; transform: translate(-50%, 0); z-index: 2; line-height: 1; padding: 2px; }
+    .shake { animation: shake .35s ease; }
+    @keyframes shake { 25% { transform: translateX(-6px); } 75% { transform: translateX(6px); } }
 
     /* Celebration */
     .celebrate { position: absolute; inset: 0; z-index: 40; background: rgba(26,10,4,.82); display: none; flex-direction: column; align-items: center; justify-content: center; padding: 22px; text-align: center; color: #fff; }
@@ -126,15 +141,17 @@
     <div class="about">
       <h1>Poof</h1>
       <p class="sub">Portfolio Piece #2 — Animated App Home Screen</p>
-      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a dance rescue, a traced flame, a cool rock that needs a name — grow the living flame on his head. Small steps, for both of you.</p>
+      <p><strong>Poof</strong> is a cozy daily-quest companion app. Poof is a shy little monster who lives in a cave in the hills, longing to visit the glowing town below. Every morning he greets you from his cave, and the tiny quests you finish together — a dance rescue, a followed ember, a cool rock that needs a name — grow the living flame on his head. Small steps, for both of you.</p>
       <ul>
         <li>Animated cave-home header, generated from an original character design</li>
         <li>Streak counter built on Poof's flame tuft — it grows as you complete quests</li>
         <li>Working quest cards, progress ring, and ember rewards</li>
-        <li>Finish all three quests and Poof celebrates</li>
+        <li>Seven active quests — reflexes, memory, timing, and one real-world rock</li>
+        <li>High scores for every game, saved on the device — replay quests to beat your best</li>
+        <li>Finish all seven quests and Poof celebrates</li>
         <li>Four working tabs, including the Map — the town below, someday</li>
       </ul>
-      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all three are <strong>active quests</strong> now: cool dancing Poof down by tapping the extra flames off his fur (don't let him overheat and fall asleep!), trace the ember flame well enough to light it, and go find a real cool rock, name it, and introduce it to Poof's rock, Steve. Finish all three for Poof's celebration.</div>
+      <div class="try"><strong>Try it:</strong> tap the quest cards in the phone — all seven are <strong>active quests</strong>: cool dancing Poof down, follow the ember, name a cool rock for Steve, test your flame memory, wake the cave crystals, catch embers in a jar, and pop smoke puffs. Every game keeps a high score, and finished quests can be replayed any time to beat it. Finish all seven for Poof's celebration.</div>
       <p style="margin-top:22px"><a href="index.html">&larr; Back to portfolio</a> &nbsp;·&nbsp; <a href="flair-poof.html">Piece #1: Flair Poof title screen</a></p>
     </div>
 
@@ -165,11 +182,11 @@
                 <circle class="ring-bg" cx="32" cy="32" r="26"></circle>
                 <circle class="ring-fg" id="ringFg" cx="32" cy="32" r="26" stroke-dasharray="163.4" stroke-dashoffset="163.4"></circle>
               </svg>
-              <div class="ring-num" id="ringNum">0/3</div>
+              <div class="ring-num" id="ringNum">0/7</div>
             </div>
             <div>
               <h3>Today's quests</h3>
-              <p id="progressText">Three tiny steps. Poof believes in you.</p>
+              <p id="progressText">Seven tiny steps. Poof believes in you.</p>
             </div>
             <div class="embers"><span id="emberCount">240</span> ◆<small>embers</small></div>
           </div>
@@ -179,9 +196,9 @@
             <span><span class="name">Cool Poof down!</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
-          <button class="quest" data-quest data-trace data-reward="15">
-            <span class="icon" style="background:#ffe1e6">🔥</span>
-            <span><span class="name">Trace the ember flame</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+          <button class="quest" data-quest data-follow data-reward="15">
+            <span class="icon" style="background:#ffe1e6">✨</span>
+            <span><span class="name">Follow the ember</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
           <button class="quest" data-quest data-rock data-reward="15">
@@ -189,12 +206,32 @@
             <span><span class="name">Find a cool rock</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
             <span class="box"></span>
           </button>
+          <button class="quest" data-quest data-memory data-reward="15">
+            <span class="icon" style="background:#e6e1ff">🧠</span>
+            <span><span class="name">Flame Memory</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span class="box"></span>
+          </button>
+          <button class="quest" data-quest data-crystals data-reward="15">
+            <span class="icon" style="background:#dff3ff">💎</span>
+            <span><span class="name">Wake the crystals</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span class="box"></span>
+          </button>
+          <button class="quest" data-quest data-jar data-reward="15">
+            <span class="icon" style="background:#fff0d6">🫙</span>
+            <span><span class="name">Ember Jar</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span class="box"></span>
+          </button>
+          <button class="quest" data-quest data-puffs data-reward="15">
+            <span class="icon" style="background:#e9e9ee">💨</span>
+            <span><span class="name">Pop the smoke puffs</span><br><span class="reward">Active quest · +15 ◆ embers</span></span>
+            <span class="box"></span>
+          </button>
         </div>
 
         <div class="view" id="view-quests">
           <div class="panel">
             <h3>📜 Quest log</h3>
-            <p>Today's quests live on the Home tab. Tomorrow brings three new tiny steps — and one day, a quest that leads all the way down to the town.</p>
+            <p>Today's quests live on the Home tab. Tomorrow brings seven new tiny steps — and one day, a quest that leads all the way down to the town.</p>
             <p><strong>Coming soon:</strong> weekly quests, brave quests, and a very small quest about saying hello to a neighbor.</p>
           </div>
         </div>
@@ -222,6 +259,18 @@
               <div class="stat-row"><span>Dream</span><strong>Visit the town ✨</strong></div>
             </div>
           </div>
+          <div class="panel" style="margin-top:14px">
+            <h3>🏆 High scores</h3>
+            <div style="text-align:left">
+              <div class="stat-row"><span>🕺 Cool Poof down!</span><strong id="best-dance">—</strong></div>
+              <div class="stat-row"><span>✨ Follow the ember</span><strong id="best-follow">—</strong></div>
+              <div class="stat-row"><span>🧠 Flame Memory</span><strong id="best-memory">—</strong></div>
+              <div class="stat-row"><span>💎 Wake the crystals</span><strong id="best-crystals">—</strong></div>
+              <div class="stat-row"><span>🫙 Ember Jar</span><strong id="best-jar">—</strong></div>
+              <div class="stat-row"><span>💨 Smoke puffs</span><strong id="best-puffs">—</strong></div>
+            </div>
+            <p style="margin-bottom:0">Tap any finished quest to play it again and beat your best. Scores live on this device.</p>
+          </div>
         </div>
 
         <div class="tabbar">
@@ -233,12 +282,18 @@
 
         <div class="tracer" id="tracer">
           <div class="tracer-card">
-            <h3>🔥 Trace the ember flame</h3>
-            <p>Trace the dashed flame with your finger or mouse. Cover most of the outline to light Poof's flame — miss too much and you'll have to try again!</p>
+            <h3>✨ Follow the ember</h3>
+            <p style="text-align:left"><strong>How to play:</strong> a loose ember will drift around the flame outline.<br>
+            1️⃣ Press <strong>Start</strong>, then <strong>press and hold</strong> on the canvas.<br>
+            2️⃣ Keep your finger (or mouse) <strong>right on the glowing ember</strong> as it travels.<br>
+            3️⃣ Stay on it for at least <strong>70%</strong> of the trip to light Poof's flame!</p>
             <canvas id="traceCanvas" width="300" height="300"></canvas>
             <div class="tracer-msg" id="tracerMsg"></div>
+            <div class="best-line" id="followBest"></div>
             <div class="tracer-btns">
-              <button id="traceRetry">↺ Start over</button>
+              <button id="followStart">▶ Start</button>
+              <button id="followComplete" style="display:none">Complete ✓</button>
+              <button id="traceRetry" style="display:none">Try again</button>
               <button id="traceClose" class="ghost">Not now</button>
             </div>
           </div>
@@ -296,11 +351,106 @@
             <div class="heat-wrap"><div class="heat-bar" id="heatBar"></div></div>
             <div class="heat-label"><span>🔥 Heat</span><span>Flames doused: <span id="douseCount">0</span>/12</span></div>
             <div class="tracer-msg" id="danceMsg"></div>
+            <div class="best-line" id="danceBest"></div>
             <div class="tracer-btns">
               <button id="danceStart">▶ Start</button>
               <button id="danceComplete" style="display:none">Complete ✓</button>
               <button id="danceRetry" style="display:none">Try again 🕺</button>
               <button id="danceClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="tracer" id="memoryPanel">
+          <div class="tracer-card">
+            <h3>🧠 Flame Memory</h3>
+            <p style="text-align:left"><strong>How to play:</strong> Poof's four flames will flicker a pattern.<br>
+            1️⃣ <strong>Watch</strong> the sequence.<br>
+            2️⃣ <strong>Tap the flames back</strong> in the same order.<br>
+            3️⃣ Each round adds one more flicker. Clear the <strong>7-flame</strong> sequence to win!</p>
+            <div class="mem-grid">
+              <button class="mem-pad" data-pad="0" style="--h:0deg">🔥</button>
+              <button class="mem-pad" data-pad="1" style="--h:90deg">🔥</button>
+              <button class="mem-pad" data-pad="2" style="--h:180deg">🔥</button>
+              <button class="mem-pad" data-pad="3" style="--h:260deg">🔥</button>
+            </div>
+            <div class="tracer-msg" id="memoryMsg">Press Start, then watch…</div>
+            <div class="best-line" id="memoryBest"></div>
+            <div class="tracer-btns">
+              <button id="memoryStart">▶ Start</button>
+              <button id="memoryComplete" style="display:none">Complete ✓</button>
+              <button id="memoryRetry" style="display:none">Try again</button>
+              <button id="memoryClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer" id="crystalPanel">
+          <div class="tracer-card">
+            <h3>💎 Wake the crystals</h3>
+            <p style="text-align:left"><strong>How to play:</strong> the cave crystals are asleep.<br>
+            1️⃣ A crystal will <strong>glow</strong> — tap it before the glow fades!<br>
+            2️⃣ Each woken crystal makes the next one <strong>faster</strong>.<br>
+            3️⃣ Wake all <strong>6</strong> — but miss 3 glows and the cave goes dark. 🌙</p>
+            <div class="game-scene crystal-scene" id="crystalScene">
+              <button class="crystal" style="left:8%;top:12%">💎</button>
+              <button class="crystal" style="left:42%;top:6%">💎</button>
+              <button class="crystal" style="left:74%;top:14%">💎</button>
+              <button class="crystal" style="left:20%;top:52%">💎</button>
+              <button class="crystal" style="left:56%;top:48%">💎</button>
+              <button class="crystal" style="left:80%;top:58%">💎</button>
+            </div>
+            <div class="hud-line"><span>💎 Awake: <span id="crystalCount">0</span>/6</span><span>🌙 × <span id="crystalMoons">3</span></span></div>
+            <div class="tracer-msg" id="crystalMsg"></div>
+            <div class="best-line" id="crystalsBest"></div>
+            <div class="tracer-btns">
+              <button id="crystalStart">▶ Start</button>
+              <button id="crystalComplete" style="display:none">Complete ✓</button>
+              <button id="crystalRetry" style="display:none">Try again</button>
+              <button id="crystalClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer" id="jarPanel">
+          <div class="tracer-card">
+            <h3>🫙 Ember Jar</h3>
+            <p style="text-align:left"><strong>How to play:</strong> glowing embers are drifting down!<br>
+            1️⃣ <strong>Slide the jar</strong> (drag, mouse, or tap) to catch them.<br>
+            2️⃣ Catch <strong>12 embers</strong> ✨ to win.<br>
+            3️⃣ Dodge the <strong>rain drops</strong> 💧 — 3 drops crack the jar!</p>
+            <div class="game-scene" id="jarScene">
+              <div class="jar-el" id="jarEl" style="left:50%">🫙</div>
+            </div>
+            <div class="hud-line"><span>✨ Caught: <span id="jarCount">0</span>/12</span><span>💔 Cracks: <span id="jarCracks">0</span>/3</span></div>
+            <div class="tracer-msg" id="jarMsg"></div>
+            <div class="best-line" id="jarBest"></div>
+            <div class="tracer-btns">
+              <button id="jarStart">▶ Start</button>
+              <button id="jarComplete" style="display:none">Complete ✓</button>
+              <button id="jarRetry" style="display:none">Try again</button>
+              <button id="jarClose" class="ghost">Not now</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="tracer" id="puffPanel">
+          <div class="tracer-card">
+            <h3>💨 Pop the smoke puffs</h3>
+            <p style="text-align:left"><strong>How to play:</strong> bubbles are floating up from the fire!<br>
+            1️⃣ Pop the <strong>golden stars</strong> 🌟 — you need <strong>15</strong>.<br>
+            2️⃣ Do NOT pop the <strong>smoke puffs</strong> 💨 — they cost a heart!<br>
+            3️⃣ Lose 3 hearts ❤️ and the smoke wins.</p>
+            <div class="game-scene" id="puffScene"></div>
+            <div class="hud-line"><span>🌟 Popped: <span id="puffCount">0</span>/15</span><span>❤️ × <span id="puffHearts">3</span></span></div>
+            <div class="tracer-msg" id="puffMsg"></div>
+            <div class="best-line" id="puffBest"></div>
+            <div class="tracer-btns">
+              <button id="puffStart">▶ Start</button>
+              <button id="puffComplete" style="display:none">Complete ✓</button>
+              <button id="puffRetry" style="display:none">Try again</button>
+              <button id="puffClose" class="ghost">Not now</button>
             </div>
           </div>
         </div>
@@ -329,7 +479,7 @@
     };
     function playSfx(a) { if (!a) return; a.currentTime = 0; a.play().catch(function () {}); }
     var CIRC = 163.4;
-    var total = 3, done = 0, embers = 240;
+    var total = 7, done = 0, embers = 240;
     var ringFg = document.getElementById('ringFg');
     var ringNum = document.getElementById('ringNum');
     var progressText = document.getElementById('progressText');
@@ -339,9 +489,13 @@
     var celebrate = document.getElementById('celebrate');
     var celebrateVideo = document.getElementById('celebrateVideo');
     var messages = [
-      'Three tiny steps. Poof believes in you.',
+      'Seven tiny steps. Poof believes in you.',
       'One down. The flame flickers taller.',
       'Two down! Poof is doing a tiny dance.',
+      'Three down — the cave feels warmer already.',
+      'Four down! The town lights look a little closer.',
+      'Five down! Poof packed a tiny bag. Just in case.',
+      'Six down — one brave step left!',
       'All done. Today, you were brave together.'
     ];
 
@@ -352,6 +506,31 @@
       emberCount.textContent = embers;
       profileEmbers.textContent = embers;
       flame.style.fontSize = (1 + done * 0.22) + 'em';
+    }
+
+    /* ----- High scores (saved on this device) ----- */
+    function getBest(k) { try { var v = localStorage.getItem('poofBest_' + k); return v === null ? null : JSON.parse(v); } catch (e) { return null; } }
+    function setBest(k, v) { try { localStorage.setItem('poofBest_' + k, JSON.stringify(v)); } catch (e) {} renderBests(); }
+    function praiseWord() { return ['Good job!', 'Great work!', 'You did it!'][Math.floor(Math.random() * 3)]; }
+    function bestText(k) {
+      var b = getBest(k);
+      if (!b) return '';
+      if (k === 'dance') return b.t ? '🏆 Best: cooled him in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/12 doused';
+      if (k === 'follow') return '🏆 Best: ' + (b.p || 0) + '% on the ember';
+      if (k === 'memory') return '🏆 Best: sequence of ' + (b.r || 0);
+      if (k === 'crystals') return b.t ? '🏆 Best: all 6 awake in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/6 awake';
+      if (k === 'jar') return b.t ? '🏆 Best: full jar in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/12 caught';
+      if (k === 'puffs') return b.t ? '🏆 Best: 15 stars in ' + b.t + 's' : '🏆 Best try: ' + (b.n || 0) + '/15 popped';
+      return '';
+    }
+    function renderBests() {
+      ['dance', 'follow', 'memory', 'crystals', 'jar', 'puffs'].forEach(function (k) {
+        var line = bestText(k);
+        var panelEl = document.getElementById(k + 'Best');
+        if (panelEl) panelEl.textContent = line;
+        var profEl = document.getElementById('best-' + k);
+        if (profEl) profEl.textContent = line ? line.replace('🏆 Best: ', '').replace('🏆 Best try: ', 'try: ') : '—';
+      });
     }
 
     function setQuest(card, makeDone) {
@@ -379,19 +558,17 @@
 
     document.querySelectorAll('[data-quest]').forEach(function (card) {
       card.addEventListener('click', function () {
-        if (card.hasAttribute('data-trace') && !card.classList.contains('done')) {
-          openTracer(card);
-        } else if (card.hasAttribute('data-rock') && !card.classList.contains('done')) {
-          openRock(card);
-        } else if (card.hasAttribute('data-dance') && !card.classList.contains('done')) {
-          openDance(card);
-        } else {
-          setQuest(card, !card.classList.contains('done'));
-        }
+        if (card.hasAttribute('data-dance')) openDance(card);
+        else if (card.hasAttribute('data-follow')) openFollow(card);
+        else if (card.hasAttribute('data-rock')) openRock(card);
+        else if (card.hasAttribute('data-memory')) openMemory(card);
+        else if (card.hasAttribute('data-crystals')) openCrystals(card);
+        else if (card.hasAttribute('data-jar')) openJar(card);
+        else if (card.hasAttribute('data-puffs')) openPuffs(card);
       });
     });
 
-    /* ----- Tracing quest: trace the ember flame, judged on coverage ----- */
+    /* ----- Follow the Ember: keep your pointer on the travelling ember ----- */
     var tracer = document.getElementById('tracer');
     var traceCanvas = document.getElementById('traceCanvas');
     var tracerMsg = document.getElementById('tracerMsg');
@@ -402,103 +579,140 @@
       var L = flamePathEl.getTotalLength();
       for (var i = 0; i <= 150; i++) { var p = flamePathEl.getPointAtLength(L * i / 150); guidePts.push([p.x, p.y]); }
     })();
-    var userPts = [], drawing = false, pendingCard = null, traceDone = false;
-    var PASS_COVERAGE = 0.68, TOLERANCE = 30;
+    var followCard = null, followPlaying = false, followT = 0, followGood = 0, followBad = 0;
+    var followPtr = null, followRAF = null, followLast = 0, followWon = false;
+    var followStartBtn = document.getElementById('followStart');
+    var followCompleteBtn = document.getElementById('followComplete');
+    var followRetryBtn = document.getElementById('traceRetry');
+    var FOLLOW_TRIP_MS = 13000, FOLLOW_PASS = 70, FOLLOW_TOL = 38;
 
-    function drawGuide() {
+    function emberPos() {
+      var f = followT * (guidePts.length - 1);
+      var i = Math.min(guidePts.length - 2, Math.floor(f));
+      var r = f - i;
+      return [guidePts[i][0] + (guidePts[i + 1][0] - guidePts[i][0]) * r,
+              guidePts[i][1] + (guidePts[i + 1][1] - guidePts[i][1]) * r];
+    }
+    function drawFollow() {
       tctx.clearRect(0, 0, 300, 300);
       tctx.beginPath();
       guidePts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
       tctx.closePath();
-      tctx.fillStyle = 'rgba(255,138,61,0.07)';
+      tctx.fillStyle = 'rgba(255,138,61,0.06)';
       tctx.fill();
       tctx.setLineDash([7, 7]);
-      tctx.strokeStyle = 'rgba(230,111,29,0.55)';
+      tctx.strokeStyle = 'rgba(230,111,29,0.45)';
       tctx.lineWidth = 3;
       tctx.stroke();
       tctx.setLineDash([]);
-    }
-    function drawUserStroke() {
-      if (userPts.length < 2) return;
-      tctx.beginPath();
-      userPts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
-      tctx.strokeStyle = '#ff7a2f';
-      tctx.lineWidth = 9;
-      tctx.lineCap = 'round';
-      tctx.lineJoin = 'round';
-      tctx.stroke();
-    }
-    function redrawTrace() { drawGuide(); drawUserStroke(); }
-    function canvasPos(e) {
-      var r = traceCanvas.getBoundingClientRect();
-      return [(e.clientX - r.left) * 300 / r.width, (e.clientY - r.top) * 300 / r.height];
-    }
-    function coverage() {
-      if (userPts.length < 10) return 0;
-      var hit = 0;
-      guidePts.forEach(function (g) {
-        for (var i = 0; i < userPts.length; i++) {
-          var dx = g[0] - userPts[i][0], dy = g[1] - userPts[i][1];
-          if (dx * dx + dy * dy <= TOLERANCE * TOLERANCE) { hit++; return; }
-        }
-      });
-      return hit / guidePts.length;
-    }
-    function judgeTrace() {
-      if (traceDone) return;
-      var c = coverage();
-      if (c >= PASS_COVERAGE) {
-        traceDone = true;
-        // Light the flame: fill it in triumphantly
+      if (followWon) {
         tctx.beginPath();
         guidePts.forEach(function (p, i) { if (i === 0) tctx.moveTo(p[0], p[1]); else tctx.lineTo(p[0], p[1]); });
         tctx.closePath();
         var grad = tctx.createLinearGradient(0, 280, 0, 20);
         grad.addColorStop(0, '#ffb347'); grad.addColorStop(1, '#ff5d3a');
         tctx.fillStyle = grad; tctx.fill();
-        drawUserStroke();
-        tracerMsg.textContent = 'You lit the flame! 🔥';
-        playSfx(sfx.chime);
-        var card = pendingCard;
-        setTimeout(function () {
-          tracer.classList.remove('show');
-          if (card) setQuest(card, true);
-        }, 1100);
-      } else if (c >= 0.35) {
-        tracerMsg.textContent = 'So close — ' + Math.round(c * 100) + '% traced. Fill the gaps and lift your finger to check again!';
-      } else if (userPts.length >= 10) {
-        tracerMsg.textContent = 'Only ' + Math.round(c * 100) + '% — follow the dashed flame closely. Poof believes in you!';
+      }
+      // travelled portion in solid orange
+      var upto = Math.floor(followT * (guidePts.length - 1));
+      if (upto > 1 && !followWon) {
+        tctx.beginPath();
+        for (var i = 0; i <= upto; i++) { if (i === 0) tctx.moveTo(guidePts[i][0], guidePts[i][1]); else tctx.lineTo(guidePts[i][0], guidePts[i][1]); }
+        tctx.strokeStyle = '#ff8a3d'; tctx.lineWidth = 4; tctx.stroke();
+      }
+      var e = emberPos();
+      var glow = tctx.createRadialGradient(e[0], e[1], 2, e[0], e[1], 22);
+      glow.addColorStop(0, 'rgba(255,220,120,0.95)');
+      glow.addColorStop(0.35, 'rgba(255,150,50,0.75)');
+      glow.addColorStop(1, 'rgba(255,120,40,0)');
+      tctx.beginPath(); tctx.arc(e[0], e[1], 22, 0, Math.PI * 2); tctx.fillStyle = glow; tctx.fill();
+      tctx.beginPath(); tctx.arc(e[0], e[1], 8, 0, Math.PI * 2); tctx.fillStyle = '#ffdf8a'; tctx.fill();
+      tctx.beginPath(); tctx.arc(e[0], e[1], 4.5, 0, Math.PI * 2); tctx.fillStyle = '#fff6d8'; tctx.fill();
+      if (followPtr) {
+        tctx.beginPath(); tctx.arc(followPtr[0], followPtr[1], 10, 0, Math.PI * 2);
+        tctx.strokeStyle = 'rgba(90,50,160,0.85)'; tctx.lineWidth = 3; tctx.stroke();
       }
     }
-    function openTracer(card) {
-      pendingCard = card;
-      userPts = []; traceDone = false;
+    function followLoop(now) {
+      if (!followPlaying) return;
+      var dt = Math.min(60, now - (followLast || now));
+      followLast = now;
+      if (followPtr) {
+        var e = emberPos();
+        var dx = e[0] - followPtr[0], dy = e[1] - followPtr[1];
+        if (dx * dx + dy * dy <= FOLLOW_TOL * FOLLOW_TOL) followGood += dt; else followBad += dt;
+        followT += dt / FOLLOW_TRIP_MS;
+      }
+      drawFollow();
+      if (followT >= 1) { finishFollow(); return; }
+      followRAF = requestAnimationFrame(followLoop);
+    }
+    function finishFollow() {
+      followPlaying = false;
+      var totalMs = followGood + followBad;
+      var pct = totalMs > 0 ? Math.round(100 * followGood / totalMs) : 0;
+      var b = getBest('follow');
+      if (!b || pct > (b.p || 0)) setBest('follow', { p: pct });
+      if (pct >= FOLLOW_PASS) {
+        followWon = true;
+        drawFollow();
+        tracerMsg.textContent = praiseWord() + ' 🎉 You stayed on the ember for ' + pct + '% of the trip — the flame is lit! 🔥';
+        playSfx(sfx.sparkle);
+        followCompleteBtn.style.display = '';
+      } else {
+        tracerMsg.textContent = 'The ember got away — you stayed on it for ' + pct + '%. It needs ' + FOLLOW_PASS + '% to light the flame.';
+        playSfx(sfx.click);
+        followRetryBtn.style.display = '';
+      }
+    }
+    function followReset() {
+      followPlaying = false;
+      if (followRAF) cancelAnimationFrame(followRAF);
+      followT = 0; followGood = 0; followBad = 0; followPtr = null; followWon = false;
       tracerMsg.textContent = '';
+      followStartBtn.style.display = '';
+      followCompleteBtn.style.display = 'none';
+      followRetryBtn.style.display = 'none';
+      drawFollow();
+    }
+    function openFollow(card) {
+      followCard = card;
+      followReset();
       tracer.classList.add('show');
       playSfx(sfx.click);
-      redrawTrace();
+    }
+    function followCanvasPos(e) {
+      var r = traceCanvas.getBoundingClientRect();
+      return [(e.clientX - r.left) * 300 / r.width, (e.clientY - r.top) * 300 / r.height];
     }
     traceCanvas.addEventListener('pointerdown', function (e) {
-      if (traceDone) return;
-      drawing = true;
+      if (!followPlaying) return;
       traceCanvas.setPointerCapture(e.pointerId);
-      userPts.push(canvasPos(e));
-      redrawTrace();
+      followPtr = followCanvasPos(e);
     });
-    traceCanvas.addEventListener('pointermove', function (e) {
-      if (!drawing || traceDone) return;
-      var p = canvasPos(e);
-      var last = userPts[userPts.length - 1];
-      if (!last || Math.abs(p[0] - last[0]) + Math.abs(p[1] - last[1]) > 3) { userPts.push(p); redrawTrace(); }
-    });
+    traceCanvas.addEventListener('pointermove', function (e) { if (followPtr) followPtr = followCanvasPos(e); });
     ['pointerup', 'pointercancel'].forEach(function (ev) {
-      traceCanvas.addEventListener(ev, function () { if (drawing) { drawing = false; judgeTrace(); } });
+      traceCanvas.addEventListener(ev, function () { followPtr = null; });
     });
-    document.getElementById('traceRetry').addEventListener('click', function () {
-      userPts = []; traceDone = false; tracerMsg.textContent = ''; playSfx(sfx.click); redrawTrace();
+    followStartBtn.addEventListener('click', function () {
+      followReset();
+      followStartBtn.style.display = 'none';
+      followPlaying = true;
+      followLast = 0;
+      playSfx(sfx.click);
+      followRAF = requestAnimationFrame(followLoop);
+    });
+    followRetryBtn.addEventListener('click', function () { playSfx(sfx.click); followStartBtn.click(); });
+    followCompleteBtn.addEventListener('click', function () {
+      tracer.classList.remove('show');
+      playSfx(sfx.click);
+      if (followCard) setQuest(followCard, true);
     });
     document.getElementById('traceClose').addEventListener('click', function () {
-      tracer.classList.remove('show'); playSfx(sfx.click);
+      followPlaying = false;
+      if (followRAF) cancelAnimationFrame(followRAF);
+      tracer.classList.remove('show');
+      playSfx(sfx.click);
     });
 
     /* ----- Rock quest: find a cool rock, name it, meet Steve ----- */
@@ -545,7 +759,7 @@
     var douseCountEl = document.getElementById('douseCount');
     var danceMsg = document.getElementById('danceMsg');
     var danceRetry = document.getElementById('danceRetry');
-    var danceCard = null, danceTimer = null, danceHeat = 0, doused = 0, danceTick = 0, danceOver = false;
+    var danceCard = null, danceTimer = null, danceHeat = 0, doused = 0, danceTick = 0, danceOver = false, danceStartTime = 0;
     var DOUSE_GOAL = 12;
 
     function clearFlames() {
@@ -598,6 +812,7 @@
       dancePoof.classList.remove('sleepy');
       dancePoof.currentTime = 0;
       dancePoof.play().catch(function () {});
+      danceStartTime = Date.now();
       spawnFlame(); spawnFlame();
       danceTimer = setInterval(danceStep, 100);
     }
@@ -605,6 +820,9 @@
     function winDance() {
       danceOver = true;
       stopDance();
+      var secs = Math.max(1, Math.round((Date.now() - danceStartTime) / 1000));
+      var db = getBest('dance');
+      if (!db || !db.t || secs < db.t) setBest('dance', { t: secs });
       dancePoof.pause();
       danceEndImg.src = 'assets/poof-win.jpg';
       danceEndImg.classList.add('show');
@@ -627,6 +845,8 @@
       danceEndImg.classList.add('show');
       dancePoof.classList.add('sleepy');
       danceZzz.classList.add('show');
+      var db2 = getBest('dance');
+      if (!db2 || (!db2.t && doused > (db2.n || 0))) setBest('dance', { n: doused });
       danceMsg.textContent = 'Too hot! 🥵 Poof overheated and fell asleep. Even fire monsters have limits.';
       danceRetry.style.display = '';
       playSfx(sfx.click);
@@ -655,6 +875,442 @@
       stopDance();
       dancePoof.pause();
       dancePanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
+    /* ----- Flame Memory: watch the flicker pattern, tap it back ----- */
+    var memoryPanel = document.getElementById('memoryPanel');
+    var memoryMsg = document.getElementById('memoryMsg');
+    var memoryCard = null, memSeq = [], memIdx = 0, memAccepting = false, memBusy = false;
+    var memoryStartBtn = document.getElementById('memoryStart');
+    var memoryCompleteBtn = document.getElementById('memoryComplete');
+    var memoryRetryBtn = document.getElementById('memoryRetry');
+    var memPads = Array.prototype.slice.call(document.querySelectorAll('.mem-pad'));
+    var MEM_WIN_LEN = 7;
+    function memFlash(pad, ms) {
+      return new Promise(function (res) {
+        pad.classList.add('lit');
+        playSfx(sfx.chime);
+        setTimeout(function () { pad.classList.remove('lit'); setTimeout(res, 170); }, ms || 430);
+      });
+    }
+    function memShowSeq() {
+      memAccepting = false; memIdx = 0;
+      memoryMsg.textContent = 'Watch… sequence of ' + memSeq.length + ' 👀';
+      var chain = Promise.resolve();
+      memSeq.forEach(function (pi) { chain = chain.then(function () { return memFlash(memPads[pi]); }); });
+      chain.then(function () {
+        memAccepting = true;
+        memoryMsg.textContent = 'Your turn! Repeat the ' + memSeq.length + ' flickers.';
+      });
+    }
+    function memNextRound() {
+      memSeq.push(Math.floor(Math.random() * 4));
+      setTimeout(memShowSeq, 650);
+    }
+    function memFail() {
+      memAccepting = false;
+      var completed = memSeq.length - 1;
+      var b = getBest('memory');
+      if (!b || completed > (b.r || 0)) setBest('memory', { r: completed });
+      memoryMsg.textContent = 'The flame fizzled! 🔥💨 You cleared up to a sequence of ' + completed + '.';
+      playSfx(sfx.click);
+      memoryRetryBtn.style.display = '';
+    }
+    function memWin() {
+      var b = getBest('memory');
+      if (!b || MEM_WIN_LEN > (b.r || 0)) setBest('memory', { r: MEM_WIN_LEN });
+      memoryMsg.textContent = praiseWord() + ' 🎉 A perfect ' + MEM_WIN_LEN + '-flame memory — Poof is impressed!';
+      playSfx(sfx.sparkle);
+      memoryCompleteBtn.style.display = '';
+    }
+    memPads.forEach(function (pad) {
+      pad.addEventListener('click', function () {
+        if (!memAccepting || memBusy) return;
+        var pi = parseInt(pad.getAttribute('data-pad'), 10);
+        memBusy = true;
+        memFlash(pad, 260).then(function () {
+          memBusy = false;
+          if (pi !== memSeq[memIdx]) { memFail(); return; }
+          memIdx++;
+          if (memIdx >= memSeq.length) {
+            memAccepting = false;
+            if (memSeq.length >= MEM_WIN_LEN) { memWin(); return; }
+            memoryMsg.textContent = 'Got it! 🎉 Next round…';
+            playSfx(sfx.sparkle);
+            memNextRound();
+          }
+        });
+      });
+    });
+    function startMemory() {
+      memSeq = []; memIdx = 0; memAccepting = false;
+      memoryStartBtn.style.display = 'none';
+      memoryRetryBtn.style.display = 'none';
+      memoryCompleteBtn.style.display = 'none';
+      memoryMsg.textContent = 'Get ready…';
+      memNextRound();
+    }
+    function openMemory(card) {
+      memoryCard = card;
+      memSeq = []; memAccepting = false;
+      memPads.forEach(function (pd) { pd.classList.remove('lit'); });
+      memoryMsg.textContent = 'Press Start, then watch…';
+      memoryStartBtn.style.display = '';
+      memoryRetryBtn.style.display = 'none';
+      memoryCompleteBtn.style.display = 'none';
+      memoryPanel.classList.add('show');
+      playSfx(sfx.click);
+    }
+    memoryStartBtn.addEventListener('click', function () { playSfx(sfx.click); startMemory(); });
+    memoryRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startMemory(); });
+    memoryCompleteBtn.addEventListener('click', function () {
+      memoryPanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (memoryCard) setQuest(memoryCard, true);
+    });
+    document.getElementById('memoryClose').addEventListener('click', function () {
+      memAccepting = false;
+      memoryPanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
+    /* ----- Wake the Crystals: tap each glow before it fades ----- */
+    var crystalPanel = document.getElementById('crystalPanel');
+    var crystalMsg = document.getElementById('crystalMsg');
+    var crystalCountEl = document.getElementById('crystalCount');
+    var crystalMoonsEl = document.getElementById('crystalMoons');
+    var crystalCard = null, cryAwake = 0, cryMoons = 3, cryWindow = 1150, cryLit = -1, cryTimer = null, cryPlaying = false, cryStartTime = 0;
+    var cryEls = Array.prototype.slice.call(document.querySelectorAll('.crystal'));
+    var crystalStartBtn = document.getElementById('crystalStart');
+    var crystalCompleteBtn = document.getElementById('crystalComplete');
+    var crystalRetryBtn = document.getElementById('crystalRetry');
+    function cryHud() { crystalCountEl.textContent = cryAwake; crystalMoonsEl.textContent = cryMoons; }
+    function cryLightNext() {
+      if (!cryPlaying) return;
+      var asleep = [];
+      cryEls.forEach(function (el, i) { if (!el.classList.contains('awake')) asleep.push(i); });
+      if (!asleep.length) return;
+      cryLit = asleep[Math.floor(Math.random() * asleep.length)];
+      cryEls[cryLit].classList.add('lit');
+      cryTimer = setTimeout(function () {
+        if (!cryPlaying || cryLit < 0) return;
+        cryEls[cryLit].classList.remove('lit');
+        cryLit = -1;
+        cryMoons--;
+        cryHud();
+        playSfx(sfx.click);
+        if (cryMoons <= 0) { cryFail(); return; }
+        crystalMsg.textContent = 'Too slow — that one drifted back to sleep… 💤';
+        cryLightNext();
+      }, cryWindow);
+    }
+    function cryWin() {
+      cryPlaying = false;
+      var secs = Math.max(1, Math.round((Date.now() - cryStartTime) / 1000));
+      var b = getBest('crystals');
+      if (!b || !b.t || secs < b.t) setBest('crystals', { t: secs });
+      crystalMsg.textContent = praiseWord() + ' 🎉 All 6 crystals are awake and humming! The cave sparkles.';
+      playSfx(sfx.sparkle);
+      crystalCompleteBtn.style.display = '';
+    }
+    function cryFail() {
+      cryPlaying = false;
+      if (cryTimer) clearTimeout(cryTimer);
+      cryEls.forEach(function (el) { el.classList.remove('lit'); });
+      var b = getBest('crystals');
+      if (!b || (!b.t && cryAwake > (b.n || 0))) setBest('crystals', { n: cryAwake });
+      crystalMsg.textContent = 'The cave went dark at ' + cryAwake + '/6 awake. The crystals forgive you. Probably.';
+      playSfx(sfx.click);
+      crystalRetryBtn.style.display = '';
+    }
+    cryEls.forEach(function (el, i) {
+      el.addEventListener('click', function () {
+        if (!cryPlaying || i !== cryLit) return;
+        clearTimeout(cryTimer);
+        el.classList.remove('lit');
+        el.classList.add('awake');
+        cryLit = -1;
+        cryAwake++;
+        cryHud();
+        playSfx(sfx.chime);
+        if (cryAwake >= 6) { cryWin(); return; }
+        crystalMsg.textContent = 'Awake! 💎 ' + (6 - cryAwake) + ' to go…';
+        cryWindow = Math.max(550, cryWindow - 75);
+        cryLightNext();
+      });
+    });
+    function startCrystals() {
+      cryEls.forEach(function (el) { el.classList.remove('awake', 'lit'); });
+      cryAwake = 0; cryMoons = 3; cryWindow = 1150; cryLit = -1; cryPlaying = true;
+      cryStartTime = Date.now();
+      cryHud();
+      crystalMsg.textContent = 'Watch for the glow…';
+      crystalStartBtn.style.display = 'none';
+      crystalRetryBtn.style.display = 'none';
+      crystalCompleteBtn.style.display = 'none';
+      cryLightNext();
+    }
+    function openCrystals(card) {
+      crystalCard = card;
+      cryPlaying = false;
+      if (cryTimer) clearTimeout(cryTimer);
+      cryEls.forEach(function (el) { el.classList.remove('awake', 'lit'); });
+      cryAwake = 0; cryMoons = 3; cryHud();
+      crystalMsg.textContent = '';
+      crystalStartBtn.style.display = '';
+      crystalRetryBtn.style.display = 'none';
+      crystalCompleteBtn.style.display = 'none';
+      crystalPanel.classList.add('show');
+      playSfx(sfx.click);
+    }
+    crystalStartBtn.addEventListener('click', function () { playSfx(sfx.click); startCrystals(); });
+    crystalRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startCrystals(); });
+    crystalCompleteBtn.addEventListener('click', function () {
+      crystalPanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (crystalCard) setQuest(crystalCard, true);
+    });
+    document.getElementById('crystalClose').addEventListener('click', function () {
+      cryPlaying = false;
+      if (cryTimer) clearTimeout(cryTimer);
+      crystalPanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
+    /* ----- Ember Jar: slide the jar, catch embers, dodge the rain ----- */
+    var jarPanel = document.getElementById('jarPanel');
+    var jarScene = document.getElementById('jarScene');
+    var jarEl = document.getElementById('jarEl');
+    var jarMsg = document.getElementById('jarMsg');
+    var jarCountEl = document.getElementById('jarCount');
+    var jarCracksEl = document.getElementById('jarCracks');
+    var jarCard = null, jarItems = [], jarPlaying = false, jarCaught = 0, jarCracks = 0, jarX = 0.5, jarTargetX = 0.5, jarRAF = null, jarLast = 0, jarSpawnLast = 0, jarStartTime = 0;
+    var jarStartBtn = document.getElementById('jarStart');
+    var jarCompleteBtn = document.getElementById('jarComplete');
+    var jarRetryBtn = document.getElementById('jarRetry');
+    var JAR_GOAL = 12;
+    function jarHud() { jarCountEl.textContent = jarCaught; jarCracksEl.textContent = jarCracks; }
+    function jarSpawn(now) {
+      var isDrop = Math.random() < 0.26;
+      var el = document.createElement('div');
+      el.className = 'fall-item';
+      el.textContent = isDrop ? '💧' : '🔥';
+      el.style.fontSize = isDrop ? '1.4rem' : '1.15rem';
+      jarScene.appendChild(el);
+      jarItems.push({ el: el, x: 0.06 + Math.random() * 0.88, y: -30, vy: 120 + Math.random() * 70, drop: isDrop });
+      jarSpawnLast = now;
+    }
+    function jarLoop(now) {
+      if (!jarPlaying) return;
+      var dt = Math.min(0.05, (now - jarLast) / 1000 || 0.016);
+      jarLast = now;
+      if (now - jarSpawnLast > 620) jarSpawn(now);
+      jarX += (jarTargetX - jarX) * Math.min(1, dt * 16);
+      jarEl.style.left = (jarX * 100) + '%';
+      var W = jarScene.clientWidth, H = jarScene.clientHeight;
+      jarItems = jarItems.filter(function (it) {
+        it.y += it.vy * dt;
+        it.el.style.left = (it.x * W) + 'px';
+        it.el.style.top = it.y + 'px';
+        if (it.y > H - 58 && it.y < H - 6 && Math.abs(it.x - jarX) * W < 42) {
+          it.el.remove();
+          if (it.drop) {
+            jarCracks++; jarHud(); playSfx(sfx.click);
+            jarScene.classList.remove('shake'); void jarScene.offsetWidth; jarScene.classList.add('shake');
+            if (jarCracks >= 3) { jarFail(); return false; }
+            jarMsg.textContent = 'Splash! 💧 The jar cracks a little…';
+          } else {
+            jarCaught++; jarHud(); playSfx(sfx.chime);
+            if (jarCaught >= JAR_GOAL) { jarWin(); return false; }
+          }
+          return false;
+        }
+        if (it.y > H + 10) { it.el.remove(); return false; }
+        return true;
+      });
+      jarRAF = requestAnimationFrame(jarLoop);
+    }
+    function jarStop() {
+      jarPlaying = false;
+      if (jarRAF) cancelAnimationFrame(jarRAF);
+      jarItems.forEach(function (it) { it.el.remove(); });
+      jarItems = [];
+    }
+    function jarWin() {
+      jarStop();
+      var secs = Math.max(1, Math.round((Date.now() - jarStartTime) / 1000));
+      var b = getBest('jar');
+      if (!b || !b.t || secs < b.t) setBest('jar', { t: secs });
+      jarMsg.textContent = praiseWord() + ' 🎉 A full jar of embers — Poof will keep them by his bed.';
+      playSfx(sfx.sparkle);
+      jarCompleteBtn.style.display = '';
+    }
+    function jarFail() {
+      jarStop();
+      var b = getBest('jar');
+      if (!b || (!b.t && jarCaught > (b.n || 0))) setBest('jar', { n: jarCaught });
+      jarMsg.textContent = 'Crack! 💔 The jar gave up at ' + jarCaught + '/12 embers. Poof sweeps up, no hard feelings.';
+      playSfx(sfx.click);
+      jarRetryBtn.style.display = '';
+    }
+    function startJar() {
+      jarStop();
+      jarCaught = 0; jarCracks = 0; jarX = 0.5; jarTargetX = 0.5;
+      jarEl.style.left = '50%';
+      jarHud();
+      jarMsg.textContent = '';
+      jarStartBtn.style.display = 'none';
+      jarRetryBtn.style.display = 'none';
+      jarCompleteBtn.style.display = 'none';
+      jarPlaying = true;
+      jarStartTime = Date.now();
+      jarLast = performance.now(); jarSpawnLast = 0;
+      jarRAF = requestAnimationFrame(jarLoop);
+    }
+    function openJar(card) {
+      jarCard = card;
+      jarStop();
+      jarCaught = 0; jarCracks = 0; jarHud();
+      jarMsg.textContent = '';
+      jarStartBtn.style.display = '';
+      jarRetryBtn.style.display = 'none';
+      jarCompleteBtn.style.display = 'none';
+      jarPanel.classList.add('show');
+      playSfx(sfx.click);
+    }
+    jarScene.addEventListener('pointermove', function (e) {
+      var r = jarScene.getBoundingClientRect();
+      jarTargetX = Math.max(0.06, Math.min(0.94, (e.clientX - r.left) / r.width));
+    });
+    jarScene.addEventListener('pointerdown', function (e) {
+      var r = jarScene.getBoundingClientRect();
+      jarTargetX = Math.max(0.06, Math.min(0.94, (e.clientX - r.left) / r.width));
+    });
+    jarStartBtn.addEventListener('click', function () { playSfx(sfx.click); startJar(); });
+    jarRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startJar(); });
+    jarCompleteBtn.addEventListener('click', function () {
+      jarPanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (jarCard) setQuest(jarCard, true);
+    });
+    document.getElementById('jarClose').addEventListener('click', function () {
+      jarStop();
+      jarPanel.classList.remove('show');
+      playSfx(sfx.click);
+    });
+
+    /* ----- Pop the Smoke Puffs: pop gold, never smoke ----- */
+    var puffPanel = document.getElementById('puffPanel');
+    var puffScene = document.getElementById('puffScene');
+    var puffMsg = document.getElementById('puffMsg');
+    var puffCountEl = document.getElementById('puffCount');
+    var puffHeartsEl = document.getElementById('puffHearts');
+    var puffCard = null, puffItems = [], puffPlaying = false, puffPopped = 0, puffHearts = 3, puffRAF = null, puffLast = 0, puffSpawnLast = 0, puffStartTime = 0;
+    var puffStartBtn = document.getElementById('puffStart');
+    var puffCompleteBtn = document.getElementById('puffComplete');
+    var puffRetryBtn = document.getElementById('puffRetry');
+    var PUFF_GOAL = 15;
+    function puffHud() { puffCountEl.textContent = puffPopped; puffHeartsEl.textContent = puffHearts; }
+    function puffSpawn(now) {
+      var isSmoke = Math.random() < 0.32;
+      var b = document.createElement('button');
+      b.className = 'puff';
+      b.type = 'button';
+      b.textContent = isSmoke ? '💨' : '🌟';
+      b.style.fontSize = isSmoke ? '1.9rem' : '1.6rem';
+      puffScene.appendChild(b);
+      var item = { el: b, x: 0.08 + Math.random() * 0.84, y: puffScene.clientHeight + 30, vy: 46 + Math.random() * 42, smoke: isSmoke, sway: Math.random() * Math.PI * 2 };
+      b.addEventListener('click', function () {
+        if (!puffPlaying || item.dead) return;
+        item.dead = true;
+        b.remove();
+        if (item.smoke) {
+          puffHearts--; puffHud(); playSfx(sfx.click);
+          puffScene.classList.remove('shake'); void puffScene.offsetWidth; puffScene.classList.add('shake');
+          puffMsg.textContent = 'Pffft! 💨 That was smoke…';
+          if (puffHearts <= 0) puffFail();
+        } else {
+          puffPopped++; puffHud(); playSfx(sfx.chime);
+          if (puffPopped >= PUFF_GOAL) puffWin();
+        }
+      });
+      puffItems.push(item);
+      puffSpawnLast = now;
+    }
+    function puffLoop(now) {
+      if (!puffPlaying) return;
+      var dt = Math.min(0.05, (now - puffLast) / 1000 || 0.016);
+      puffLast = now;
+      if (now - puffSpawnLast > 560 && puffItems.length < 9) puffSpawn(now);
+      var W = puffScene.clientWidth;
+      puffItems = puffItems.filter(function (it) {
+        if (it.dead) return false;
+        it.y -= it.vy * dt;
+        it.sway += dt * 2;
+        it.el.style.left = ((it.x + Math.sin(it.sway) * 0.012) * W) + 'px';
+        it.el.style.top = it.y + 'px';
+        if (it.y < -40) { it.el.remove(); return false; }
+        return true;
+      });
+      puffRAF = requestAnimationFrame(puffLoop);
+    }
+    function puffStop() {
+      puffPlaying = false;
+      if (puffRAF) cancelAnimationFrame(puffRAF);
+      puffItems.forEach(function (it) { it.el.remove(); });
+      puffItems = [];
+    }
+    function puffWin() {
+      puffStop();
+      var secs = Math.max(1, Math.round((Date.now() - puffStartTime) / 1000));
+      var b = getBest('puffs');
+      if (!b || !b.t || secs < b.t) setBest('puffs', { t: secs });
+      puffMsg.textContent = praiseWord() + ' 🎉 15 golden stars popped — the sky over the cave is clear!';
+      playSfx(sfx.sparkle);
+      puffCompleteBtn.style.display = '';
+    }
+    function puffFail() {
+      puffStop();
+      var b = getBest('puffs');
+      if (!b || (!b.t && puffPopped > (b.n || 0))) setBest('puffs', { n: puffPopped });
+      puffMsg.textContent = 'Too smoky! 💨 Poof is coughing at ' + puffPopped + '/15 stars. Achoo.';
+      playSfx(sfx.click);
+      puffRetryBtn.style.display = '';
+    }
+    function startPuffs() {
+      puffStop();
+      puffPopped = 0; puffHearts = 3; puffHud();
+      puffMsg.textContent = '';
+      puffStartBtn.style.display = 'none';
+      puffRetryBtn.style.display = 'none';
+      puffCompleteBtn.style.display = 'none';
+      puffPlaying = true;
+      puffStartTime = Date.now();
+      puffLast = performance.now(); puffSpawnLast = 0;
+      puffRAF = requestAnimationFrame(puffLoop);
+    }
+    function openPuffs(card) {
+      puffCard = card;
+      puffStop();
+      puffPopped = 0; puffHearts = 3; puffHud();
+      puffMsg.textContent = '';
+      puffStartBtn.style.display = '';
+      puffRetryBtn.style.display = 'none';
+      puffCompleteBtn.style.display = 'none';
+      puffPanel.classList.add('show');
+      playSfx(sfx.click);
+    }
+    puffStartBtn.addEventListener('click', function () { playSfx(sfx.click); startPuffs(); });
+    puffRetryBtn.addEventListener('click', function () { playSfx(sfx.click); startPuffs(); });
+    puffCompleteBtn.addEventListener('click', function () {
+      puffPanel.classList.remove('show');
+      playSfx(sfx.click);
+      if (puffCard) setQuest(puffCard, true);
+    });
+    document.getElementById('puffClose').addEventListener('click', function () {
+      puffStop();
+      puffPanel.classList.remove('show');
       playSfx(sfx.click);
     });
 
@@ -696,12 +1352,13 @@
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
       // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
       setInterval(function () {
-        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show');
+        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show') || rockPanel.classList.contains('show') || dancePanel.classList.contains('show') || memoryPanel.classList.contains('show') || crystalPanel.classList.contains('show') || jarPanel.classList.contains('show') || puffPanel.classList.contains('show');
         if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
         if (!caveVideo.paused) playOverlay.classList.remove('show');
       }, 2500);
     }
     render();
+    renderBests();
   </script>
 </body>
 </html>
