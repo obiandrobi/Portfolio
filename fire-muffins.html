@@ -35,7 +35,7 @@
     #streakPop.pop { animation: streakPop 1.05s ease forwards; }
     @keyframes streakPop { 0% { opacity: 0; transform: scale(.4) rotate(-4deg); } 18% { opacity: 1; transform: scale(1.15) rotate(2deg); } 30% { transform: scale(1) rotate(0deg); } 75% { opacity: 1; } 100% { opacity: 0; transform: scale(1.04) translateY(-10px); } }
     .ground { position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: rgba(20,8,4,.35); z-index: 2; }
-    #poof { position: absolute; bottom: 12px; left: 50%; width: 128px; height: auto; margin-left: -64px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; pointer-events: none; -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
+    #poof { position: absolute; bottom: 12px; left: 50%; width: 88px; height: auto; margin-left: -44px; z-index: 5; filter: drop-shadow(0 10px 9px rgba(0,0,0,.4)); transform-origin: 50% 92%; will-change: transform; pointer-events: none; -webkit-touch-callout: none; -webkit-user-drag: none; user-select: none; -webkit-user-select: none; }
     #poof.hop { animation: hop .38s ease; }
     @keyframes hop { 40% { margin-bottom: 16px; } }
     .muffin { position: absolute; left: 0; top: 0; z-index: 4; width: 46px; height: 52px; margin-left: -23px; text-align: center; will-change: transform; pointer-events: none; }
@@ -322,7 +322,7 @@
         m.y += m.speed * dt;
         m.el.style.transform = 'translate(' + (m.x * W) + 'px,' + m.y + 'px)';
         var muffinBottom = m.y + 52;
-        var overlapX = Math.abs(m.x - poofX) * W < 84;
+        var overlapX = Math.abs(m.x - poofX) * W < 56;
         if (muffinBottom >= poofTop + 26 && muffinBottom <= H - 4 && overlapX) {
           score++;
           streak++;
