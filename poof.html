@@ -469,6 +469,8 @@
             <div class="acc-tray" id="accTray">
               <button data-acc="eyes" data-emoji="👀" data-fx="0.5" data-fy="0.47" data-rem="2.6">👀</button>
               <button data-acc="shades" data-emoji="🕶️" data-fx="0.5" data-fy="0.47" data-rem="2.9">🕶️</button>
+              <button data-acc="smile" data-emoji="😊" data-fx="0.5" data-fy="0.65" data-rem="2">😊</button>
+              <button data-acc="lips" data-emoji="👄" data-fx="0.5" data-fy="0.66" data-rem="1.8">👄</button>
               <button data-acc="hat" data-emoji="🎩" data-fx="0.5" data-fy="0.13" data-rem="2.8">🎩</button>
               <button data-acc="crown" data-emoji="👑" data-fx="0.5" data-fy="0.11" data-rem="2.6">👑</button>
               <button data-acc="cap" data-emoji="🧢" data-fx="0.5" data-fy="0.14" data-rem="2.6">🧢</button>
@@ -1642,7 +1644,7 @@
     var selfieImg = document.getElementById('selfieImg');
     var selfieDownload = document.getElementById('selfieDownload');
     var selfieBlob = null;
-    var ACC_KEYS = ['eyes', 'shades', 'hat', 'crown', 'cap', 'bow', 'flower', 'star'];
+    var ACC_KEYS = ['eyes', 'shades', 'smile', 'lips', 'hat', 'crown', 'cap', 'bow', 'flower', 'star'];
     function steveCount() { return Object.keys(stevePieces).length; }
     function steveMsgUpdate() {
       var n = steveCount();
@@ -1711,9 +1713,20 @@
     document.getElementById('makeoverClear').addEventListener('click', function () { playSfx(sfx.click); clearSteve(); });
     document.getElementById('makeoverRandom').addEventListener('click', function () {
       clearSteve();
-      var shuffled = ACC_KEYS.slice().sort(function () { return Math.random() - 0.5; }).slice(0, 4 + Math.floor(Math.random() * 3));
+      // Build a proper outfit, not a random pile: exactly ONE from each zone
+      // (eyes, mouth, hat) plus 1–2 extras — so Steve never wears 3 hats at
+      // once and always comes out selfie-ready (4–5 pieces, needs 3).
+      function pickOne(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      var outfit = [
+        pickOne(['eyes', 'shades']),
+        pickOne(['smile', 'lips']),
+        pickOne(['hat', 'crown', 'cap'])
+      ];
+      var extras = ['bow', 'flower', 'star'].sort(function () { return Math.random() - 0.5; });
+      outfit.push(extras[0]);
+      if (Math.random() < 0.5) outfit.push(extras[1]);
       document.querySelectorAll('#accTray button').forEach(function (btn) {
-        if (shuffled.indexOf(btn.getAttribute('data-acc')) >= 0) addPiece(btn);
+        if (outfit.indexOf(btn.getAttribute('data-acc')) >= 0) addPiece(btn);
       });
       playSfx(sfx.sparkle);
       steveMsgUpdate();
