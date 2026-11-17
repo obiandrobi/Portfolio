@@ -675,12 +675,30 @@
       }
       musicBar++;
     }
-    function startMusic() {
+    function startSynthMusic() {
       if (!musicOn || musicTimer) return;
       musicBarPlay();
       musicTimer = setInterval(musicBarPlay, 4000);
     }
-    function stopMusic() { if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+    function stopSynthMusic() { if (musicTimer) { clearInterval(musicTimer); musicTimer = null; } }
+    /* The real track (user-generated): Cave Sprite Loop. If it ever fails to
+       load, the synth loop above quietly takes over. */
+    var musicAudio = new Audio('assets/cave-sprite-loop.mp3');
+    musicAudio.loop = true;
+    musicAudio.volume = 0.5;
+    musicAudio.preload = 'auto';
+    var musicUseSynth = false;
+    musicAudio.addEventListener('error', function () { musicUseSynth = true; }, true);
+    function startMusic() {
+      if (!musicOn) return;
+      if (musicUseSynth) { startSynthMusic(); return; }
+      var p = musicAudio.play();
+      if (p && p.catch) p.catch(function () { musicUseSynth = true; startSynthMusic(); });
+    }
+    function stopMusic() {
+      try { musicAudio.pause(); } catch (e) {}
+      stopSynthMusic();
+    }
     var musicChip = document.getElementById('musicChip');
     function renderMusicChip() { musicChip.textContent = musicOn ? '🎵' : '🔇'; musicChip.classList.toggle('off', !musicOn); }
     musicChip.addEventListener('click', function (ev) {
