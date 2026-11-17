@@ -439,12 +439,21 @@
       caveVideo.removeAttribute('autoplay'); caveVideo.pause();
     } else {
       caveVideo.addEventListener('play', function () { playOverlay.classList.remove('show'); });
+      caveVideo.addEventListener('pause', function () {
+        if (!document.hidden) playOverlay.classList.add('show');
+      });
       playOverlay.addEventListener('click', function (e) { e.stopPropagation(); tryPlayCave(); });
       document.querySelector('.screen').addEventListener('pointerdown', function () {
         if (caveVideo.paused) tryPlayCave();
       });
       tryPlayCave();
       setTimeout(function () { if (caveVideo.paused) playOverlay.classList.add('show'); }, 900);
+      // iOS can pause the video later (scrolling, tab switches) — keep the wake-up button honest.
+      setInterval(function () {
+        var busy = tracer.classList.contains('show') || celebrate.classList.contains('show');
+        if (!busy && caveVideo.paused && !document.hidden) playOverlay.classList.add('show');
+        if (!caveVideo.paused) playOverlay.classList.remove('show');
+      }, 2500);
     }
     render();
   </script>
