@@ -89,6 +89,7 @@
     .tracer-btns { display: flex; gap: 10px; justify-content: center; margin-top: 8px; }
     .tracer-btns button { font: inherit; font-weight: 800; border-radius: 999px; padding: 9px 18px; cursor: pointer; border: 2px solid #ff8a3d; background: #ff8a3d; color: #fff; }
     .tracer-btns button.flair { background: linear-gradient(135deg, #d42a1e, #7f1d1d); border-color: #7f1d1d; }
+    .tracer, .celebrate { touch-action: none; }
     button { touch-action: manipulation; }
     .game-scene, #danceStage, #steveStage { touch-action: none; }
     .rock-input { font-size: 16px; }
@@ -384,7 +385,7 @@
             <p style="text-align:left"><strong>How to play:</strong> Steve the rock has a big day coming up. He wants to look his best.<br>
             1️⃣ Tap accessories below to put them on Steve — <strong>drag them</strong> to place them just right.<br>
             2️⃣ Give him at least <strong>3 accessories</strong>.<br>
-            3️⃣ Then take his <strong>selfie with Poof</strong> 📸 — you can save the picture!</p>
+            3️⃣ Then take his <strong>beach selfie</strong> 📸 — you can save the picture!</p>
             <div class="game-scene" id="steveStage" style="background:linear-gradient(#ffe9c9,#ffd9a8)">
               <div class="steve-rock" id="steveRock">🪨</div>
             </div>
@@ -393,13 +394,13 @@
               <button data-acc="shades" data-emoji="🕶️" data-fx="0.5" data-fy="0.44" data-rem="2.9">🕶️</button>
               <button data-acc="hat" data-emoji="🎩" data-fx="0.5" data-fy="0.17" data-rem="2.8">🎩</button>
               <button data-acc="crown" data-emoji="👑" data-fx="0.5" data-fy="0.15" data-rem="2.6">👑</button>
-              <button data-acc="stache" data-emoji="🥸" data-fx="0.5" data-fy="0.62" data-rem="2.4">🥸</button>
+              <button data-acc="cap" data-emoji="🧢" data-fx="0.5" data-fy="0.18" data-rem="2.6">🧢</button>
               <button data-acc="bow" data-emoji="🎀" data-fx="0.69" data-fy="0.22" data-rem="2">🎀</button>
               <button data-acc="flower" data-emoji="🌸" data-fx="0.3" data-fy="0.24" data-rem="1.9">🌸</button>
               <button data-acc="star" data-emoji="⭐" data-fx="0.5" data-fy="0.78" data-rem="1.7">⭐</button>
             </div>
             <div class="tracer-msg" id="makeoverMsg">Steve is ready for his glow-up.</div>
-            <img id="selfieImg" alt="Selfie of Poof with Steve the rock, all dressed up">
+            <img id="selfieImg" alt="Steve the rock at the beach, all dressed up">
             <div class="tracer-btns">
               <button id="makeoverSelfie">📸 Take his selfie</button>
               <button id="makeoverComplete" style="display:none">Complete ✓</button>
@@ -1359,7 +1360,7 @@
       playSfx(sfx.click);
     });
 
-    /* ----- Steve's Makeover: dress the rock, then a selfie with Poof ----- */
+    /* ----- Steve's Makeover: dress the rock, then his beach selfie ----- */
     var makeoverPanel = document.getElementById('makeoverPanel');
     var steveStage = document.getElementById('steveStage');
     var makeoverMsg = document.getElementById('makeoverMsg');
@@ -1367,7 +1368,7 @@
     var makeoverCompleteBtn = document.getElementById('makeoverComplete');
     var selfieImg = document.getElementById('selfieImg');
     var selfieDownload = document.getElementById('selfieDownload');
-    var ACC_KEYS = ['eyes', 'shades', 'hat', 'crown', 'stache', 'bow', 'flower', 'star'];
+    var ACC_KEYS = ['eyes', 'shades', 'hat', 'crown', 'cap', 'bow', 'flower', 'star'];
     function steveCount() { return Object.keys(stevePieces).length; }
     function steveMsgUpdate() {
       var n = steveCount();
@@ -1447,25 +1448,35 @@
       var S = 640, cv = document.createElement('canvas');
       cv.width = S; cv.height = S;
       var c = cv.getContext('2d');
-      var g = c.createLinearGradient(0, 0, 0, S);
-      g.addColorStop(0, '#8ec9e8'); g.addColorStop(0.55, '#ffd9a0'); g.addColorStop(1, '#ffab73');
-      c.fillStyle = g; c.fillRect(0, 0, S, S);
-      c.beginPath(); c.arc(S * 0.78, S * 0.2, 52, 0, Math.PI * 2); c.fillStyle = '#fff3b0'; c.fill();
-      c.fillStyle = '#7a9e6e'; c.beginPath(); c.ellipse(S * 0.5, S * 1.02, S * 0.75, S * 0.2, 0, Math.PI, Math.PI * 2); c.fill();
+      var g = c.createLinearGradient(0, 0, 0, S * 0.62);
+      g.addColorStop(0, '#7ec8f2'); g.addColorStop(1, '#d8f3ff');
+      c.fillStyle = g; c.fillRect(0, 0, S, S * 0.62);
+      c.beginPath(); c.arc(S * 0.82, S * 0.16, 46, 0, Math.PI * 2); c.fillStyle = '#fff3b0'; c.fill();
+      var sea = c.createLinearGradient(0, S * 0.42, 0, S * 0.66);
+      sea.addColorStop(0, '#2ea3c7'); sea.addColorStop(1, '#7fd4e8');
+      c.fillStyle = sea; c.fillRect(0, S * 0.42, S, S * 0.24);
+      c.fillStyle = 'rgba(255,255,255,0.75)'; c.fillRect(0, S * 0.645, S, 7);
+      var sandG = c.createLinearGradient(0, S * 0.66, 0, S);
+      sandG.addColorStop(0, '#ffe6b3'); sandG.addColorStop(1, '#f7cf8b');
+      c.fillStyle = sandG; c.fillRect(0, S * 0.66, S, S * 0.34);
       var rockName = document.getElementById('yourRockName').textContent || 'Rocko';
       var rockDone = document.getElementById('rockStat').style.display !== 'none';
       function drawScene() {
         c.textAlign = 'center'; c.textBaseline = 'middle';
+        c.font = (S * 0.2) + 'px serif';
+        c.fillText('🌴', S * 0.09, S * 0.72);
+        c.font = (S * 0.07) + 'px serif';
+        c.fillText('🐚', S * 0.16, S * 0.9);
         c.font = (S * 0.34) + 'px serif';
-        c.fillText('🪨', S * 0.62, S * 0.58);
+        c.fillText('🪨', S * 0.48, S * 0.7);
         Object.keys(stevePieces).forEach(function (k) {
           var el = stevePieces[k];
           var rem = parseFloat(el.getAttribute('data-rem'));
-          // stage coords (Steve at 50%/55% of the stage) -> selfie coords (rock at 62%/58%)
+          // stage coords (Steve at 50%/55% of the stage) -> selfie coords (rock at 48%/70%)
           var dx = (parseFloat(el.getAttribute('data-fx')) - 0.5) * S * 0.62;
           var dy = (parseFloat(el.getAttribute('data-fy')) - 0.55) * S * 0.62;
           c.font = (rem * 16 * (S / 300)) + 'px serif';
-          c.fillText(el.textContent, S * 0.62 + dx, S * 0.58 + dy);
+          c.fillText(el.textContent, S * 0.48 + dx, S * 0.7 + dy);
         });
         if (rockDone) {
           c.font = (S * 0.13) + 'px serif';
@@ -1475,7 +1486,7 @@
           c.fillText(rockName, S * 0.86, S * 0.9);
         }
         c.font = '900 ' + (S * 0.055) + 'px system-ui, sans-serif';
-        c.shadowColor = 'rgba(90,40,0,0.45)'; c.shadowBlur = 8; c.shadowOffsetY = 3;
+        c.shadowColor = 'rgba(60,30,0,0.85)'; c.shadowBlur = 10; c.shadowOffsetY = 3;
         c.fillStyle = '#ffffff';
         c.fillText(rockDone ? 'Steve & ' + rockName + ' — best friends 💛' : 'Steve, styled by you 💛', S * 0.5, S * 0.94);
         c.shadowBlur = 0; c.shadowOffsetY = 0;
@@ -1484,21 +1495,11 @@
         selfieImg.style.display = 'block';
         selfieDownload.href = url;
         selfieDownload.style.display = '';
-        makeoverMsg.textContent = '📸 Got it! Poof is framing this one.';
+        makeoverMsg.textContent = "📸 Got it! Steve's beach day — one for the fridge.";
         playSfx(sfx.sparkle);
         makeoverCompleteBtn.style.display = '';
       }
-      var img = new Image();
-      img.onload = function () {
-        c.save();
-        c.beginPath(); c.arc(S * 0.24, S * 0.6, S * 0.17, 0, Math.PI * 2); c.clip();
-        c.drawImage(img, S * 0.24 - S * 0.17, S * 0.6 - S * 0.17, S * 0.34, S * 0.34);
-        c.restore();
-        c.beginPath(); c.arc(S * 0.24, S * 0.6, S * 0.17, 0, Math.PI * 2); c.lineWidth = 8; c.strokeStyle = '#ffffff'; c.stroke();
-        drawScene();
-      };
-      img.onerror = function () { drawScene(); };
-      img.src = 'assets/poof-front.jpg';
+      drawScene();
     }
     document.getElementById('makeoverSelfie').addEventListener('click', takeSelfie);
     makeoverCompleteBtn.addEventListener('click', function () {
