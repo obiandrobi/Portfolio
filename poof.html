@@ -204,6 +204,15 @@
       .tracer-btns button { padding: 6px 9px; font-size: .78rem; }
       .acc-tray button { font-size: .95rem; padding: 4px 9px; }
     }
+    /* Tall phones (e.g. iPhone 15 Pro Max, ~932px tall): the header takes 41%
+       of the screen height, so on a tall screen it balloons toward ~380px
+       and the whole app feels stretched, dropping too far down the screen.
+       On screens taller than the desktop frame, the header takes a smaller
+       share and is hard-capped, so the layout proportions stay the same on
+       every phone. */
+    @media (max-width: 760px) and (min-height: 761px) {
+      .app-header { height: 34%; max-height: 330px; }
+    }
   </style>
 </head>
 <body>
@@ -235,7 +244,7 @@
           <img class="cave-anim" src="assets/cave-hero-v2.webp" alt="Poof's cozy cave home in the hills, overlooking the glowing town far below" fetchpriority="high">
           <div class="statusbar"><span>7:02</span><span>📶 🔋</span></div>
           <div class="streak-chip"><span class="flame" id="streakFlame">🔥</span><span><span id="streakDays">12</span> day streak</span></div>
-          <div class="build-tag">✨ build 1435 · tidy buttons</div>
+          <div class="build-tag">✨ build 1655 · tall fit</div>
           <div class="greeting">
             <h2>Hello there! ☀️</h2>
             <p>Poof is waiting in the cave. Ready?</p>
